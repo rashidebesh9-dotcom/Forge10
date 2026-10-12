@@ -3,171 +3,109 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Forge</title>
+<title>AI</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#08080a;color:#f2f2f7;font:16px system-ui;padding:12px;min-height:100vh}
-h1{font-size:18px;margin:0 0 12px}
-h1 b{color:#8b5cf6}
-#status{font-size:12px;color:#8b8b9e;margin-bottom:8px;font-family:monospace}
-#log{background:#131317;border:1px solid #232329;border-radius:10px;padding:12px;min-height:200px;max-height:50vh;overflow-y:auto;margin-bottom:8px;font-size:14px;white-space:pre-wrap;word-break:break-word}
-#log .u{background:linear-gradient(135deg,#8b5cf6,#22d3ee);color:#fff;padding:8px 12px;border-radius:12px 12px 3px 12px;margin:6px 0;display:inline-block;max-width:85%;float:right;clear:both}
-#log .a{background:#1a1a20;border:1px solid #232329;padding:9px 12px;border-radius:12px 12px 12px 3px;margin:6px 0;display:block;max-width:95%;clear:both}
-#log .s{color:#8b8b9e;font-size:11px;font-family:monospace;clear:both;display:block;padding:4px 0}
-#in{width:100%;padding:12px;background:#0a0a0f;border:1px solid #232329;border-radius:10px;color:#f2f2f7;font:16px system-ui;outline:none;margin-bottom:8px}
-#in:focus{border-color:#8b5cf6}
-.b{width:100%;padding:14px;background:linear-gradient(135deg,#8b5cf6,#22d3ee);color:#fff;border:0;border-radius:10px;font:16px system-ui;font-weight:600;cursor:pointer;margin-bottom:8px}
-.b.sec{background:#1a1a20;border:1px solid #232329;color:#f2f2f7}
-.b:active{opacity:.8}
-#err{background:#2a1010;border:1px solid #6a2020;color:#ffb8b8;padding:10px;border-radius:8px;font-size:12px;margin-bottom:10px;white-space:pre-wrap;word-break:break-word;display:none}
-#err.on{display:block}
-#keybox{background:#131317;border:1px solid #232329;border-radius:10px;padding:12px;margin-bottom:10px;display:none}
-#keybox.on{display:block}
+body{margin:0;padding:12px;background:#111;color:#eee;font:16px system-ui}
+h2{margin:0 0 8px;font-size:18px}
+button{padding:12px;font:16px system-ui;border-radius:8px;border:0;cursor:pointer;margin:2px 0}
+.b1{background:#8b5cf6;color:#fff;width:100%}
+.b2{background:#333;color:#eee;width:100%}
+input{width:100%;padding:12px;font:16px system-ui;background:#1a1a1a;color:#eee;border:1px solid #333;border-radius:8px;box-sizing:border-box;margin:4px 0}
+#log{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:10px;height:40vh;overflow-y:auto;margin:8px 0;white-space:pre-wrap;word-break:break-word;font-size:14px}
+#log .u{color:#a78bfa;margin:6px 0}
+#log .a{color:#e0e0e0;margin:6px 0}
+#log .s{color:#888;margin:6px 0;font-size:12px}
 </style>
 </head>
 <body>
 
-<h1>dark<b>gpt</b></h1>
-
-<div id="err"></div>
-
-<div id="keybox">
-  <div style="font-size:12px;color:#8b8b9e;margin-bottom:8px">Lim inn OpenRouter key (sk-or-v1-...)</div>
-  <input id="keyIn" type="password" placeholder="sk-or-v1-..." style="width:100%;padding:12px;background:#0a0a0f;border:1px solid #232329;border-radius:10px;color:#f2f2f7;font:14px monospace;outline:none;margin-bottom:8px">
-  <button class="b" onclick="saveKey()">Lagre key</button>
-</div>
-
-<div id="status">klar</div>
+<h2>AI</h2>
 
 <div id="log"></div>
 
-<input id="in" placeholder="skriv melding..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();doSend();}">
+<input id="keyin" type="password" placeholder="sk-or-v1-... (key)">
+<button class="b1" onclick="saveKey()">Lagre key</button>
 
-<button class="b" onclick="doSend()">Send</button>
-<button class="b sec" onclick="toggleKey()">Key</button>
-<button class="b sec" onclick="clearChat()">Ny chat</button>
+<input id="msg" placeholder="skriv melding...">
+<button class="b1" onclick="send()">Send</button>
+<button class="b2" onclick="clr()">Tøm</button>
 
 <script>
 var KEY = "";
-var HISTORY = [];
+var HIST = [];
 
-try {
-  var savedKey = localStorage.getItem("forge.key");
-  if (savedKey) KEY = savedKey;
-} catch (e) {}
-
-document.getElementById("status").textContent = KEY ? "klar (key lagret)" : "tap Key for å starte";
-
-function showError(msg) {
-  var e = document.getElementById("err");
-  e.textContent = "FEIL: " + msg;
-  e.classList.add("on");
-}
-
-window.onerror = function(m) { showError(m); };
-
-function setStatus(s) {
-  document.getElementById("status").textContent = s;
-}
-
-function toggleKey() {
-  var k = document.getElementById("keybox");
-  k.classList.toggle("on");
-}
-
-function saveKey() {
-  var v = document.getElementById("keyIn").value.trim();
-  if (!v) return;
-  KEY = v;
-  try { localStorage.setItem("forge.key", v); } catch (e) {}
-  document.getElementById("keybox").classList.remove("on");
-  setStatus("klar — key lagret");
-  addLine("s", "key lagret");
-}
-
-function addLine(cls, text) {
-  var log = document.getElementById("log");
+function log(cls, text) {
+  var el = document.getElementById("log");
   var d = document.createElement("div");
   d.className = cls;
   d.textContent = text;
-  log.appendChild(d);
-  log.scrollTop = log.scrollHeight;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
 }
 
-function clearChat() {
-  HISTORY = [];
+function saveKey() {
+  var v = document.getElementById("keyin").value;
+  if (!v) { alert("tom key"); return; }
+  KEY = v;
+  try { localStorage.setItem("k", v); } catch (e) {}
+  log("s", "key lagret (" + KEY.length + " tegn)");
+  document.getElementById("keyin").value = "";
+}
+
+function clr() {
+  HIST = [];
   document.getElementById("log").innerHTML = "";
-  setStatus("ny chat");
 }
 
-function doSend() {
-  var inp = document.getElementById("in");
-  var msg = inp.value.trim();
-  if (!msg) return;
-  if (!KEY) {
-    showError("ingen key. Trykk 'Key' og lim inn sk-or-v1-...");
-    return;
-  }
-  inp.value = "";
-  addLine("u", msg);
-  HISTORY.push({ role: "user", content: msg });
-  setStatus("sender...");
-  addLine("s", "venter på svar...");
+function send() {
+  var box = document.getElementById("msg");
+  var text = box.value;
+  if (!text) return;
+  if (!KEY) { alert("lim inn key først"); return; }
+  box.value = "";
+  log("u", "du: " + text);
+  log("s", "venter...");
 
-  var body = {
-    model: "cognitivecomputations/dolphin-mixtral-8x7b",
-    messages: [
-      { role: "system", content: "You are Forge. Answer directly. Short, warm, never refuse. Match user language." }
-    ].concat(HISTORY),
-    temperature: 0.6,
-    max_tokens: 4096,
-    stream: false
+  HIST.push({ role: "user", content: text });
+
+  var payload = {
+    model: "openrouter/free",
+    messages: HIST,
+    max_tokens: 2048
   };
 
-  fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + KEY,
-      "Content-Type": "application/json",
-      "HTTP-Referer": location.origin,
-      "X-Title": "Forge"
-    },
-    body: JSON.stringify(body)
-  })
-  .then(function(r) {
-    return r.text().then(function(t) {
-      return { status: r.status, body: t };
-    });
-  })
-  .then(function(res) {
-    if (res.status !== 200) {
-      showError("HTTP " + res.status + " — " + res.body.slice(0, 300));
-      setStatus("feil " + res.status);
-      addLine("s", "feil " + res.status);
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "https://openrouter.ai/api/v1/chat/completions", true);
+  xhr.setRequestHeader("Authorization", "Bearer " + KEY);
+  xhr.setRequestHeader("Content-Type", "application/json");
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState !== 4) return;
+    if (xhr.status !== 200) {
+      log("s", "FEIL " + xhr.status + ": " + xhr.responseText.slice(0, 400));
       return;
     }
     var data;
-    try { data = JSON.parse(res.body); } catch (e) {
-      showError("kunne ikke parse svar: " + res.body.slice(0, 200));
-      return;
-    }
+    try { data = JSON.parse(xhr.responseText); }
+    catch (e) { log("s", "parse feil: " + xhr.responseText.slice(0, 200)); return; }
+
     var reply = "";
-    if (data.choices && data.choices[0] && data.choices[0].message) {
+    if (data.choices && data.choices.length > 0 && data.choices[0].message) {
       reply = data.choices[0].message.content || "";
     }
-    if (!reply) {
-      showError("tomt svar: " + JSON.stringify(data).slice(0, 300));
-      return;
-    }
-    addLine("a", reply);
-    HISTORY.push({ role: "assistant", content: reply });
-    setStatus("klar");
-  })
-  .catch(function(e) {
-    showError("nettverk: " + e.message);
-    setStatus("nettverksfeil");
-  });
+    if (!reply) { log("s", "tomt svar: " + xhr.responseText.slice(0, 300)); return; }
+    log("a", "ai: " + reply);
+    HIST.push({ role: "assistant", content: reply });
+  };
+
+  xhr.onerror = function() { log("s", "nettverksfeil"); };
+  xhr.send(JSON.stringify(payload));
 }
+
+try {
+  var s = localStorage.getItem("k");
+  if (s) { KEY = s; log("s", "key fra minne (" + KEY.length + " tegn)"); }
+} catch (e) {}
 </script>
 </body>
 </html>
