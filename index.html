@@ -75,7 +75,7 @@ footer{border-top:1px solid #232329;background:rgba(19,19,23,.78);backdrop-filte
 .card{background:#12121a;border:1px solid #2a2a35;border-radius:20px;padding:20px;width:100%;max-width:540px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 20px 60px -10px rgba(0,0,0,.8)}
 .card h3{margin:0 0 6px;font-size:16px}
 .card p{margin:0 0 14px;font-size:12.5px;color:#8b8b9e;line-height:1.5}
-.card a{color:#22d3ee;text-decoration:none}
+.card a{color:#22d3ee;text-decoration:none;word-break:break-all}
 .card input[type=password]{width:100%;padding:12px;background:#0a0a0f;border:1px solid #232329;border-radius:10px;color:#f2f2f7;font:13px ui-monospace,monospace;outline:none;margin-bottom:12px}
 .card input:focus{border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,.15)}
 .card .list{flex:1;overflow-y:auto;min-height:50px;margin-bottom:10px}
@@ -124,9 +124,10 @@ footer{border-top:1px solid #232329;background:rgba(19,19,23,.78);backdrop-filte
 <div class="modal" id="modal"><div class="card" id="card"></div></div>
 <script>
 var KEY="", GH="", HIST=[], MEM=[], CHATS={}, CUR="", CODE="", BUNDLE=null, IMGS=[], busy=false;
+var BUILD_REPO="forge-builds";
 
 function $(id){ return document.getElementById(id); }
-function showErr(m){ var e=$("err"); e.textContent="FEIL: "+m; e.className="on"; setTimeout(function(){ e.className=""; }, 9000); }
+function showErr(m){ var e=$("err"); e.textContent="FEIL: "+m; e.className="on"; setTimeout(function(){ e.className=""; }, 12000); }
 window.onerror=function(m,u,l){ showErr(m+" @ "+l); return false; };
 function setStatus(t,cls){ var s=$("status"); s.textContent=t; s.className="pill"+(cls?" "+cls:""); }
 function newId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
@@ -146,10 +147,8 @@ function renderText(parent,text){
   if(!text) return;
   var parts=String(text).split("```");
   for (var i=0;i<parts.length;i++){
-    if (i%2===1){
-      var nl=parts[i].indexOf("\n"); var body=nl>=0?parts[i].slice(nl+1):parts[i];
-      var pre=document.createElement("pre"); pre.textContent=body.replace(/\n+$/,""); parent.appendChild(pre);
-    } else { var sp=document.createElement("span"); sp.textContent=parts[i]; parent.appendChild(sp); }
+    if (i%2===1){ var nl=parts[i].indexOf("\n"); var body=nl>=0?parts[i].slice(nl+1):parts[i]; var pre=document.createElement("pre"); pre.textContent=body.replace(/\n+$/,""); parent.appendChild(pre); }
+    else { var sp=document.createElement("span"); sp.textContent=parts[i]; parent.appendChild(sp); }
   }
 }
 function showEmpty(){
@@ -317,7 +316,6 @@ function downloadBundle(){
   setStatus("lastet ned", "on");
 }
 
-/* ---------- GITHUB ---------- */
 function ghApi(method, path, body){
   return new Promise(function(resolve,reject){
     var xhr=new XMLHttpRequest();
@@ -339,47 +337,59 @@ function ghApi(method, path, body){
   });
 }
 
-function pushToGitHub(repoName, files, onProgress){
-  return ghApi("GET","/user").then(function(user){
-    var owner=user.login;
-    onProgress("GitHub: oppretter "+owner+"/"+repoName);
-    return ghApi("POST","/user/repos",{ name:repoName, private:false, auto_init:false, description:"Built by Forge" })
-      .catch(function(err){
-        if (String(err.message).indexOf("422")>=0) return {owner:{login:owner},name:repoName};
-        throw err;
-      }).then(function(repo){
-        var blobPromises=[];
-        for (var i=0;i<files.length;i++){
-          (function(f,idx){
-            onProgress("GitHub: laster "+f.path+" ("+(idx+1)+"/"+files.length+")");
-            blobPromises.push(ghApi("POST","/repos/"+owner+"/"+repoName+"/git/blobs",{
-              content: btoa(unescape(encodeURIComponent(f.content))),
-              encoding:"base64"
-            }).then(function(b){ return {path:f.path, sha:b.sha}; }));
-          })(files[i], i);
+/* get owner from token without needing repo perms */
+function getOwner(){
+  return ghApi("GET","/user").then(function(u){ return u.login; });
+}
+
+function pushFiles(owner, repo, files, onProgress){
+  /* 1. ensure repo exists — GET; if 404, POST /user/repos */
+  return ghApi("GET","/repos/"+owner+"/"+repo).catch(function(err){
+    if (String(err.message).indexOf("404")>=0){
+      onProgress("GitHub: oppretter "+owner+"/"+repo);
+      return ghApi("POST","/user/repos",{ name:repo, private:false, auto_init:false }).catch(function(e2){
+        if (String(e2.message).indexOf("403")>=0 || String(e2.message).indexOf("422")>=0){
+          throw new Error("kan ikke opprette repo "+owner+"/"+repo+". Lag det manuelt på github.com/new — navn: "+repo+", public, ingen README.");
         }
-        return Promise.all(blobPromises);
-      }).then(function(blobs){
-        return ghApi("POST","/repos/"+owner+"/"+repoName+"/git/trees",{
-          tree: blobs.map(function(b){ return {path:b.path, mode:"100644", type:"blob", sha:b.sha}; })
-        }).then(function(tree){
-          onProgress("GitHub: committer…");
-          return ghApi("GET","/repos/"+owner+"/"+repoName+"/git/refs/heads/main")
-            .then(function(ref){ return {parents:[ref.object.sha], treeSha:tree.sha}; })
-            .catch(function(){ return {parents:[], treeSha:tree.sha}; });
-        });
-      }).then(function(info){
-        var commitBody={message:"Forge build", tree:info.treeSha};
-        if (info.parents.length) commitBody.parents=info.parents;
-        return ghApi("POST","/repos/"+owner+"/"+repoName+"/git/commits",commitBody);
-      }).then(function(commit){
-        return ghApi("GET","/repos/"+owner+"/"+repoName+"/git/refs/heads/main")
-          .then(function(){ return ghApi("PATCH","/repos/"+owner+"/"+repoName+"/git/refs/heads/main",{sha:commit.sha,force:true}); })
-          .catch(function(){ return ghApi("POST","/repos/"+owner+"/"+repoName+"/git/refs",{ref:"refs/heads/main",sha:commit.sha}); });
-      }).then(function(){
-        onProgress("GitHub: venter på Actions…");
-        return waitForBuild(owner, repoName, onProgress);
-      }).then(function(artifact){ return {owner:owner, repo:repoName, artifact:artifact}; });
+        throw e2;
+      });
+    }
+    throw err;
+  }).then(function(){
+    /* 2. get current main sha (or null if empty) */
+    return ghApi("GET","/repos/"+owner+"/"+repo+"/git/refs/heads/main")
+      .then(function(ref){ return ref.object.sha; })
+      .catch(function(){ return null; });
+  }).then(function(parentSha){
+    /* 3. create blobs */
+    var blobPromises=[];
+    for (var i=0;i<files.length;i++){
+      (function(f,idx){
+        onProgress("GitHub: "+f.path+" ("+(idx+1)+"/"+files.length+")");
+        blobPromises.push(ghApi("POST","/repos/"+owner+"/"+repo+"/git/blobs",{
+          content: btoa(unescape(encodeURIComponent(f.content))),
+          encoding:"base64"
+        }).then(function(b){ return {path:f.path, sha:b.sha}; }));
+      })(files[i], i);
+    }
+    return Promise.all(blobPromises).then(function(blobs){ return {blobs:blobs, parentSha:parentSha}; });
+  }).then(function(info){
+    /* 4. create tree */
+    onProgress("GitHub: bygger tree…");
+    var tree=[]; for (var i=0;i<info.blobs.length;i++) tree.push({path:info.blobs[i].path, mode:"100644", type:"blob", sha:info.blobs[i].sha});
+    return ghApi("POST","/repos/"+owner+"/"+repo+"/git/trees",{tree:tree}).then(function(t){ return {tree:t, parentSha:info.parentSha}; });
+  }).then(function(info){
+    /* 5. commit */
+    onProgress("GitHub: committer…");
+    var commitBody={message:"Forge build "+new Date().toISOString(), tree:info.tree.sha};
+    if (info.parentSha) commitBody.parents=[info.parentSha];
+    return ghApi("POST","/repos/"+owner+"/"+repo+"/git/commits",commitBody);
+  }).then(function(commit){
+    /* 6. update or create ref */
+    onProgress("GitHub: oppdaterer branch…");
+    return ghApi("GET","/repos/"+owner+"/"+repo+"/git/refs/heads/main")
+      .then(function(){ return ghApi("PATCH","/repos/"+owner+"/"+repo+"/git/refs/heads/main",{sha:commit.sha,force:true}); })
+      .catch(function(){ return ghApi("POST","/repos/"+owner+"/"+repo+"/git/refs",{ref:"refs/heads/main",sha:commit.sha}); });
   });
 }
 
@@ -387,23 +397,27 @@ function waitForBuild(owner, repo, onProgress){
   var startT=Date.now(), MAX=10*60*1000;
   return new Promise(function(resolve,reject){
     function tick(){
-      if (Date.now()-startT>MAX){ reject(new Error("timeout 10 min")); return; }
-      ghApi("GET","/repos/"+owner+"/"+repo+"/actions/runs?per_page=5").then(function(data){
+      if (Date.now()-startT>MAX){ reject(new Error("timeout etter 10 min")); return; }
+      ghApi("GET","/repos/"+owner+"/"+repo+"/actions/runs?per_page=3").then(function(data){
         var runs=data.workflow_runs||[];
-        if (!runs.length){ onProgress("GitHub: venter på workflow…"); setTimeout(tick,6000); return; }
+        if (!runs.length){ onProgress("GitHub: venter på Actions…"); setTimeout(tick,6000); return; }
         var run=runs[0];
-        onProgress("GitHub: "+run.status+" ("+(run.conclusion||"kjører")+")");
+        onProgress("GitHub: "+(run.status||"")+" "+(run.conclusion||""));
         if (run.status==="completed"){
-          if (run.conclusion!=="success"){ reject(new Error("build feilet: "+run.conclusion)); return; }
+          if (run.conclusion!=="success"){ reject(new Error("build feilet: "+run.conclusion+" — åpne github.com/"+owner+"/"+repo+"/actions for detaljer")); return; }
           ghApi("GET","/repos/"+owner+"/"+repo+"/actions/runs/"+run.id+"/artifacts").then(function(a){
             var arts=a.artifacts||[];
-            if (!arts.length){ reject(new Error("ingen artifact")); return; }
+            if (!arts.length){ reject(new Error("build ferdig men ingen artifact")); return; }
             resolve(arts[0]);
           }).catch(reject);
           return;
         }
         setTimeout(tick,6000);
-      }).catch(reject);
+      }).catch(function(e){
+        /* actions might not be enabled yet — retry */
+        if (String(e.message).indexOf("404")>=0){ onProgress("GitHub: venter på actions…"); setTimeout(tick,6000); return; }
+        reject(e);
+      });
     }
     tick();
   });
@@ -428,19 +442,26 @@ function downloadArtifact(owner, repo, artifact){
 
 function buildOnGitHub(files, btn){
   if (!GH){ openGh(); return; }
-  var repoName="forge-"+newId();
   if (btn){ btn.disabled=true; btn.textContent="bygger…"; }
-  setStatus("github starter…", "warn");
-  pushToGitHub(repoName, files, function(msg){
-    setStatus(msg.slice(0,40), "warn");
-    var b=$("bThink");
-    if (b) b.innerHTML='<b>'+esc(msg)+'</b>';
-  }).then(function(res){
-    return downloadArtifact(res.owner, res.repo, res.artifact).then(function(blob){
-      dlBlob(blob, (res.artifact.name||"build")+".zip");
+  setStatus("starter…", "warn");
+  var owner="";
+  getOwner().then(function(o){
+    owner=o;
+    return pushFiles(owner, BUILD_REPO, files, function(msg){
+      setStatus(msg.slice(0,44), "warn");
+      var b=$("bThink"); if (b) b.innerHTML='<b>'+esc(msg)+'</b>';
+    });
+  }).then(function(){
+    return waitForBuild(owner, BUILD_REPO, function(msg){
+      setStatus(msg.slice(0,44), "warn");
+      var b=$("bThink"); if (b) b.innerHTML='<b>'+esc(msg)+'</b>';
+    });
+  }).then(function(artifact){
+    return downloadArtifact(owner, BUILD_REPO, artifact).then(function(blob){
+      dlBlob(blob, (artifact.name||"build")+".zip");
       setStatus("ferdig — sjekk Downloads", "on");
       if (btn){ btn.disabled=false; btn.textContent="Bygg på GitHub → ferdig fil"; }
-      addAI("Ferdig! Filen ligger i Files → Downloads som `"+(res.artifact.name||"build")+".zip`. Pakk ut og bruk.");
+      addAI("Ferdig! Filen ligger i Files → Downloads som `"+(artifact.name||"build")+".zip`. Åpne den og hent .exe eller .ipa.");
     });
   }).catch(function(e){
     showErr("GitHub: "+e.message);
@@ -449,7 +470,6 @@ function buildOnGitHub(files, btn){
   });
 }
 
-/* ---------- send ---------- */
 function onSend(){
   if (busy) return;
   if (!KEY){ openKey(); return; }
@@ -607,7 +627,7 @@ function callAI(prompt, imgs, sysExtra, prefill, round, buildEl, startT, timer){
         '<div class="bundle"><div class="t">◆ prosjekt</div><div class="l" id="bList"></div>'+
         '<button id="bDl">Last ned '+name+'</button>'+
         '<button class="sec" id="bGh2">Bygg på GitHub → ferdig fil</button>'+
-        '<div class="build-note">GitHub-knappen pusher koden, GitHub kompilerer på sine servere, du laster ned ferdig .exe/.ipa. Du trenger GitHub token — trykk ⚙︎ i headeren.</div>'+
+        '<div class="build-note">Pusher koden til github.com/<b>'+esc(BUILD_REPO)+'</b>, GitHub kompilerer på sine servere, du laster ned ferdig .exe/.ipa. Krever GitHub token (⚙︎) og at repoet <b>'+esc(BUILD_REPO)+'</b> finnes.</div>'+
         '</div>';
       l.appendChild(card);
       var lines=[]; for (var i=0;i<files.length;i++) lines.push(files[i].path+"  ·  "+(files[i].content.length/1024).toFixed(1)+" KB");
@@ -657,8 +677,12 @@ function openKey(){
 }
 
 function openGh(){
-  openModal('<h3>⚙︎ GitHub token</h3><p>For at appen skal bygge ferdig .exe/.ipa automatisk. Lag token på <a href="https://github.com/settings/tokens?type=beta" target="_blank">github.com/settings/tokens</a>. Permissions: Contents=Read+Write, Workflows=Read+Write, Actions=Read+Write. Expiration: no expiration.</p>'+
-    '<input type="password" id="gi" placeholder="github_pat_..." autocomplete="off" autocapitalize="off" spellcheck="false">'+
+  openModal('<h3>⚙︎ GitHub token</h3>'+
+    '<p>1. Lag classic token på <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> (Generate new token (classic)).</p>'+
+    '<p>2. Scopes: <b>repo</b> og <b>workflow</b>. Expiration: no expiration.</p>'+
+    '<p>3. Lag repo <b>forge-builds</b> manuelt på <a href="https://github.com/new?name=forge-builds&public=1" target="_blank">github.com/new?name=forge-builds</a> — public, ingen README.</p>'+
+    '<p>4. Lim inn <b>ghp_...</b>-tokenen under.</p>'+
+    '<input type="password" id="gi" placeholder="ghp_..." autocomplete="off" autocapitalize="off" spellcheck="false">'+
     '<div class="row"><button class="g" id="gc">Avbryt</button><button class="p" id="gs">Lagre</button></div>');
   $("gi").value=GH;
   setTimeout(function(){ try{ $("gi").focus(); }catch(_){} },80);
@@ -718,7 +742,6 @@ function renderAttached(){
 }
 function addImage(dataUrl){ IMGS.push(dataUrl); renderAttached(); }
 
-/* wire */
 $("send").onclick=onSend;
 $("bKey").onclick=openKey;
 $("bChats").onclick=openChats;
