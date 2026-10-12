@@ -5,37 +5,63 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI</title>
 <style>
-body{margin:0;padding:12px;background:#111;color:#eee;font:16px system-ui}
-h2{margin:0 0 8px;font-size:18px}
-button{padding:12px;font:16px system-ui;border-radius:8px;border:0;cursor:pointer;margin:2px 0}
-.b1{background:#8b5cf6;color:#fff;width:100%}
-.b2{background:#333;color:#eee;width:100%}
-input{width:100%;padding:12px;font:16px system-ui;background:#1a1a1a;color:#eee;border:1px solid #333;border-radius:8px;box-sizing:border-box;margin:4px 0}
-#log{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:10px;height:40vh;overflow-y:auto;margin:8px 0;white-space:pre-wrap;word-break:break-word;font-size:14px}
-#log .u{color:#a78bfa;margin:6px 0}
-#log .a{color:#e0e0e0;margin:6px 0}
-#log .s{color:#888;margin:6px 0;font-size:12px}
+body{margin:0;padding:12px;background:#111;color:#eee;font:16px system-ui;padding-bottom:80px}
+h2{margin:0 0 10px;font-size:18px}
+button{padding:14px;font:16px system-ui;border-radius:8px;border:0;cursor:pointer;width:100%;margin:6px 0;box-sizing:border-box}
+.b1{background:#8b5cf6;color:#fff}
+.b2{background:#333;color:#eee}
+input{width:100%;padding:14px;font:16px system-ui;background:#1a1a1a;color:#eee;border:1px solid #444;border-radius:8px;box-sizing:border-box;margin:4px 0}
+#log{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:10px;height:35vh;overflow-y:auto;margin:8px 0;font-size:14px;white-space:pre-wrap;word-break:break-word}
+#log div{margin:5px 0}
+.u{color:#a78bfa}
+.a{color:#e0e0e0}
+.s{color:#888;font-size:12px;font-family:monospace}
+.e{color:#ff8080;background:#2a1010;padding:8px;border-radius:6px;font-size:12px;font-family:monospace}
+#err{background:#2a1010;border:2px solid #6a2020;color:#ffb8b8;padding:12px;border-radius:8px;margin-bottom:10px;font-size:13px;white-space:pre-wrap;word-break:break-word;display:none;font-family:monospace}
+#err.on{display:block}
 </style>
 </head>
 <body>
 
 <h2>AI</h2>
 
+<div id="err"></div>
+
 <div id="log"></div>
 
 <input id="keyin" type="password" placeholder="sk-or-v1-... (key)">
-<button class="b1" onclick="saveKey()">Lagre key</button>
+<button id="btnKey" class="b1">Lagre key</button>
 
 <input id="msg" placeholder="skriv melding...">
-<button class="b1" onclick="send()">Send</button>
-<button class="b2" onclick="clr()">Tøm</button>
+<button id="btnSend" class="b1">Send</button>
+<button id="btnClear" class="b2">Tøm logg</button>
+<button id="btnTest" class="b2">TEST (vis alert)</button>
 
 <script>
+// ============================================================
+// ES5 ONLY — fungerer på alt
+// ============================================================
+
 var KEY = "";
 var HIST = [];
 
+// ---- feilvisning ----
+function showErr(msg) {
+  var e = document.getElementById("err");
+  if (!e) return;
+  e.textContent = "FEIL: " + msg;
+  e.style.display = "block";
+}
+
+window.onerror = function(m, src, line) {
+  showErr(m + " (linje " + line + ")");
+  return false;
+};
+
+// ---- logg ----
 function log(cls, text) {
   var el = document.getElementById("log");
+  if (!el) return;
   var d = document.createElement("div");
   d.className = cls;
   d.textContent = text;
@@ -43,69 +69,126 @@ function log(cls, text) {
   el.scrollTop = el.scrollHeight;
 }
 
-function saveKey() {
-  var v = document.getElementById("keyin").value;
-  if (!v) { alert("tom key"); return; }
-  KEY = v;
-  try { localStorage.setItem("k", v); } catch (e) {}
-  log("s", "key lagret (" + KEY.length + " tegn)");
-  document.getElementById("keyin").value = "";
+// ---- last key fra minne ----
+try {
+  var saved = localStorage.getItem("mykey");
+  if (saved) {
+    KEY = saved;
+    log("s", "key lastet (" + KEY.length + " tegn)");
+  } else {
+    log("s", "ingen key lagret — lim inn under");
+  }
+} catch (e) {
+  log("s", "localStorage utilgjengelig");
 }
 
-function clr() {
+// ---- handlere ----
+function onSaveKey() {
+  try {
+    var v = document.getElementById("keyin").value;
+    v = v.replace(/^\s+|\s+$/g, "");
+    if (!v) { alert("tom key"); return; }
+    KEY = v;
+    try { localStorage.setItem("mykey", v); } catch (e2) {}
+    log("s", "key lagret (" + v.length + " tegn)");
+    document.getElementById("keyin").value = "";
+  } catch (e) {
+    showErr("saveKey: " + e.message);
+  }
+}
+
+function onClear() {
   HIST = [];
   document.getElementById("log").innerHTML = "";
+  log("s", "logg tømt");
 }
 
-function send() {
-  var box = document.getElementById("msg");
-  var text = box.value;
-  if (!text) return;
-  if (!KEY) { alert("lim inn key først"); return; }
-  box.value = "";
-  log("u", "du: " + text);
-  log("s", "venter...");
-
-  HIST.push({ role: "user", content: text });
-
-  var payload = {
-    model: "openrouter/free",
-    messages: HIST,
-    max_tokens: 2048
-  };
-
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", "https://openrouter.ai/api/v1/chat/completions", true);
-  xhr.setRequestHeader("Authorization", "Bearer " + KEY);
-  xhr.setRequestHeader("Content-Type", "application/json");
-
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState !== 4) return;
-    if (xhr.status !== 200) {
-      log("s", "FEIL " + xhr.status + ": " + xhr.responseText.slice(0, 400));
-      return;
-    }
-    var data;
-    try { data = JSON.parse(xhr.responseText); }
-    catch (e) { log("s", "parse feil: " + xhr.responseText.slice(0, 200)); return; }
-
-    var reply = "";
-    if (data.choices && data.choices.length > 0 && data.choices[0].message) {
-      reply = data.choices[0].message.content || "";
-    }
-    if (!reply) { log("s", "tomt svar: " + xhr.responseText.slice(0, 300)); return; }
-    log("a", "ai: " + reply);
-    HIST.push({ role: "assistant", content: reply });
-  };
-
-  xhr.onerror = function() { log("s", "nettverksfeil"); };
-  xhr.send(JSON.stringify(payload));
+function onTest() {
+  alert("JS kjører. KEY = " + (KEY ? KEY.length + " tegn" : "tom"));
 }
 
+function onSend() {
+  try {
+    var box = document.getElementById("msg");
+    var text = box.value;
+    text = text.replace(/^\s+|\s+$/g, "");
+    if (!text) { alert("skriv noe først"); return; }
+    if (!KEY) { alert("lim inn key først"); return; }
+    box.value = "";
+
+    log("u", "du: " + text);
+    log("s", "sender...");
+
+    HIST.push({ role: "user", content: text });
+
+    var payload = JSON.stringify({
+      model: "openrouter/free",
+      messages: HIST,
+      max_tokens: 2048
+    });
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://openrouter.ai/api/v1/chat/completions", true);
+    xhr.setRequestHeader("Authorization", "Bearer " + KEY);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState !== 4) return;
+
+      if (xhr.status !== 200) {
+        log("e", "HTTP " + xhr.status + ": " + xhr.responseText.slice(0, 400));
+        return;
+      }
+
+      var data;
+      try {
+        data = JSON.parse(xhr.responseText);
+      } catch (e) {
+        log("e", "parse feil: " + xhr.responseText.slice(0, 200));
+        return;
+      }
+
+      var reply = "";
+      if (data && data.choices && data.choices.length > 0 && data.choices[0].message) {
+        reply = data.choices[0].message.content || "";
+      }
+
+      if (!reply) {
+        log("e", "tomt svar: " + xhr.responseText.slice(0, 300));
+ det        return;
+      }
+
+      log("a", "ai: " + reply);
+      HIST.push({ role: "assistant", content: reply });
+    };
+
+    xhr.onerror = function() {
+      log("e", "nettverksfeil — sjekk wifi/mobildata");
+    };
+
+    xhr.send(payload);
+
+  } catch (e) {
+    showErr("send: " + e.message);
+  }
+}
+
+// ---- BIND KNAPPER I JS (ikke inline) ----
 try {
-  var s = localStorage.getItem("k");
-  if (s) { KEY = s; log("s", "key fra minne (" + KEY.length + " tegn)"); }
-} catch (e) {}
+  document.getElementById("btnKey").onclick = onSaveKey;
+  document.getElementById("btnSend").onclick = onSend;
+  document.getElementById("btnClear").onclick = onClear;
+  document.getElementById("btnTest").onclick = onTest;
+
+  document.getElementById("msg").onkeydown = function(ev) {
+    if (ev.key === "Enter") { ev.preventDefault(); onSend(); }
+  };
+
+  log("s", "klar — knapper bundet");
+} catch (e) {
+  showErr("bind: " + e.message);
+}
+
 </script>
 </body>
 </html>
