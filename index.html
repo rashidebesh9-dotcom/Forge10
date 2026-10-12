@@ -20,7 +20,6 @@ body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,system-
 .lg-btn{width:100%;padding:14px;border-radius:14px;background:var(--panel);color:var(--text);border:1px solid var(--border);font:15px inherit;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:12px;touch-action:manipulation;font-family:inherit}
 .lg-btn:active{background:var(--bg-3)}
 .lg-btn svg{width:20px;height:20px;flex:0 0 auto}
-.lg-btn.primary{background:var(--red);border:0;color:#fff;justify-content:center;font-weight:600}
 .lg-skip{margin-top:22px;color:var(--mute);font-size:13px;cursor:pointer;text-decoration:underline;touch-action:manipulation}
 #sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--bg-2);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .25s ease;z-index:50;display:flex;flex-direction:column;padding:8px 8px 12px}
 #sidebar.on{transform:translateX(0)}
@@ -60,7 +59,7 @@ body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,system-
 #popover button.red{color:var(--red-2)}
 #popover svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 main{flex:1;display:flex;flex-direction:column;height:100dvh;width:100vw;min-width:0}
-header{height:56px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg);position:relative;z-index:5;border-bottom:1px solid transparent}
+header{height:56px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg);position:relative;z-index:5}
 .menu-btn{width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;touch-action:manipulation}
 .menu-btn:active{background:var(--bg-3)}
 .menu-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -351,6 +350,7 @@ function fmtTime(sec){ sec=Math.max(0,Math.round(sec)); var m=Math.floor(sec/60)
 function fmtDate(ts){ var d=new Date(ts), now=new Date(); if (d.toDateString()===now.toDateString()) return pad2(d.getHours())+":"+pad2(d.getMinutes()); return d.getDate()+"."+pad2(d.getMonth()+1)+" "+pad2(d.getHours())+":"+pad2(d.getMinutes()); }
 function initials(n){ if (!n) return "?"; var p=n.trim().split(/\s+/); if (p.length===1) return p[0].slice(0,2).toUpperCase(); return (p[0][0]+p[p.length-1][0]).toUpperCase(); }
 
+/* ===== LOGIN ===== */
 function showLogin(){ $("login").className="on"; }
 function hideLogin(){ $("login").className=""; }
 function loginAs(provider){
@@ -368,6 +368,7 @@ var lgBtns=document.querySelectorAll(".lg-btn[data-prov]");
 for (var li=0;li<lgBtns.length;li++){ (function(b){ b.onclick=function(){ loginAs(b.getAttribute("data-prov")); }; })(lgBtns[li]); }
 $("lgSkip").onclick=function(){ ACCOUNT={name:"Gjest",email:"",provider:"guest"}; save(); hideLogin(); renderAccount(); renderSidebar(); };
 
+/* ===== SIDEBAR ===== */
 function openSidebar(){ $("sidebar").className="on"; $("overlay").className="on"; }
 function closeSidebar(){ $("sidebar").className=""; $("overlay").className=""; hidePopover(); }
 $("menuBtn").onclick=openSidebar;
@@ -454,6 +455,7 @@ function newChat(){
   setTimeout(function(){ try{ $("inp").focus(); }catch(_){} },80);
 }
 
+/* ===== LOG ===== */
 function logInner(){ return $("logInner"); }
 function scrollBottom(){ var l=$("log"); l.scrollTop=l.scrollHeight; }
 function setHeaderTitle(t){ $("headerTitle").textContent=t; }
@@ -500,6 +502,7 @@ function replay(){
   }
 }
 
+/* ===== STORAGE ===== */
 function save(){
   try{
     if (KEY) localStorage.setItem("dg.key",KEY);
@@ -546,6 +549,7 @@ function ensureChat(){
   return CHATS[CUR];
 }
 
+/* ===== MEMORY ===== */
 function extractMem(text){ if(!text) return []; var m=text.match(/\[MEM:\s*([^\]]+)\]/i); if(!m) return []; return m[1].split(/,|\u2022|\|/).map(function(x){ return x.replace(/^\s+|\s+$/g,""); }).filter(function(x){ return x.length>2&&x.length<200; }); }
 function stripMem(text){ if(!text) return text; return String(text).replace(/\n?\[MEM:[^\]]*\]\s*$/i,"").replace(/^\s+|\s+$/g,""); }
 function addMem(facts){
@@ -556,6 +560,7 @@ function addMem(facts){
 }
 function memBlock(){ if (!MEM.length) return ""; var out="MINNER OM BRUKEREN:\n"; for (var i=0;i<MEM.length;i++) out+="· "+MEM[i]+"\n"; out+="\nBruk naturlig. Aldri les opp."; return out; }
 
+/* ===== SYSTEM ===== */
 function getSys(){
   var s=[
     "You are Forge — brilliant engineer and friend.",
@@ -587,6 +592,7 @@ function getSys(){
   return s.join("\n");
 }
 
+/* ===== BUNDLE ===== */
 function parseBundle(text){
   if (!text) return null;
   var re=/^FILE:\s*(.+?)\s*$/gm, marks=[], m;
@@ -602,6 +608,7 @@ function parseBundle(text){
   return files.length?files:null;
 }
 
+/* ===== ZIP ===== */
 var _ct=null;
 function crc32(u8){ if (!_ct){ _ct=new Uint32Array(256); for (var n=0;n<256;n++){ var c=n; for (var k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); _ct[n]=c>>>0; } } var cc=0^(-1); for (var i=0;i<u8.length;i++) cc=(cc>>>8)^_ct[(cc^u8[i])&0xFF]; return (cc^(-1))>>>0; }
 function enc(s){ return new TextEncoder().encode(s); }
@@ -643,6 +650,7 @@ function downloadFiles(files){
   else dlBlob(makeZip(files),"forge-project.zip");
 }
 
+/* ===== LIBRARY ===== */
 function openLibrary(){ $("library").className="on"; renderLibrary(); }
 function closeLibrary(){ $("library").className=""; }
 $("libBack").onclick=closeLibrary;
@@ -674,6 +682,7 @@ function renderLibrary(){
   }
 }
 
+/* ===== GITHUB ===== */
 function ghApi(method,path,body){
   return new Promise(function(resolve,reject){
     var xhr=new XMLHttpRequest();
@@ -693,8 +702,52 @@ function ghApi(method,path,body){
 }
 function getOwner(){ return ghApi("GET","/user").then(function(u){ return u.login; }); }
 
-var IOS_WORKFLOW=["name: build","on:","  push:","    branches: [main]","  workflow_dispatch:","jobs:","  build:","    runs-on: macos-latest","    timeout-minutes: 30","    steps:","      - uses: actions/checkout@v4","      - name: Install tools","        run: |","          brew install ldid xz make || true","          git clone --recursive --depth=1 https://github.com/theos/theos.git $HOME/theos || true","      - name: Build tweak","        run: |","          export THEOS=$HOME/theos","          export PATH=$THEOS/bin:$PATH","          make clean || true","          make package FINALPACKAGE=1 || make package || make","      - name: Collect","        run: |","          mkdir -p out","          find . -name '*.dylib' -exec cp {} out/ \\; || true","          find . -name '*.deb' -exec cp {} out/ \\; || true","      - uses: actions/upload-artifact@v4","        with:","          name: build","          path: out/*","          if-no-files-found: warn"].join("\n");
-var PC_WORKFLOW=["name: build","on:","  push:","    branches: [main]","  workflow_dispatch:","jobs:","  build:","    runs-on: windows-latest","    timeout-minutes: 30","    steps:","      - uses: actions/checkout@v4","      - name: Configure","        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release","      - name: Build","        run: cmake --build build --config Release","      - name: Collect","        shell: pwsh","        run: |","          New-Item -ItemType Directory -Force -Path out | Out-Null","          Get-ChildItem -Recurse -Path build -Include *.exe,*.dll | ForEach-Object { Copy-Item $_.FullName -Destination out/ }","      - uses: actions/upload-artifact@v4","        with:","          name: build","          path: out/*","          if-no-files-found: warn"].join("\n");
+/* Alltid last opp artifact, selv om build feiler — da får du build.log og ser feilen */
+var IOS_WORKFLOW=[
+"name: build","on:","  push:","    branches: [main]","  workflow_dispatch:","jobs:",
+"  build:","    runs-on: macos-latest","    timeout-minutes: 30","    steps:",
+"      - uses: actions/checkout@v4",
+"      - name: Install tools","        run: |",
+"          brew install ldid xz make || true",
+"          git clone --recursive --depth=1 https://github.com/theos/theos.git $HOME/theos || true",
+"      - name: Build tweak","        run: |",
+"          export THEOS=$HOME/theos",
+"          export PATH=$THEOS/bin:$PATH",
+"          { echo '=== make clean ==='; make clean 2>&1; } | tee build.log || true",
+"          { echo '=== make package ==='; make package FINALPACKAGE=1 2>&1; } | tee -a build.log || { echo '=== make package (fallback) ===' | tee -a build.log; make package 2>&1 | tee -a build.log; } || true",
+"          true",
+"      - name: Collect","        run: |",
+"          mkdir -p out",
+"          find . -name '*.dylib' -exec cp {} out/ \\; || true",
+"          find . -name '*.deb' -exec cp {} out/ \\; || true",
+"          cp build.log out/ 2>/dev/null || true",
+"          echo '--- build.log ---'; cat build.log 2>/dev/null || true",
+"          echo '--- out/ ---'; ls -la out/",
+"      - uses: actions/upload-artifact@v4","        with:",
+"          name: build","          path: out/*","          if-no-files-found: warn"
+].join("\n");
+
+var PC_WORKFLOW=[
+"name: build","on:","  push:","    branches: [main]","  workflow_dispatch:","jobs:",
+"  build:","    runs-on: windows-latest","    timeout-minutes: 30","    steps:",
+"      - uses: actions/checkout@v4",
+"      - name: Configure","        shell: pwsh","        run: |",
+"          \"=== cmake configure ===\" | Out-File -Encoding utf8 build.log",
+"          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release *>> build.log",
+"          \"exit=$LASTEXITCODE\" | Out-File -Append -Encoding utf8 build.log",
+"      - name: Build","        shell: pwsh","        run: |",
+"          \"=== cmake build ===\" | Out-File -Append -Encoding utf8 build.log",
+"          cmake --build build --config Release *>> build.log",
+"          \"exit=$LASTEXITCODE\" | Out-File -Append -Encoding utf8 build.log",
+"      - name: Collect","        shell: pwsh","        run: |",
+"          New-Item -ItemType Directory -Force -Path out | Out-Null",
+"          Get-ChildItem -Recurse -Path build -Include *.exe,*.dll -ErrorAction SilentlyContinue | ForEach-Object { Copy-Item $_.FullName -Destination out/ }",
+"          Copy-Item build.log out/ -ErrorAction SilentlyContinue",
+"          Get-Content build.log -ErrorAction SilentlyContinue",
+"          Get-ChildItem out/",
+"      - uses: actions/upload-artifact@v4","        with:",
+"          name: build","          path: out/*","          if-no-files-found: warn"
+].join("\n");
 
 function pickWorkflow(files){
   var hasMake=false, hasTweak=false, hasCmake=false;
@@ -720,7 +773,7 @@ function pushFile(owner,repo,path,content,retry){
     throw e;
   }).then(function(b){ return ghApi("PUT",url,b); }).catch(function(e){
     if (retry<3 && String(e.message).indexOf("409")>=0){
-      return new Promise(function(res){ setTimeout(res, 400); }).then(function(){ return pushFile(owner,repo,path,content,retry+1); });
+      return new Promise(function(res){ setTimeout(res, 500); }).then(function(){ return pushFile(owner,repo,path,content,retry+1); });
     }
     throw e;
   });
@@ -743,7 +796,7 @@ function pushFiles(owner,repo,files,onProgress){
     for (var i=0;i<files.length;i++){ if (files[i].path.indexOf(".github/workflows/")===0) continue; filtered.push(files[i]); }
     filtered.push(wf);
     window.__lastWfKind=wf.kind;
-    /* SEKVENSIELL PUSH — én fil om gangen, ingen race */
+    /* SEKVENSIELL — én fil om gangen, ingen race */
     var i2=0;
     function step(){
       if (i2>=filtered.length) return Promise.resolve();
@@ -758,10 +811,14 @@ function pushFiles(owner,repo,files,onProgress){
   }).then(function(){
     onProgress("dispatcher workflow…");
     var dispatchedAt=Date.now();
-    return ghApi("POST","/repos/"+owner+"/"+repo+"/actions/workflows/build.yml/dispatches",{ref:"main"}).then(function(){ return {runSince:dispatchedAt}; }).catch(function(){
+    return ghApi("POST","/repos/"+owner+"/"+repo+"/actions/workflows/build.yml/dispatches",{ref:"main"}).then(function(){
+      return new Promise(function(res){ setTimeout(res, 4000); }).then(function(){ return {runSince:dispatchedAt}; });
+    }).catch(function(){
       return ghApi("GET","/repos/"+owner+"/"+repo+"/actions/workflows").then(function(data){
         var wfs=data.workflows||[]; if (!wfs.length) throw new Error("ingen workflows i repoet");
-        return ghApi("POST","/repos/"+owner+"/"+repo+"/actions/workflows/"+wfs[0].id+"/dispatches",{ref:"main"}).then(function(){ return {runSince:dispatchedAt}; });
+        return ghApi("POST","/repos/"+owner+"/"+repo+"/actions/workflows/"+wfs[0].id+"/dispatches",{ref:"main"}).then(function(){
+          return new Promise(function(res){ setTimeout(res, 4000); }).then(function(){ return {runSince:dispatchedAt}; });
+        });
       });
     });
   });
@@ -773,23 +830,27 @@ function waitForBuild(owner,repo,since,onTick){
     function tick(){
       if (Date.now()-startT>MAX){ reject(new Error("timeout 15 min")); return; }
       ghApi("GET","/repos/"+owner+"/"+repo+"/actions/runs?per_page=10").then(function(data){
-        var runs=(data.workflow_runs||[]).filter(function(r){ return new Date(r.created_at).getTime() >= since-120000; });
+        var runs=data.workflow_runs||[];
         if (!runs.length){
           var el=(Date.now()-startT)/1000;
           onTick({phase:"vent",msg:"Venter på Actions",elapsed:el,eta:Math.max(15,typicalSec-el),pct:Math.min(10,el/2)});
           setTimeout(tick,5000); return;
         }
-        var run=runs[0], status=run.status||"queued", concl=run.conclusion||"";
+        /* plukk den nyeste kjøringen uansett når den startet */
+        var run=runs[0];
+        var status=run.status||"queued", concl=run.conclusion||"";
         var startedAt=run.run_started_at?new Date(run.run_started_at).getTime():new Date(run.created_at).getTime();
         var el2=(Date.now()-startedAt)/1000, pct;
         if (status==="queued") pct=Math.min(10,el2/3);
         else if (status==="in_progress") pct=Math.min(92,15+(el2/typicalSec)*80);
         else pct=100;
         if (status==="completed"){
-          if (concl!=="success"){ reject(new Error("build feilet: "+concl+" — sjekk github.com/"+owner+"/"+repo+"/actions")); return; }
+          /* selv om konklusjonen er failure — last ned artifact (build.log finnes der) */
           onTick({phase:"ferdig",msg:"Henter artifact",elapsed:el2,eta:0,pct:100});
           ghApi("GET","/repos/"+owner+"/"+repo+"/actions/runs/"+run.id+"/artifacts").then(function(a){
-            var arts=a.artifacts||[]; if (!arts.length){ reject(new Error("ingen artifact")); return; } resolve(arts[0]);
+            var arts=a.artifacts||[];
+            if (!arts.length){ reject(new Error("build "+concl+", ingen artifact. Åpne github.com/"+owner+"/"+repo+"/actions")); return; }
+            resolve({artifact:arts[0], conclusion:concl});
           }).catch(reject);
           return;
         }
@@ -849,16 +910,26 @@ function buildOnGitHub(files,btn,promptText){
       uC(label+" — forventet "+fmtTime(s.eta),fmtTime(s.eta));
       uK("GitHub: "+s.msg+" ("+fmtTime(s.elapsed)+")");
     });
-  }).then(function(artifact){
-    uP(95); uT("Laster ned…"); uC("henter "+artifact.name,"~3s");
-    return downloadArtifact(owner,BUILD_REPO,artifact).then(function(blob){
-      dlBlob(blob,(artifact.name||"build")+".zip");
-      uP(100); uT("Ferdig!"); uC("lagret i Downloads","0:00");
+  }).then(function(result){
+    uP(95); uT("Laster ned…"); uC("henter "+result.artifact.name,"~3s");
+    return downloadArtifact(owner,BUILD_REPO,result.artifact).then(function(blob){
+      dlBlob(blob,(result.artifact.name||"build")+".zip");
+      uP(100);
+      if (result.conclusion==="success"){
+        uT("Ferdig!"); uC("lagret i Downloads","0:00");
+      } else {
+        uT("Build feilet — sjekk build.log"); uC("zip i Downloads","0:00");
+      }
       if (btn){ btn.disabled=false; btn.textContent="Bygg på GitHub"; }
       var kind=window.__lastWfKind;
-      var msg="**Ferdig på "+fmtTime((Date.now()-t0)/1000)+"**. `"+(artifact.name||"build")+".zip` ligger i Files → Downloads.";
-      if (kind==="ios") msg+=" Inni: .deb (jailbreak) og .dylib (injiser i dekryptert ipa selv).";
-      else msg+=" Inni: .exe og evt. .dll.";
+      var msg;
+      if (result.conclusion==="success"){
+        msg="**Ferdig på "+fmtTime((Date.now()-t0)/1000)+"**. `"+(result.artifact.name||"build")+".zip` ligger i Files → Downloads.";
+        if (kind==="ios") msg+=" Inni: .deb (jailbreak) og .dylib (injiser i dekryptert ipa selv).";
+        else msg+=" Inni: .exe og evt. .dll.";
+      } else {
+        msg="**Build feilet, men zip er lastet ned.** Åpne `"+(result.artifact.name||"build")+".zip` i Files og se `build.log`. Send meg siste 20 linjer så fikser jeg koden.";
+      }
       addAI(msg);
     });
   }).catch(function(e){
@@ -868,6 +939,7 @@ function buildOnGitHub(files,btn,promptText){
   });
 }
 
+/* ===== SEND ===== */
 function onSend(){
   if (busy) return;
   if (!KEY){ openKey(); return; }
