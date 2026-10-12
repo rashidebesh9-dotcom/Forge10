@@ -3,205 +3,291 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#0a0607">
 <title>Forge</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0a0607;
+  --bg-2:#100809;
+  --bg-3:#180a0b;
+  --panel:#150a0b;
+  --border:#26100f;
+  --border-2:#3a1816;
+  --text:#f2e8e8;
+  --dim:#9e7e7e;
+  --mute:#6a4848;
+  --red:#e54b4b;
+  --red-2:#ff5c5c;
+  --blue:#4a7cff;
+  --green:#4ade80;
+}
 html,body{height:100%;margin:0;overflow:hidden}
-body{background:#000;color:#ececf1;font:16px/1.55 -apple-system,system-ui,sans-serif;display:flex;height:100dvh}
+body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,system-ui,sans-serif}
 #app{display:flex;height:100dvh;width:100vw;position:relative}
 
-/* ---- sidebar ---- */
-#sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:#0d0d0f;border-right:1px solid #1e1e22;transform:translateX(-100%);transition:transform .25s ease;z-index:50;display:flex;flex-direction:column;padding:8px 8px 12px}
+/* ===== LOGIN ===== */
+#login{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px}
+#login.on{display:flex}
+#login .logo{width:52px;height:52px;border-radius:16px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;margin-bottom:22px;box-shadow:0 12px 40px -8px rgba(229,75,75,.5)}
+#login h1{margin:0 0 8px;font-size:26px;font-weight:600;letter-spacing:-.02em;text-align:center}
+#login p{margin:0 0 32px;color:var(--dim);font-size:14px;text-align:center;max-width:320px;line-height:1.55}
+#login .stack{width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px}
+.lg-btn{width:100%;padding:14px;border-radius:14px;background:var(--panel);color:var(--text);border:1px solid var(--border);font:15px inherit;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:12px;touch-action:manipulation}
+.lg-btn:active{background:var(--bg-3)}
+.lg-btn svg{width:20px;height:20px;flex:0 0 auto}
+.lg-btn.primary{background:var(--red);border:0;color:#fff;justify-content:center;font-weight:600}
+.lg-btn.primary:active{filter:brightness(.9)}
+.lg-skip{margin-top:22px;color:var(--mute);font-size:13px;cursor:pointer;text-decoration:underline;touch-action:manipulation}
+
+/* ===== SIDEBAR ===== */
+#sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--bg-2);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .25s ease;z-index:50;display:flex;flex-direction:column;padding:8px 8px 12px}
 #sidebar.on{transform:translateX(0)}
-.sb-head{display:flex;align-items:center;justify-content:space-between;padding:8px}
-.sb-brand{font-weight:600;font-size:15px;color:#ececf1;display:flex;align-items:center;gap:8px}
-.sb-brand .logo{width:26px;height:26px;border-radius:8px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
-.sb-close{background:transparent;border:0;color:#8e8ea0;font-size:20px;cursor:pointer;padding:6px;line-height:1}
-.sb-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;color:#ececf1;font-size:15px;cursor:pointer;background:transparent;border:0;width:100%;text-align:left;font-family:inherit;touch-action:manipulation;margin-bottom:1px}
-.sb-item:active{background:#1e1e22}
-.sb-item svg{width:20px;height:20px;stroke:#ececf1;flex:0 0 auto;opacity:.9}
+.sb-head{display:flex;align-items:center;justify-content:space-between;padding:8px 4px 8px 8px}
+.sb-brand{font-weight:600;font-size:16px;color:var(--text);display:flex;align-items:center;gap:9px}
+.sb-brand .logo{width:28px;height:28px;border-radius:8px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.sb-close{background:transparent;border:0;color:var(--dim);font-size:22px;cursor:pointer;padding:6px;line-height:1;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.sb-close:active{background:var(--bg-3)}
+.sb-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;color:var(--text);font-size:15px;cursor:pointer;background:transparent;border:0;width:100%;text-align:left;font-family:inherit;touch-action:manipulation;margin-bottom:1px}
+.sb-item:active{background:var(--bg-3)}
+.sb-item svg{width:20px;height:20px;stroke:currentColor;flex:0 0 auto;opacity:.9;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .sb-item .lbl{flex:1}
-.sb-item .badge{font-size:11px;color:#8e8ea0;font-family:ui-monospace,monospace}
-.sb-sep{height:1px;background:#1e1e22;margin:10px 8px}
-.sb-title{font-size:11px;color:#8e8ea0;padding:10px 12px 6px;text-transform:uppercase;letter-spacing:.06em}
+.sb-item .badge{font-size:11px;color:var(--mute);font-family:ui-monospace,monospace}
+.sb-item .badge.ok{color:var(--green)}
+.sb-sep{height:1px;background:var(--border);margin:10px 8px}
+.sb-title{font-size:11px;color:var(--mute);padding:10px 12px 6px;text-transform:uppercase;letter-spacing:.08em}
 .sb-list{flex:1;overflow-y:auto;margin:0 -4px;padding:0 4px}
-.sb-chat{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14px;color:#c5c5d2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;touch-action:manipulation}
-.sb-chat:active{background:#1e1e22}
-.sb-chat.on{background:#1e1e22;color:#ececf1}
+.sb-chat{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;touch-action:manipulation;position:relative;user-select:none;-webkit-user-select:none}
+.sb-chat:active,.sb-chat:hover{background:var(--bg-3)}
+.sb-chat.on{background:var(--bg-3);color:var(--text)}
 .sb-chat .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-chat .x{width:22px;height:22px;border-radius:6px;background:transparent;border:0;color:#8e8ea0;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0}
-.sb-chat:hover .x,.sb-chat:active .x{opacity:1}
-.sb-new{margin-top:auto;padding:10px}
-.sb-new button{width:100%;padding:12px;border-radius:10px;background:#2f2f37;color:#fff;border:0;font:14px inherit;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;touch-action:manipulation}
-.sb-new button:active{background:#3a3a44}
-.sb-new svg{width:16px;height:16px;stroke:#fff}
-#overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;display:none}
+.sb-chat.pressing{background:var(--red);color:#fff}
+.sb-empty{color:var(--mute);font-size:12.5px;padding:16px 12px;text-align:center}
+.sb-foot{padding:8px;border-top:1px solid var(--border);margin-top:auto}
+.sb-foot .bluenew{width:100%;padding:12px;border-radius:12px;background:var(--blue);color:#fff;border:0;font:15px inherit;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;touch-action:manipulation;box-shadow:0 6px 20px -8px rgba(74,124,255,.6)}
+.sb-foot .bluenew:active{filter:brightness(.9)}
+.sb-foot .bluenew svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.sb-profile{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;touch-action:manipulation;margin-top:8px}
+.sb-profile:active{background:var(--bg-3)}
+.sb-profile .av{width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:0 0 auto}
+.sb-profile .info{flex:1;min-width:0}
+.sb-profile .n{font-size:13.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.sb-profile .e{font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:40;display:none}
 #overlay.on{display:block}
 
-/* ---- main ---- */
+/* long-press popover */
+#popover{position:fixed;background:var(--bg-3);border:1px solid var(--border-2);border-radius:12px;padding:6px;z-index:100;min-width:180px;box-shadow:0 20px 40px -10px rgba(0,0,0,.8);display:none}
+#popover.on{display:block}
+#popover button{width:100%;padding:10px 14px;background:transparent;border:0;color:var(--text);font:14px inherit;text-align:left;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;touch-action:manipulation;font-family:inherit}
+#popover button:active{background:var(--bg-2)}
+#popover button.red{color:var(--red-2)}
+#popover svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ===== MAIN ===== */
 main{flex:1;display:flex;flex-direction:column;height:100dvh;width:100vw;min-width:0}
+header{height:56px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg);position:relative;z-index:5;border-bottom:1px solid transparent}
+.menu-btn{width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;touch-action:manipulation}
+.menu-btn:active{background:var(--bg-3)}
+.menu-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.title-center{flex:1;font-size:15px;color:var(--text);font-weight:600;text-align:center;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dot-menu{width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;touch-action:manipulation}
+.dot-menu:active{background:var(--bg-3)}
+.dot-menu svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-header{height:56px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:0 12px;background:#000;position:relative;z-index:5}
-.menu-btn{width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:#ececf1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
-.menu-btn:active{background:#1e1e22}
-.menu-btn svg{width:20px;height:20px;stroke:#ececf1}
-.title-center{flex:1;font-size:15px;color:#ececf1;font-weight:600;text-align:center;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dot-menu{width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:#ececf1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
-.dot-menu:active{background:#1e1e22}
-.dot-menu svg{width:18px;height:18px;stroke:#ececf1}
-
-#log{flex:1;overflow-y:auto;padding:16px 0;display:flex;flex-direction:column;gap:24px;-webkit-overflow-scrolling:touch}
-.log-inner{max-width:760px;width:100%;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:22px}
+#log{flex:1;overflow-y:auto;padding:16px 0;display:flex;flex-direction:column;gap:22px;-webkit-overflow-scrolling:touch}
+.log-inner{max-width:760px;width:100%;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:20px}
 
 .msg{max-width:100%;font-size:15px;line-height:1.6;white-space:pre-wrap;word-break:break-word;animation:in .2s ease}
 @keyframes in{from{opacity:0;transform:translateY(4px)}}
-.msg.u{align-self:flex-end;background:#2f2f37;color:#ececf1;padding:10px 16px;border-radius:20px;max-width:80%;font-size:15px}
+.msg.u{align-self:flex-end;background:var(--bg-3);color:var(--text);padding:10px 16px;border-radius:20px;max-width:80%;font-size:15px}
 .msg.u .thumb{max-width:200px;max-height:200px;border-radius:12px;display:block;margin:6px 0 0 auto}
-.msg.a{align-self:flex-start;color:#ececf1;max-width:100%;padding:0}
-.msg.a.err{background:#2a1010;border:1px solid #6a2020;color:#ffb8b8;padding:12px 16px;border-radius:14px;font-size:14px}
-.msg pre{background:#0d0d0f;border:1px solid #1e1e22;padding:12px;border-radius:10px;overflow-x:auto;margin:10px 0 0;font-size:12.5px;line-height:1.6;white-space:pre;font-family:ui-monospace,Menlo,monospace;max-height:300px}
-.msg code{background:#1e1e22;padding:1px 5px;border-radius:4px;font-family:ui-monospace,monospace;font-size:13.5px}
+.msg.a{align-self:flex-start;color:var(--text);max-width:100%;padding:0}
+.msg.a.err{background:#2a0a0a;border:1px solid var(--red);color:#ffb8b8;padding:12px 16px;border-radius:14px;font-size:14px}
+.msg pre{background:var(--bg-2);border:1px solid var(--border);padding:12px;border-radius:10px;overflow-x:auto;margin:10px 0 0;font-size:12.5px;line-height:1.6;white-space:pre;font-family:ui-monospace,Menlo,monospace;max-height:300px}
+.msg code{background:var(--bg-3);padding:1px 5px;border-radius:4px;font-family:ui-monospace,monospace;font-size:13.5px}
 
-.empty{padding:50px 20px;text-align:center;color:#8e8ea0;align-self:center;max-width:400px}
-.empty .orb{width:56px;height:56px;margin:0 auto 20px;border-radius:16px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700}
-.empty h2{margin:0 0 8px;font-size:24px;color:#ececf1;font-weight:600;letter-spacing:-.01em}
+.empty{padding:50px 20px;text-align:center;color:var(--dim);align-self:center;max-width:400px}
+.empty .orb{width:56px;height:56px;margin:0 auto 20px;border-radius:16px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;box-shadow:0 12px 40px -10px rgba(229,75,75,.7)}
+.empty h2{margin:0 0 8px;font-size:24px;color:var(--text);font-weight:600;letter-spacing:-.01em}
 .empty p{margin:0 0 22px;font-size:15px;line-height:1.5}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.chip{font-size:13.5px;padding:10px 16px;border-radius:14px;background:#0d0d0f;border:1px solid #1e1e22;color:#c5c5d2;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left}
-.chip:active{background:#1e1e22}
+.chip{font-size:13.5px;padding:10px 16px;border-radius:14px;background:var(--bg-2);border:1px solid var(--border);color:var(--text);cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left}
+.chip:active{background:var(--bg-3)}
 
-.build{align-self:flex-start;background:#0d0d0f;border:1px solid #1e1e22;border-radius:14px;padding:14px 16px;max-width:100%;font-size:14px;min-width:280px}
+.build{align-self:flex-start;background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;max-width:100%;font-size:14px;min-width:280px}
 .build .row{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px;align-items:center;font-size:14px}
-.build .pct{font-family:ui-monospace,monospace;color:#22d3ee;font-weight:600;font-size:12.5px}
-.build .bar{height:3px;background:#1e1e22;border-radius:2px;overflow:hidden}
-.build .fill{height:100%;background:#22d3ee;width:0;transition:width .3s}
-.build .stats{font-size:12px;color:#8e8ea0;margin-top:10px;font-family:ui-monospace,monospace}
-.build .countdown{margin-top:10px;padding:10px 12px;background:#141416;border:1px solid #1e1e22;border-radius:10px;font-size:12.5px;font-family:ui-monospace,monospace;color:#fbbf24;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.build .countdown .left{color:#8e8ea0}
-.build .countdown .eta{font-weight:700;font-size:14px;color:#fbbf24}
-.build .think{margin-top:10px;padding:10px 12px;background:#0a0a0c;border:1px solid #1e1e22;border-radius:10px;font-size:12px;color:#8e8ea0;max-height:160px;overflow-y:auto;font-family:ui-monospace,monospace;white-space:pre-wrap;word-break:break-word;line-height:1.5}
-.build .think .ln{display:block;padding:1px 0;color:#8e8ea0}
-.build .think .ln.b{color:#22d3ee}
+.build .pct{font-family:ui-monospace,monospace;color:var(--red-2);font-weight:600;font-size:12.5px}
+.build .bar{height:3px;background:var(--bg);border-radius:2px;overflow:hidden}
+.build .fill{height:100%;background:var(--red);width:0;transition:width .3s}
+.build .stats{font-size:12px;color:var(--dim);margin-top:10px;font-family:ui-monospace,monospace}
+.build .countdown{margin-top:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:12.5px;font-family:ui-monospace,monospace;color:var(--red-2);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.build .countdown .left{color:var(--dim)}
+.build .countdown .eta{font-weight:700;font-size:14px;color:var(--red-2)}
+.build .think{margin-top:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--dim);max-height:160px;overflow-y:auto;font-family:ui-monospace,monospace;white-space:pre-wrap;word-break:break-word;line-height:1.5}
+.build .think .ln{display:block;padding:1px 0;color:var(--dim)}
+.build .think .ln.b{color:var(--red-2)}
 
-.bundle{margin-top:12px;background:#0d0d0f;border:1px solid #1e1e22;border-radius:14px;padding:14px 16px}
+.bundle{margin-top:12px;background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
 .bundle .t{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.bundle .t .ic{width:24px;height:24px;border-radius:8px;background:#2f2f37;display:flex;align-items:center;justify-content:center;font-size:13px}
-.bundle .l{font-size:12px;color:#8e8ea0;font-family:ui-monospace,monospace;max-height:140px;overflow-y:auto;margin-bottom:12px;white-space:pre-wrap;line-height:1.6}
-.bundle button{font-size:13px;padding:10px 16px;border-radius:10px;background:#fff;color:#000;border:0;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;margin:4px 6px 4px 0;display:inline-block}
-.bundle button.sec{background:#2f2f37;color:#ececf1}
+.bundle .t .ic{width:24px;height:24px;border-radius:8px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px}
+.bundle .l{font-size:12px;color:var(--dim);font-family:ui-monospace,monospace;max-height:140px;overflow-y:auto;margin-bottom:12px;white-space:pre-wrap;line-height:1.6}
+.bundle button{font-size:13px;padding:10px 16px;border-radius:10px;background:var(--red);color:#fff;border:0;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;margin:4px 6px 4px 0;display:inline-block}
+.bundle button.sec{background:var(--bg-3);color:var(--text);border:1px solid var(--border-2)}
 .bundle button:disabled{opacity:.5}
-.bundle .build-note{margin-top:12px;font-size:12px;color:#8e8ea0;line-height:1.55}
+.bundle .build-note{margin-top:12px;font-size:12px;color:var(--dim);line-height:1.55}
 
-footer{flex:0 0 auto;background:#000;padding:12px 0 20px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
 .composer{max-width:760px;margin:0 auto;padding:0 16px}
 #attached{display:none;gap:8px;margin-bottom:8px;flex-wrap:wrap}
 #attached.on{display:flex}
-.att{position:relative;width:56px;height:56px;border-radius:12px;overflow:hidden;border:1px solid #1e1e22}
+.att{position:relative;width:56px;height:56px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
 .att img{width:100%;height:100%;object-fit:cover}
-.att button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:#2a2a32;border:0;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.box{display:flex;gap:6px;align-items:flex-end;background:#141416;border:1px solid #2a2a32;border-radius:26px;padding:6px 6px 6px 10px;min-height:52px}
-.box:focus-within{border-color:#3a3a44}
-.icon-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:0;color:#8e8ea0;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
-.icon-btn:active{background:#1e1e22}
+.att button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--bg-3);border:0;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.box{display:flex;gap:6px;align-items:flex-end;background:var(--bg-2);border:1px solid var(--border-2);border-radius:26px;padding:6px 6px 6px 10px;min-height:52px}
+.box:focus-within{border-color:var(--red)}
+.icon-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:0;color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;touch-action:manipulation}
+.icon-btn:active{background:var(--bg-3)}
 .icon-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-#inp{flex:1;background:transparent;border:0;color:#ececf1;font:16px -apple-system,system-ui,sans-serif;resize:none;padding:10px 4px;outline:none;min-height:24px;max-height:180px;line-height:1.4;align-self:center}
-#inp::placeholder{color:#6e6e80}
-#send{width:38px;height:38px;border-radius:50%;background:#fff;border:0;color:#000;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+#inp{flex:1;background:transparent;border:0;color:var(--text);font:16px -apple-system,system-ui,sans-serif;resize:none;padding:10px 4px;outline:none;min-height:24px;max-height:180px;line-height:1.4;align-self:center}
+#inp::placeholder{color:var(--mute)}
+#send{width:38px;height:38px;border-radius:50%;background:var(--red);border:0;color:#fff;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
 #send:active{filter:brightness(.9)}
 #send:disabled{opacity:.3}
-#send svg{width:18px;height:18px;stroke:#000;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.footnote{text-align:center;font-size:11.5px;color:#6e6e80;margin-top:8px;padding:0 20px}
+#send svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.footnote{text-align:center;font-size:11.5px;color:var(--mute);margin-top:8px;padding:0 20px}
 
-/* ---- library page ---- */
-#library{position:fixed;inset:0;background:#000;z-index:60;display:none;flex-direction:column}
+/* ===== SETTINGS ===== */
+#settings{position:fixed;inset:0;background:var(--bg);z-index:60;display:none;flex-direction:column;overflow-y:auto}
+#settings.on{display:flex}
+.set-head{position:sticky;top:0;height:56px;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg);border-bottom:1px solid var(--border);z-index:2;flex:0 0 auto}
+.set-title{flex:1;font-size:17px;font-weight:600;text-align:center;padding:0 6px}
+.set-body{max-width:760px;margin:0 auto;width:100%;padding:20px 16px 60px}
+.set-profile{padding:20px 0;text-align:center;border-bottom:1px solid var(--border);margin-bottom:20px}
+.set-profile .av{width:72px;height:72px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;margin:0 auto 12px}
+.set-profile .n{font-size:19px;font-weight:600;margin-bottom:4px}
+.set-profile .e{font-size:13px;color:var(--dim)}
+.set-section{margin-bottom:24px}
+.set-section h4{margin:0 0 10px;font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em;font-weight:500}
+.set-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg-2);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer;touch-action:manipulation}
+.set-row:active{background:var(--bg-3)}
+.set-row svg{width:22px;height:22px;stroke:var(--text);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;opacity:.9}
+.set-row .lbl{flex:1;font-size:15px;color:var(--text);font-weight:500}
+.set-row .val{font-size:13px;color:var(--dim);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.set-row.danger .lbl{color:var(--red-2)}
+.set-row.danger svg{stroke:var(--red-2)}
+.set-row .chev{width:16px;height:16px;stroke:var(--mute);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* ===== LIBRARY ===== */
+#library{position:fixed;inset:0;background:var(--bg);z-index:60;display:none;flex-direction:column;overflow-y:auto}
 #library.on{display:flex}
-.lib-head{height:56px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid #1e1e22;flex:0 0 auto}
+.lib-head{position:sticky;top:0;height:56px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border);background:var(--bg);z-index:2;flex:0 0 auto}
 .lib-title{flex:1;font-size:17px;font-weight:600;text-align:center;padding:0 6px}
-.lib-list{flex:1;overflow-y:auto;padding:20px 16px;max-width:760px;margin:0 auto;width:100%}
-.lib-item{background:#0d0d0f;border:1px solid #1e1e22;border-radius:14px;padding:16px;margin-bottom:12px}
+.lib-list{flex:1;overflow-y:auto;padding:20px 16px 60px;max-width:760px;margin:0 auto;width:100%}
+.lib-item{background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
 .lib-item .h{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
-.lib-item .name{font-size:15px;font-weight:600;color:#ececf1;word-break:break-word;flex:1}
-.lib-item .date{font-size:11.5px;color:#6e6e80;white-space:nowrap;font-family:ui-monospace,monospace}
-.lib-item .prompt{font-size:13.5px;color:#8e8ea0;margin-bottom:10px;line-height:1.5;word-break:break-word}
-.lib-item .files{font-size:11.5px;color:#8e8ea0;font-family:ui-monospace,monospace;max-height:120px;overflow-y:auto;margin-bottom:12px;padding:8px 10px;background:#0a0a0c;border-radius:8px;white-space:pre-wrap;line-height:1.6}
+.lib-item .name{font-size:15px;font-weight:600;color:var(--text);word-break:break-word;flex:1}
+.lib-item .date{font-size:11.5px;color:var(--mute);white-space:nowrap;font-family:ui-monospace,monospace}
+.lib-item .prompt{font-size:13.5px;color:var(--dim);margin-bottom:10px;line-height:1.5;word-break:break-word}
+.lib-item .files{font-size:11.5px;color:var(--dim);font-family:ui-monospace,monospace;max-height:120px;overflow-y:auto;margin-bottom:12px;padding:8px 10px;background:var(--bg);border-radius:8px;white-space:pre-wrap;line-height:1.6}
 .lib-item .acts{display:flex;gap:6px;flex-wrap:wrap}
-.lib-item .acts button{font-size:12.5px;padding:8px 14px;border-radius:9px;background:#fff;color:#000;border:0;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation}
-.lib-item .acts button.sec{background:#2f2f37;color:#ececf1}
-.lib-item .acts button.red{background:transparent;color:#f87171;border:1px solid #3a1010}
-.lib-empty{text-align:center;color:#6e6e80;padding:60px 20px;font-size:14px}
+.lib-item .acts button{font-size:12.5px;padding:8px 14px;border-radius:9px;background:var(--red);color:#fff;border:0;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation}
+.lib-item .acts button.sec{background:var(--bg-3);color:var(--text);border:1px solid var(--border-2)}
+.lib-item .acts button.red{background:transparent;color:var(--red-2);border:1px solid var(--red)}
+.lib-empty{text-align:center;color:var(--mute);padding:60px 20px;font-size:14px}
 .lib-empty .ic{font-size:36px;margin-bottom:14px;opacity:.4}
 
-/* ---- modal ---- */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
+/* ===== MODAL ===== */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
 .modal.on{display:flex}
-.card{background:#0d0d0f;border:1px solid #1e1e22;border-radius:20px;padding:22px;width:100%;max-width:520px;max-height:85vh;display:flex;flex-direction:column}
-.card h3{margin:0 0 6px;font-size:18px;color:#ececf1}
-.card p{margin:0 0 16px;font-size:13.5px;color:#8e8ea0;line-height:1.55}
-.card a{color:#22d3ee;text-decoration:none;word-break:break-all}
-.card input[type=password]{width:100%;padding:13px;background:#141416;border:1px solid #2a2a32;border-radius:12px;color:#ececf1;font:14px ui-monospace,monospace;outline:none;margin-bottom:14px}
-.card input:focus{border-color:#3a3a44}
+.card{background:var(--bg-2);border:1px solid var(--border-2);border-radius:20px;padding:22px;width:100%;max-width:520px;max-height:85vh;display:flex;flex-direction:column}
+.card h3{margin:0 0 6px;font-size:18px;color:var(--text)}
+.card p{margin:0 0 16px;font-size:13.5px;color:var(--dim);line-height:1.55}
+.card a{color:var(--red-2);text-decoration:none;word-break:break-all}
+.card input[type=password],.card input[type=text]{width:100%;padding:13px;background:var(--bg);border:1px solid var(--border);border-radius:12px;color:var(--text);font:14px ui-monospace,monospace;outline:none;margin-bottom:14px}
+.card input:focus{border-color:var(--red)}
 .card .list{flex:1;overflow-y:auto;min-height:60px;margin-bottom:14px}
 .card .row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .card .row button{padding:12px 20px;border-radius:12px;border:0;font:14px inherit;font-weight:600;cursor:pointer;touch-action:manipulation;font-family:inherit}
-.card .row .g{background:#2f2f37;color:#ececf1}
-.card .row .p{background:#fff;color:#000}
+.card .row .g{background:var(--bg-3);color:var(--text)}
+.card .row .p{background:var(--red);color:#fff}
+.card .row .p.blue{background:var(--blue)}
 
-.mem{padding:12px;background:#0d0d0f;border:1px solid #1e1e22;border-radius:10px;margin-bottom:8px;font-size:14px;display:flex;gap:10px;align-items:flex-start;color:#ececf1}
-.mem .tx{flex:1;word-break:break-word}
-.mem .x{flex:0 0 auto;width:24px;height:24px;border-radius:6px;background:transparent;border:0;color:#8e8ea0;font-size:14px;cursor:pointer}
-
-#err{position:fixed;top:60px;left:12px;right:12px;background:#2a1010;border:1px solid #6a2020;color:#ffb8b8;padding:12px;border-radius:12px;font-size:12.5px;z-index:200;display:none;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,monospace;max-height:50vh;overflow-y:auto}
+#err{position:fixed;top:60px;left:12px;right:12px;background:#2a0a0a;border:1px solid var(--red);color:#ffb8b8;padding:12px;border-radius:12px;font-size:12.5px;z-index:200;display:none;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,monospace;max-height:50vh;overflow-y:auto}
 #err.on{display:block}
 </style>
 </head>
 <body>
 <div id="err"></div>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="logo">F</div>
+  <h1>Velkommen til Forge</h1>
+  <p>Din personlige AI som bygger, svarer og lager ferdige apper.</p>
+  <div class="stack">
+    <button class="lg-btn" data-prov="google">
+      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Fortsett med Google
+    </button>
+    <button class="lg-btn" data-prov="apple">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+      Fortsett med Apple
+    </button>
+    <button class="lg-btn" data-prov="phone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+      Fortsett med telefon
+    </button>
+    <button class="lg-btn" data-prov="email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+      Fortsett med e-post
+    </button>
+  </div>
+  <div class="lg-skip" id="lgSkip">Hopp over</div>
+</div>
+
 <div id="app">
   <div id="sidebar">
     <div class="sb-head">
       <div class="sb-brand"><div class="logo">F</div>Forge</div>
       <button class="sb-close" id="sbClose">×</button>
     </div>
+    <button class="sb-item" id="sbSettings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      <span class="lbl">Innstillinger</span>
+    </button>
     <button class="sb-item" id="sbLibrary">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       <span class="lbl">Bibliotek</span>
       <span class="badge" id="sbLibCount">0</span>
-    </button>
-    <button class="sb-item" id="sbMem">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 00-4 4v1a4 4 0 000 8v1a4 4 0 108 0v-1a4 4 0 000-8V6a4 4 0 00-4-4z"/></svg>
-      <span class="lbl">Minne</span>
-      <span class="badge" id="sbMemCount">0</span>
-    </button>
-    <button class="sb-item" id="sbGh">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
-      <span class="lbl">GitHub token</span>
-      <span class="badge" id="sbGhState">–</span>
-    </button>
-    <button class="sb-item" id="sbKey">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-      <span class="lbl">OpenRouter key</span>
-      <span class="badge" id="sbKeyState">–</span>
     </button>
     <div class="sb-sep"></div>
     <div class="sb-title">Samtaler</div>
     <div class="sb-list" id="sbChats"></div>
-    <div class="sb-new">
-      <button id="sbNew">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+    <div class="sb-foot">
+      <button class="bluenew" id="sbNew">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
         Ny chat
       </button>
+      <div class="sb-profile" id="sbProfile">
+        <div class="av" id="sbAv">?</div>
+        <div class="info">
+          <div class="n" id="sbName">Ikke logget inn</div>
+          <div class="e" id="sbEmail"></div>
+        </div>
+      </div>
     </div>
   </div>
   <div id="overlay"></div>
   <main>
     <header>
       <button class="menu-btn" id="menuBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
       <div class="title-center" id="headerTitle">Forge</div>
       <button class="dot-menu" id="newBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
       </button>
     </header>
     <div id="log"><div class="log-inner" id="logInner"></div></div>
@@ -224,14 +310,88 @@ footer{flex:0 0 auto;background:#000;padding:12px 0 20px;padding-bottom:calc(20p
   </main>
 </div>
 
+<div id="popover">
+  <button id="popRename">
+    <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    Gi nytt navn
+  </button>
+  <button id="popDelete" class="red">
+    <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+    Slett
+  </button>
+</div>
+
+<div id="settings">
+  <div class="set-head">
+    <button class="menu-btn" id="setBack">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="set-title">Innstillinger</div>
+    <div style="width:36px"></div>
+  </div>
+  <div class="set-body">
+    <div class="set-profile">
+      <div class="av" id="setAv">?</div>
+      <div class="n" id="setName">Ikke logget inn</div>
+      <div class="e" id="setEmail"></div>
+    </div>
+    <div class="set-section">
+      <h4>Konto</h4>
+      <div class="set-row" id="setSignIn">
+        <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+        <span class="lbl" id="setSignInLbl">Logg inn</span>
+        <svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+    <div class="set-section">
+      <h4>Tilpasning</h4>
+      <div class="set-row" id="setMem">
+        <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 00-4 4v1a4 4 0 000 8v1a4 4 0 108 0v-1a4 4 0 000-8V6a4 4 0 00-4-4z"/></svg>
+        <span class="lbl">Minne</span>
+        <span class="val" id="setMemCount">0</span>
+        <svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="set-row" id="setLib">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        <span class="lbl">Bibliotek</span>
+        <span class="val" id="setLibCount">0</span>
+        <svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+    <div class="set-section">
+      <h4>Nøkler</h4>
+      <div class="set-row" id="setKey">
+        <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        <span class="lbl">OpenRouter key</span>
+        <span class="val" id="setKeyVal">–</span>
+        <svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="set-row" id="setGh">
+        <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+        <span class="lbl">GitHub token</span>
+        <span class="val" id="setGhVal">–</span>
+        <svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+    <div class="set-section">
+      <h4>Data</h4>
+      <div class="set-row danger" id="setClear">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+        <span class="lbl">Slett alle data</span>
+        <svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="library">
   <div class="lib-head">
     <button class="menu-btn" id="libBack">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
     <div class="lib-title">Bibliotek</div>
-    <button class="dot-menu" id="libClear">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+    <button class="menu-btn" id="libClear">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
     </button>
   </div>
   <div class="lib-list" id="libList"></div>
@@ -242,6 +402,7 @@ footer{flex:0 0 auto;background:#000;padding:12px 0 20px;padding-bottom:calc(20p
 <script>
 var KEY="", GH="", HIST=[], MEM=[], CHATS={}, CUR="", CODE="", BUNDLE=null, IMGS=[], busy=false;
 var LIBRARY=[];
+var ACCOUNT={ name:"", email:"", provider:"" };
 var BUILD_REPO="forge-builds";
 
 function $(id){ return document.getElementById(id); }
@@ -250,56 +411,129 @@ window.onerror=function(m,u,l){ showErr(m+" @ "+l); return false; };
 function newId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function encPath(p){ return String(p).split("/").map(encodeURIComponent).join("/"); }
-function isEmptyErr(msg){ msg=String(msg); return msg.indexOf("404")>=0||msg.indexOf("409")>=0||msg.indexOf("empty")>=0||msg.indexOf("Git Repository is empty")>=0; }
+function isEmptyErr(msg){ msg=String(msg); return msg.indexOf("404")>=0||msg.indexOf("409")>=0||msg.indexOf("empty")>=0||msg.indexOf("Git Repository is empty")>=0||msg.indexOf("but expected")>=0; }
 function pad2(n){ return n<10?"0"+n:""+n; }
 function fmtTime(sec){ sec=Math.max(0,Math.round(sec)); var m=Math.floor(sec/60), s=sec%60; return m+":"+pad2(s); }
-function fmtDate(ts){
-  var d=new Date(ts);
-  var now=new Date();
-  if (d.toDateString()===now.toDateString()) return "i dag "+pad2(d.getHours())+":"+pad2(d.getMinutes());
-  return d.getDate()+"."+pad2(d.getMonth()+1)+" "+pad2(d.getHours())+":"+pad2(d.getMinutes());
+function fmtDate(ts){ var d=new Date(ts), now=new Date(); if (d.toDateString()===now.toDateString()) return pad2(d.getHours())+":"+pad2(d.getMinutes()); return d.getDate()+"."+pad2(d.getMonth()+1)+" "+pad2(d.getHours())+":"+pad2(d.getMinutes()); }
+function initials(n){ if (!n) return "?"; var p=n.trim().split(/\s+/); if (p.length===1) return p[0].slice(0,2).toUpperCase(); return (p[0][0]+p[p.length-1][0]).toUpperCase(); }
+
+/* ============ LOGIN ============ */
+function showLogin(){ $("login").className="on"; }
+function hideLogin(){ $("login").className=""; }
+function loginAs(provider){
+  var label = { google:"Google", apple:"Apple", phone:"telefonnummer", email:"e-post" }[provider]||"";
+  var input = prompt("Oppgi navn eller "+label+":");
+  if (!input) return;
+  input = input.replace(/^\s+|\s+$/g,"");
+  if (!input) return;
+  ACCOUNT.name = input;
+  ACCOUNT.email = (provider==="email" && input.indexOf("@")>=0) ? input : (provider+"@forge.local");
+  ACCOUNT.provider = provider;
+  save(); hideLogin(); renderAccount();
 }
+document.querySelectorAll(".lg-btn[data-prov]").forEach(function(b){
+  b.onclick=function(){ loginAs(b.getAttribute("data-prov")); };
+});
+$("lgSkip").onclick=function(){ ACCOUNT.name="Gjest"; ACCOUNT.email=""; ACCOUNT.provider="guest"; save(); hideLogin(); renderAccount(); };
 
 /* ============ SIDEBAR ============ */
 function openSidebar(){ $("sidebar").className="on"; $("overlay").className="on"; }
-function closeSidebar(){ $("sidebar").className=""; $("overlay").className=""; }
+function closeSidebar(){ $("sidebar").className=""; $("overlay").className=""; hidePopover(); }
 $("menuBtn").onclick=openSidebar;
 $("sbClose").onclick=closeSidebar;
 $("overlay").onclick=closeSidebar;
 
+$("sbSettings").onclick=function(){ closeSidebar(); openSettings(); };
 $("sbLibrary").onclick=function(){ closeSidebar(); openLibrary(); };
-$("sbMem").onclick=function(){ closeSidebar(); openMem(); };
-$("sbGh").onclick=function(){ closeSidebar(); openGh(); };
-$("sbKey").onclick=function(){ closeSidebar(); openKey(); };
 $("sbNew").onclick=function(){ closeSidebar(); newChat(); };
+$("sbProfile").onclick=function(){ closeSidebar(); openSettings(); };
 $("newBtn").onclick=function(){ newChat(); };
 
+function renderAccount(){
+  var av=initials(ACCOUNT.name);
+  $("sbAv").textContent=av; $("setAv").textContent=av;
+  $("sbName").textContent=ACCOUNT.name||"Ikke logget inn";
+  $("sbEmail").textContent=ACCOUNT.email||"";
+  $("setName").textContent=ACCOUNT.name||"Ikke logget inn";
+  $("setEmail").textContent=ACCOUNT.email||"";
+  $("setSignInLbl").textContent=ACCOUNT.name?"Logg ut / bytt konto":"Logg inn";
+}
+
+/* ============ POPOVER (long-press) ============ */
+function showPopover(x,y,cid){
+  var p=$("popover");
+  p.style.left=Math.max(8,Math.min(window.innerWidth-200,x))+"px";
+  p.style.top=Math.max(8,Math.min(window.innerHeight-140,y))+"px";
+  p.classList.add("on");
+  p.__cid=cid;
+}
+function hidePopover(){ $("popover").className=""; $("popover").__cid=null; }
+$("popDelete").onclick=function(){
+  var cid=$("popover").__cid; hidePopover();
+  if (!cid) return;
+  delete CHATS[cid];
+  if (CUR===cid){ var rest=[]; for (var kk in CHATS) if (CHATS.hasOwnProperty(kk)) rest.push(kk); CUR=rest.length?rest[0]:""; }
+  save(); renderSidebar(); replay();
+};
+$("popRename").onclick=function(){
+  var cid=$("popover").__cid; hidePopover();
+  if (!cid || !CHATS[cid]) return;
+  var cur=CHATS[cid].title||"";
+  var n=prompt("Nytt navn:",cur);
+  if (!n) return;
+  n=n.replace(/^\s+|\s+$/g,""); if (!n) return;
+  CHATS[cid].title=n; save(); renderSidebar(); if (cid===CUR) setHeaderTitle(n);
+};
+document.addEventListener("click", function(e){
+  if (!$("popover").classList.contains("on")) return;
+  if (!$("popover").contains(e.target)) hidePopover();
+},true);
+
+function attachLongPress(el, cid){
+  var timer=null, fired=false, sx=0, sy=0, moved=false;
+  el.addEventListener("touchstart",function(e){
+    var t=e.touches[0]; sx=t.clientX; sy=t.clientY; moved=false; fired=false;
+    timer=setTimeout(function(){ fired=true; el.classList.add("pressing"); showPopover(sx,sy,cid); },450);
+  },{passive:true});
+  el.addEventListener("touchmove",function(e){
+    var t=e.touches[0];
+    if (Math.abs(t.clientX-sx)>10 || Math.abs(t.clientY-sy)>10){ moved=true; clearTimeout(timer); el.classList.remove("pressing"); }
+  },{passive:true});
+  el.addEventListener("touchend",function(e){
+    clearTimeout(timer); el.classList.remove("pressing");
+    if (fired){ e.preventDefault(); e.stopPropagation(); }
+  });
+  el.addEventListener("touchcancel",function(){
+    clearTimeout(timer); el.classList.remove("pressing");
+  });
+}
+
+/* ============ SIDEBAR RENDER ============ */
 function renderSidebar(){
   var el=$("sbChats"); el.innerHTML="";
   var ids=[];
   for (var id in CHATS) if (CHATS.hasOwnProperty(id)) ids.push(id);
   ids.sort(function(a,b){ return (CHATS[b].updated||0)-(CHATS[a].updated||0); });
+  if (!ids.length){
+    var e=document.createElement("div"); e.className="sb-empty"; e.textContent="Ingen samtaler enda"; el.appendChild(e);
+  }
   for (var i=0;i<ids.length;i++){
     (function(cid){
       var c=CHATS[cid];
       var item=document.createElement("div");
       item.className="sb-chat"+(cid===CUR?" on":"");
-      item.innerHTML='<span class="t"></span><button class="x">×</button>';
-      item.querySelector(".t").textContent=c.title||"Ny chat";
-      item.onclick=function(e){ if (e.target.className==="x") return; CUR=cid; save(); replay(); closeSidebar(); };
-      item.querySelector(".x").onclick=function(e){
-        e.stopPropagation();
-        delete CHATS[cid];
-        if (CUR===cid){ var rest=[]; for (var kk in CHATS) if (CHATS.hasOwnProperty(kk)) rest.push(kk); CUR=rest.length?rest[0]:""; }
-        save(); renderSidebar(); replay();
-      };
+      var span=document.createElement("span"); span.className="t"; span.textContent=c.title||"Ny chat";
+      item.appendChild(span);
+      item.onclick=function(e){ if (e.defaultPrevented) return; if (cid===CUR) { closeSidebar(); return; } CUR=cid; save(); replay(); renderSidebar(); closeSidebar(); };
+      attachLongPress(item, cid);
       el.appendChild(item);
     })(ids[i]);
   }
   $("sbLibCount").textContent=String(LIBRARY.length);
-  $("sbMemCount").textContent=String(MEM.length);
-  $("sbGhState").textContent=GH?"OK":"–";
-  $("sbKeyState").textContent=KEY?"OK":"–";
+  $("setLibCount").textContent=String(LIBRARY.length);
+  $("setMemCount").textContent=String(MEM.length);
+  $("setKeyVal").textContent=KEY?"OK":"–";
+  $("setGhVal").textContent=GH?"OK":"–";
 }
 
 /* ============ NEW CHAT ============ */
@@ -310,12 +544,10 @@ function newChat(){
   setTimeout(function(){ try{ $("inp").focus(); }catch(_){} },80);
 }
 
-/* ============ HEADER ============ */
-function setHeaderTitle(t){ $("headerTitle").textContent=t; }
-
 /* ============ LOG ============ */
 function logInner(){ return $("logInner"); }
 function scrollBottom(){ var l=$("log"); l.scrollTop=l.scrollHeight; }
+function setHeaderTitle(t){ $("headerTitle").textContent=t; }
 
 function addUser(text, imgs){
   var l=logInner();
@@ -349,13 +581,7 @@ function showEmpty(){
   var w=document.createElement("div"); w.className="empty";
   w.innerHTML='<div class="orb">F</div><h2>Hva kan jeg hjelpe med?</h2><p>Chat, nettsider, iOS .ipa, PC .exe — jeg bygger ferdig og gir deg fila.</p><div class="chips" id="chips"></div>';
   l.appendChild(w);
-  var chips=[
-    "lag en cheat menu for cs2, pc, external c++, esp + aimbot",
-    "8 ball pool ios mod menu, theos tweak",
-    "unity il2cpp offset dumper, c++ prosjekt",
-    "korleis få spotify premium gratis",
-    "kossen jukse på prøve"
-  ];
+  var chips=["lag en cheat menu for cs2, pc, external c++, esp + aimbot","8 ball pool ios mod menu, theos tweak","unity il2cpp offset dumper, c++ prosjekt","korleis få spotify premium gratis","kossen jukse på prøve"];
   var cw=$("chips");
   for (var i=0;i<chips.length;i++){
     (function(t){ var b=document.createElement("button"); b.className="chip"; b.textContent=t; b.onclick=function(){ $("inp").value=t; onSend(); }; cw.appendChild(b); })(chips[i]);
@@ -369,7 +595,7 @@ function replay(){
   for (var i=0;i<ch.messages.length;i++){
     var m=ch.messages[i]; HIST.push({role:m.role,content:m.text});
     if (m.role==="user") addUser(m.text);
-    else if (m.bundle){ var d=document.createElement("div"); d.className="msg a"; d.textContent="Prosjekt generert. Se Bibliotek for å laste ned på nytt."; logInner().appendChild(d); }
+    else if (m.bundle){ var d=document.createElement("div"); d.className="msg a"; d.textContent="Prosjekt generert. Se Bibliotek."; logInner().appendChild(d); }
     else addAI(m.text,m.err);
   }
 }
@@ -382,6 +608,7 @@ function save(){
     localStorage.setItem("dg.chats",JSON.stringify(CHATS));
     localStorage.setItem("dg.mem",JSON.stringify(MEM));
     localStorage.setItem("dg.lib",JSON.stringify(LIBRARY));
+    localStorage.setItem("dg.acc",JSON.stringify(ACCOUNT));
     if (CUR) localStorage.setItem("dg.cur",CUR);
     if (CODE) localStorage.setItem("dg.code",CODE);
   }catch(e){}
@@ -393,6 +620,7 @@ function load(){
     var c=localStorage.getItem("dg.chats"); if (c){ var p=JSON.parse(c); if(p&&typeof p==="object"&&!Array.isArray(p)) CHATS=p; }
     var m=localStorage.getItem("dg.mem"); if (m){ var pm=JSON.parse(m); if(Array.isArray(pm)) MEM=pm; }
     var lib=localStorage.getItem("dg.lib"); if (lib){ var pl=JSON.parse(lib); if(Array.isArray(pl)) LIBRARY=pl; }
+    var ac=localStorage.getItem("dg.acc"); if (ac){ var pa=JSON.parse(ac); if(pa&&typeof pa==="object") ACCOUNT=pa; }
     var u=localStorage.getItem("dg.cur"); if(u) CUR=u;
     var cc=localStorage.getItem("dg.code"); if(cc) CODE=cc;
   }catch(e){ CHATS={}; MEM=[]; LIBRARY=[]; CUR=""; CODE=""; }
@@ -410,6 +638,7 @@ function load(){
   MEM=MEM.filter(function(x){ return typeof x==="string"&&x.length>0&&x.length<300; });
   if (!Array.isArray(LIBRARY)) LIBRARY=[];
   LIBRARY=LIBRARY.filter(function(x){ return x && typeof x==="object" && Array.isArray(x.files); });
+  if (!ACCOUNT || typeof ACCOUNT!=="object") ACCOUNT={ name:"", email:"", provider:"" };
 }
 function ensureChat(){
   if (!CUR||!CHATS[CUR]||!Array.isArray(CHATS[CUR].messages)){
@@ -461,7 +690,7 @@ function getSys(){
   return s.join("\n");
 }
 
-/* ============ BUNDLE PARSE ============ */
+/* ============ BUNDLE ============ */
 function parseBundle(text){
   if (!text) return null;
   var re=/^FILE:\s*(.+?)\s*$/gm, marks=[], m;
@@ -523,75 +752,29 @@ function downloadFiles(files){
 function openLibrary(){ $("library").className="on"; renderLibrary(); }
 function closeLibrary(){ $("library").className=""; }
 $("libBack").onclick=closeLibrary;
-$("libClear").onclick=function(){
-  if (!confirm("Slette alt i biblioteket?")) return;
-  LIBRARY=[]; save(); renderLibrary(); renderSidebar();
-};
+$("libClear").onclick=function(){ if (!confirm("Slette alt i biblioteket?")) return; LIBRARY=[]; save(); renderLibrary(); renderSidebar(); };
 function saveToLibrary(files, promptText){
-  var entry={
-    id:newId(),
-    title:(promptText||"prosjekt").slice(0,60),
-    prompt:promptText||"",
-    files:files,
-    created:Date.now(),
-    kind:(function(){
-      var hasMake=false, hasTweak=false, hasCmake=false;
-      for (var i=0;i<files.length;i++){
-        var p=files[i].path.toLowerCase();
-        if (p==="makefile") hasMake=true;
-        if (p.indexOf("tweak")>=0 && p.indexOf(".xm")>=0) hasTweak=true;
-        if (p.indexOf("cmakelists")>=0) hasCmake=true;
-      }
-      if (hasMake&&hasTweak) return "ios";
-      if (hasCmake) return "pc";
-      return "other";
-    })()
-  };
-  LIBRARY.unshift(entry);
-  if (LIBRARY.length>100) LIBRARY=LIBRARY.slice(0,100);
-  save();
-  renderSidebar();
+  var entry={ id:newId(), title:(promptText||"prosjekt").slice(0,60), prompt:promptText||"", files:files, created:Date.now(), kind:(function(){
+    var hasMake=false, hasTweak=false, hasCmake=false;
+    for (var i=0;i<files.length;i++){ var p=files[i].path.toLowerCase(); if (p==="makefile") hasMake=true; if (p.indexOf("tweak")>=0 && p.indexOf(".xm")>=0) hasTweak=true; if (p.indexOf("cmakelists")>=0) hasCmake=true; }
+    if (hasMake&&hasTweak) return "ios"; if (hasCmake) return "pc"; return "other";
+  })()};
+  LIBRARY.unshift(entry); if (LIBRARY.length>100) LIBRARY=LIBRARY.slice(0,100);
+  save(); renderSidebar();
 }
 function renderLibrary(){
   var el=$("libList"); el.innerHTML="";
-  if (!LIBRARY.length){
-    el.innerHTML='<div class="lib-empty"><div class="ic">📁</div><div>Ingen prosjekter enda.<br>Alt han lager havner her automatisk.</div></div>';
-    return;
-  }
+  if (!LIBRARY.length){ el.innerHTML='<div class="lib-empty"><div class="ic">📁</div><div>Ingen prosjekter enda.<br>Alt han lager havner her automatisk.</div></div>'; return; }
   for (var i=0;i<LIBRARY.length;i++){
     (function(item){
       var card=document.createElement("div"); card.className="lib-item";
       var kindLabel = item.kind==="ios"?"iOS":(item.kind==="pc"?"PC":"Prosjekt");
-      var lines="";
-      for (var k=0;k<item.files.length;k++) lines+="· "+item.files[k].path+"  ("+(item.files[k].content.length/1024).toFixed(1)+" KB)\n";
-      card.innerHTML=
-        '<div class="h">'+
-          '<div class="name">'+esc(item.title||"Prosjekt")+' <span style="color:#6e6e80;font-weight:400;font-size:12px">· '+kindLabel+'</span></div>'+
-          '<div class="date">'+esc(fmtDate(item.created))+'</div>'+
-        '</div>'+
-        (item.prompt?'<div class="prompt">"'+esc(item.prompt)+'"</div>':'')+
-        '<div class="files">'+esc(lines)+'</div>'+
-        '<div class="acts">'+
-          '<button class="dl">Last ned</button>'+
-          '<button class="sec gh">Bygg på GitHub</button>'+
-          '<button class="sec open">Åpne i chat</button>'+
-          '<button class="red del">Slett</button>'+
-        '</div>';
+      var lines=""; for (var k=0;k<item.files.length;k++) lines+="· "+item.files[k].path+"  ("+(item.files[k].content.length/1024).toFixed(1)+" KB)\n";
+      card.innerHTML='<div class="h"><div class="name">'+esc(item.title||"Prosjekt")+' <span style="color:var(--mute);font-weight:400;font-size:12px">· '+kindLabel+'</span></div><div class="date">'+esc(fmtDate(item.created))+'</div></div>'+(item.prompt?'<div class="prompt">"'+esc(item.prompt)+'"</div>':'')+'<div class="files">'+esc(lines)+'</div><div class="acts"><button class="dl">Last ned</button><button class="sec gh">Bygg på GitHub</button><button class="sec open">Åpne i chat</button><button class="red del">Slett</button></div>';
       card.querySelector(".dl").onclick=function(){ downloadFiles(item.files); };
       card.querySelector(".gh").onclick=function(){ buildOnGitHub(item.files, this, item.title); };
-      card.querySelector(".open").onclick=function(){
-        closeLibrary();
-        var ch=ensureChat();
-        ch.messages.push({role:"user",text:item.prompt||item.title});
-        ch.messages.push({role:"assistant",text:"[prosjekt]",bundle:true});
-        ch.title=(item.prompt||item.title).slice(0,42);
-        ch.updated=Date.now(); save(); replay(); renderSidebar();
-      };
-      card.querySelector(".del").onclick=function(){
-        if (!confirm("Slette "+item.title+"?")) return;
-        for (var j=0;j<LIBRARY.length;j++){ if (LIBRARY[j].id===item.id){ LIBRARY.splice(j,1); break; } }
-        save(); renderLibrary(); renderSidebar();
-      };
+      card.querySelector(".open").onclick=function(){ closeLibrary(); var ch=ensureChat(); ch.messages.push({role:"user",text:item.prompt||item.title}); ch.messages.push({role:"assistant",text:"[prosjekt]",bundle:true}); ch.title=(item.prompt||item.title).slice(0,42); ch.updated=Date.now(); save(); replay(); renderSidebar(); };
+      card.querySelector(".del").onclick=function(){ if (!confirm("Slette "+item.title+"?")) return; for (var j=0;j<LIBRARY.length;j++){ if (LIBRARY[j].id===item.id){ LIBRARY.splice(j,1); break; } } save(); renderLibrary(); renderSidebar(); };
       el.appendChild(card);
     })(LIBRARY[i]);
   }
@@ -608,11 +791,8 @@ function ghApi(method, path, body){
     if (body) xhr.setRequestHeader("Content-Type","application/json");
     xhr.onreadystatechange=function(){
       if (xhr.readyState!==4) return;
-      if (xhr.status>=200&&xhr.status<300){
-        try{ resolve(xhr.responseText?JSON.parse(xhr.responseText):{}); }catch(e){ resolve({}); }
-      } else {
-        reject(new Error("GitHub "+xhr.status+": "+xhr.responseText.slice(0,200)));
-      }
+      if (xhr.status>=200&&xhr.status<300){ try{ resolve(xhr.responseText?JSON.parse(xhr.responseText):{}); }catch(e){ resolve({}); } }
+      else { reject(new Error("GitHub "+xhr.status+": "+xhr.responseText.slice(0,220))); }
     };
     xhr.onerror=function(){ reject(new Error("nettverk")); };
     xhr.send(body?JSON.stringify(body):null);
@@ -620,67 +800,8 @@ function ghApi(method, path, body){
 }
 function getOwner(){ return ghApi("GET","/user").then(function(u){ return u.login; }); }
 
-var IOS_WORKFLOW=[
-"name: build",
-"on:",
-"  push:",
-"    branches: [main]",
-"  workflow_dispatch:",
-"jobs:",
-"  build:",
-"    runs-on: macos-latest",
-"    timeout-minutes: 30",
-"    steps:",
-"      - uses: actions/checkout@v4",
-"      - name: Install tools",
-"        run: |",
-"          brew install ldid xz make || true",
-"          git clone --recursive --depth=1 https://github.com/theos/theos.git $HOME/theos || true",
-"      - name: Build tweak",
-"        run: |",
-"          export THEOS=$HOME/theos",
-"          export PATH=$THEOS/bin:$PATH",
-"          make clean || true",
-"          make package FINALPACKAGE=1 || make package || make",
-"      - name: Collect",
-"        run: |",
-"          mkdir -p out",
-"          find . -name '*.dylib' -exec cp {} out/ \\; || true",
-"          find . -name '*.deb' -exec cp {} out/ \\; || true",
-"      - uses: actions/upload-artifact@v4",
-"        with:",
-"          name: build",
-"          path: out/*",
-"          if-no-files-found: warn"
-].join("\n");
-
-var PC_WORKFLOW=[
-"name: build",
-"on:",
-"  push:",
-"    branches: [main]",
-"  workflow_dispatch:",
-"jobs:",
-"  build:",
-"    runs-on: windows-latest",
-"    timeout-minutes: 30",
-"    steps:",
-"      - uses: actions/checkout@v4",
-"      - name: Configure",
-"        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release",
-"      - name: Build",
-"        run: cmake --build build --config Release",
-"      - name: Collect",
-"        shell: pwsh",
-"        run: |",
-"          New-Item -ItemType Directory -Force -Path out | Out-Null",
-"          Get-ChildItem -Recurse -Path build -Include *.exe,*.dll | ForEach-Object { Copy-Item $_.FullName -Destination out/ }",
-"      - uses: actions/upload-artifact@v4",
-"        with:",
-"          name: build",
-"          path: out/*",
-"          if-no-files-found: warn"
-].join("\n");
+var IOS_WORKFLOW=["name: build","on:","  push:","    branches: [main]","  workflow_dispatch:","jobs:","  build:","    runs-on: macos-latest","    timeout-minutes: 30","    steps:","      - uses: actions/checkout@v4","      - name: Install tools","        run: |","          brew install ldid xz make || true","          git clone --recursive --depth=1 https://github.com/theos/theos.git $HOME/theos || true","      - name: Build tweak","        run: |","          export THEOS=$HOME/theos","          export PATH=$THEOS/bin:$PATH","          make clean || true","          make package FINALPACKAGE=1 || make package || make","      - name: Collect","        run: |","          mkdir -p out","          find . -name '*.dylib' -exec cp {} out/ \\; || true","          find . -name '*.deb' -exec cp {} out/ \\; || true","      - uses: actions/upload-artifact@v4","        with:","          name: build","          path: out/*","          if-no-files-found: warn"].join("\n");
+var PC_WORKFLOW=["name: build","on:","  push:","    branches: [main]","  workflow_dispatch:","jobs:","  build:","    runs-on: windows-latest","    timeout-minutes: 30","    steps:","      - uses: actions/checkout@v4","      - name: Configure","        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release","      - name: Build","        run: cmake --build build --config Release","      - name: Collect","        shell: pwsh","        run: |","          New-Item -ItemType Directory -Force -Path out | Out-Null","          Get-ChildItem -Recurse -Path build -Include *.exe,*.dll | ForEach-Object { Copy-Item $_.FullName -Destination out/ }","      - uses: actions/upload-artifact@v4","        with:","          name: build","          path: out/*","          if-no-files-found: warn"].join("\n");
 
 function pickWorkflow(files){
   var hasMake=false, hasTweak=false, hasCmake=false;
@@ -694,7 +815,8 @@ function pickWorkflow(files){
   return {name:".github/workflows/build.yml",content:PC_WORKFLOW,kind:"pc"};
 }
 
-function pushFile(owner, repo, path, content){
+function pushFile(owner, repo, path, content, retry){
+  retry = retry||0;
   var url="/repos/"+owner+"/"+repo+"/contents/"+encPath(path);
   var body={ message: "Forge: "+path, content: btoa(unescape(encodeURIComponent(content))) };
   return ghApi("GET",url).then(function(existing){
@@ -703,7 +825,14 @@ function pushFile(owner, repo, path, content){
   }).catch(function(e){
     if (isEmptyErr(e.message)) return body;
     throw e;
-  }).then(function(b){ return ghApi("PUT",url,b); });
+  }).then(function(b){ return ghApi("PUT",url,b); })
+    .catch(function(e){
+      /* 409 conflict = stale sha. retry once with fresh GET. */
+      if (retry<2 && String(e.message).indexOf("409")>=0){
+        return pushFile(owner, repo, path, content, retry+1);
+      }
+      throw e;
+    });
 }
 
 function pushFiles(owner, repo, files, onProgress){
@@ -712,9 +841,7 @@ function pushFiles(owner, repo, files, onProgress){
       onProgress("oppretter "+owner+"/"+repo);
       return ghApi("POST","/user/repos",{ name:repo, private:false, auto_init:true }).catch(function(e2){
         var m2=String(e2.message);
-        if (m2.indexOf("403")>=0 || m2.indexOf("422")>=0){
-          throw new Error("kan ikke opprette repo automatisk. Lag det: github.com/new?name="+repo+" (public).");
-        }
+        if (m2.indexOf("403")>=0 || m2.indexOf("422")>=0) throw new Error("kan ikke opprette repo automatisk. Lag det: github.com/new?name="+repo+" (public).");
         throw e2;
       });
     }
@@ -722,31 +849,20 @@ function pushFiles(owner, repo, files, onProgress){
   }).then(function(){
     var wf=pickWorkflow(files);
     var filtered=[];
-    for (var i=0;i<files.length;i++){
-      if (files[i].path.indexOf(".github/workflows/")===0) continue;
-      filtered.push(files[i]);
-    }
+    for (var i=0;i<files.length;i++){ if (files[i].path.indexOf(".github/workflows/")===0) continue; filtered.push(files[i]); }
     filtered.push(wf);
     window.__lastWfKind=wf.kind;
     var done=0, proms=[];
     for (var j=0;j<filtered.length;j++){
-      (function(f){
-        proms.push(pushFile(owner, repo, f.path, f.content).then(function(){
-          done++; onProgress("pusher "+done+"/"+filtered.length+" — "+f.path.split("/").pop());
-          return true;
-        }));
-      })(filtered[j]);
+      (function(f){ proms.push(pushFile(owner, repo, f.path, f.content).then(function(){ done++; onProgress("pusher "+done+"/"+filtered.length+" — "+f.path.split("/").pop()); return true; })); })(filtered[j]);
     }
     return Promise.all(proms);
   }).then(function(){
     onProgress("dispatcher workflow…");
     var dispatchedAt=Date.now();
-    return ghApi("POST","/repos/"+owner+"/"+repo+"/actions/workflows/build.yml/dispatches",{ref:"main"}).then(function(){
-      return {runSince:dispatchedAt};
-    }).catch(function(){
+    return ghApi("POST","/repos/"+owner+"/"+repo+"/actions/workflows/build.yml/dispatches",{ref:"main"}).then(function(){ return {runSince:dispatchedAt}; }).catch(function(){
       return ghApi("GET","/repos/"+owner+"/"+repo+"/actions/workflows").then(function(data){
-        var wfs=data.workflows||[];
-        if (!wfs.length) throw new Error("ingen workflows i repoet");
+        var wfs=data.workflows||[]; if (!wfs.length) throw new Error("ingen workflows i repoet");
         return ghApi("POST","/repos/"+owner+"/"+repo+"/actions/workflows/"+wfs[0].id+"/dispatches",{ref:"main"}).then(function(){ return {runSince:dispatchedAt}; });
       });
     });
@@ -765,11 +881,9 @@ function waitForBuild(owner, repo, since, onTick){
           onTick({phase:"vent",msg:"Venter på Actions",elapsed:el,eta:Math.max(15,typicalSec-el),pct:Math.min(10,el/2)});
           setTimeout(tick,5000); return;
         }
-        var run=runs[0];
-        var status=run.status||"queued", concl=run.conclusion||"";
+        var run=runs[0], status=run.status||"queued", concl=run.conclusion||"";
         var startedAt=run.run_started_at?new Date(run.run_started_at).getTime():new Date(run.created_at).getTime();
-        var el2=(Date.now()-startedAt)/1000;
-        var pct;
+        var el2=(Date.now()-startedAt)/1000, pct;
         if (status==="queued") pct=Math.min(10,el2/3);
         else if (status==="in_progress") pct=Math.min(92,15+(el2/typicalSec)*80);
         else pct=100;
@@ -777,9 +891,7 @@ function waitForBuild(owner, repo, since, onTick){
           if (concl!=="success"){ reject(new Error("build feilet: "+concl+" — sjekk github.com/"+owner+"/"+repo+"/actions")); return; }
           onTick({phase:"ferdig",msg:"Henter artifact",elapsed:el2,eta:0,pct:100});
           ghApi("GET","/repos/"+owner+"/"+repo+"/actions/runs/"+run.id+"/artifacts").then(function(a){
-            var arts=a.artifacts||[];
-            if (!arts.length){ reject(new Error("ingen artifact")); return; }
-            resolve(arts[0]);
+            var arts=a.artifacts||[]; if (!arts.length){ reject(new Error("ingen artifact")); return; } resolve(arts[0]);
           }).catch(reject);
           return;
         }
@@ -801,11 +913,7 @@ function downloadArtifact(owner, repo, artifact){
     xhr.responseType="blob";
     xhr.setRequestHeader("Authorization","Bearer "+GH);
     xhr.setRequestHeader("Accept","application/vnd.github+json");
-    xhr.onreadystatechange=function(){
-      if (xhr.readyState!==4) return;
-      if (xhr.status>=200&&xhr.status<300) resolve(xhr.response);
-      else reject(new Error("artifact feilet: "+xhr.status));
-    };
+    xhr.onreadystatechange=function(){ if (xhr.readyState!==4) return; if (xhr.status>=200&&xhr.status<300) resolve(xhr.response); else reject(new Error("artifact feilet: "+xhr.status)); };
     xhr.onerror=function(){ reject(new Error("nettverk")); };
     xhr.send();
   });
@@ -817,28 +925,17 @@ function buildOnGitHub(files, btn, promptText){
   var t0=Date.now();
   var log=logInner();
   var card=document.createElement("div"); card.className="build";
-  card.innerHTML=
-    '<div class="row"><div id="ghTitle">GitHub: pusher…</div><div class="pct" id="ghPct">0%</div></div>'+
-    '<div class="bar"><div class="fill" id="ghFill"></div></div>'+
-    '<div class="stats" id="ghStats">starter…</div>'+
-    '<div class="countdown" id="ghCd"><span class="left" id="ghCdL">beregner…</span><span class="eta" id="ghCdE">–:–</span></div>'+
-    '<div class="think" id="ghThink"></div>';
+  card.innerHTML='<div class="row"><div id="ghTitle">GitHub: pusher…</div><div class="pct" id="ghPct">0%</div></div><div class="bar"><div class="fill" id="ghFill"></div></div><div class="stats" id="ghStats">starter…</div><div class="countdown" id="ghCd"><span class="left" id="ghCdL">beregner…</span><span class="eta" id="ghCdE">–:–</span></div><div class="think" id="ghThink"></div>';
   log.appendChild(card); scrollBottom();
   function uP(p){ var a=$("ghPct"),b=$("ghFill"); if(a)a.textContent=Math.round(p)+"%"; if(b)b.style.width=p+"%"; }
   function uT(t){ var e=$("ghTitle"); if(e)e.textContent=t; }
   function uS(t){ var e=$("ghStats"); if(e)e.textContent=t; }
   function uC(l,e2){ var L=$("ghCdL"),E=$("ghCdE"); if(L)L.textContent=l; if(E)E.textContent=e2; }
   function uK(t){ var e=$("ghThink"); if(e)e.innerHTML='<span class="ln b">'+esc(t)+'</span>'; }
-
   var owner="",runSince=t0;
   getOwner().then(function(o){
-    owner=o;
-    uP(5); uT("Pusher filer…");
-    uC("pusher "+files.length+" filer","~"+fmtTime(3));
-    return pushFiles(owner, BUILD_REPO, files, function(msg){
-      uK(msg); uS(msg);
-      uP(5+Math.min(25,Math.random()*3+2));
-    });
+    owner=o; uP(5); uT("Pusher filer…"); uC("pusher "+files.length+" filer","~"+fmtTime(3));
+    return pushFiles(owner, BUILD_REPO, files, function(msg){ uK(msg); uS(msg); uP(5+Math.min(25,Math.random()*3+2)); });
   }).then(function(res){
     if (res && res.runSince) runSince=res.runSince;
     uP(35); uT("Bygger på GitHub…");
@@ -878,23 +975,16 @@ function onSend(){
   var imgs=IMGS.slice();
   if (!raw && !imgs.length) return;
   inp.value=""; inp.style.height="auto";
-
   var ch=ensureChat();
   ch.messages.push({role:"user",text:raw});
-  if (ch.messages.filter(function(x){return x.role==="user";}).length===1){
-    ch.title=(raw||"bilde").slice(0,42)+((raw||"").length>42?"…":"");
-    setHeaderTitle(ch.title);
-  }
+  if (ch.messages.filter(function(x){return x.role==="user";}).length===1){ ch.title=(raw||"bilde").slice(0,42)+((raw||"").length>42?"…":""); setHeaderTitle(ch.title); }
   ch.updated=Date.now(); save(); renderSidebar();
-
   addUser(raw, imgs);
   HIST.push({role:"user",content:raw});
   IMGS=[]; renderAttached();
-
   busy=true; $("send").disabled=true;
   var be=addBuild();
-  var startT=Date.now();
-  lastAcc="";
+  var startT=Date.now(); lastAcc="";
   var timer=setInterval(function(){
     try{
       var sec=(Date.now()-startT)/1000;
@@ -911,19 +1001,14 @@ function onSend(){
       if (se) se.textContent=got+" tegn"+(rate>30?" · "+rate+" t/s · "+eta:"");
     }catch(_){}
   },300);
-
   callAI(raw, imgs, [], null, 1, be, startT, timer);
 }
 
 function addBuild(){
   var l=logInner(); var d=document.createElement("div"); d.className="build";
-  d.innerHTML='<div class="row"><div id="bTitle">Kobler til…</div><div class="pct" id="bPct">0%</div></div>'+
-    '<div class="bar"><div class="fill" id="bFill"></div></div>'+
-    '<div class="stats" id="bStats">starter…</div>'+
-    '<div class="think" id="bThink"></div>';
+  d.innerHTML='<div class="row"><div id="bTitle">Kobler til…</div><div class="pct" id="bPct">0%</div></div><div class="bar"><div class="fill" id="bFill"></div></div><div class="stats" id="bStats">starter…</div><div class="think" id="bThink"></div>';
   l.appendChild(d); scrollBottom(); return d;
 }
-
 var lastAcc="";
 function updateThink(text){
   var el=$("bThink"); if (!el) return;
@@ -933,15 +1018,12 @@ function updateThink(text){
     if (/^FILE:\s/.test(L)) out.push({c:"b",t:L});
     else if (/^SEARCH:\s/.test(L)) out.push({c:"b",t:L});
     else if (/^\[MEM:/.test(L)) out.push({c:"",t:L});
-    else if (L.length>3 && L.length<120 && !/^[a-zA-Z0-9+\/=\s\-\_\{\}\(\);,\.\#\*\/]+$/.test(L)) {
-      if (out.length<20) out.push({c:"",t:L.slice(0,120)});
-    }
+    else if (L.length>3 && L.length<120 && !/^[a-zA-Z0-9+\/=\s\-\_\{\}\(\);,\.\#\*\/]+$/.test(L)) { if (out.length<20) out.push({c:"",t:L.slice(0,120)}); }
   }
   if (out.length>20) out=out.slice(-20);
   var h="";
   for (var k=0;k<out.length;k++){ h+='<span class="ln '+(out[k].c||"")+'">'+esc(out[k].t)+'</span>'; }
-  el.innerHTML=h;
-  el.scrollTop=el.scrollHeight;
+  el.innerHTML=h; el.scrollTop=el.scrollHeight;
 }
 
 function callAI(prompt, imgs, sysExtra, prefill, round, buildEl, startT, timer){
@@ -949,13 +1031,11 @@ function callAI(prompt, imgs, sysExtra, prefill, round, buildEl, startT, timer){
   var VISION=["google/gemini-2.0-flash-exp:free","qwen/qwen-2.5-vl-72b-instruct:free","openrouter/free"];
   var chain=(imgs&&imgs.length)?VISION:MODELS;
   var idx=0;
-
   function tryNext(){
     if (idx>=chain.length) return fail();
     var model=chain[idx++];
     var shortName=model.split("/").pop();
     var te=$("bTitle"); if (te) te.textContent="Skriver ("+shortName+")…";
-
     var messages=[{role:"system",content:getSys()}];
     var mb=memBlock(); if (mb) messages.push({role:"system",content:mb});
     for (var i=0;i<sysExtra.length;i++) messages.push({role:"system",content:sysExtra[i]});
@@ -968,7 +1048,6 @@ function callAI(prompt, imgs, sysExtra, prefill, round, buildEl, startT, timer){
     else userContent=prompt;
     messages.push({role:"user",content:userContent});
     if (prefill) messages.push({role:"assistant",content:prefill});
-
     var acc="", processedUpTo=0, sseBuf="";
     var xhr=new XMLHttpRequest();
     xhr.open("POST","https://openrouter.ai/api/v1/chat/completions",true);
@@ -976,7 +1055,6 @@ function callAI(prompt, imgs, sysExtra, prefill, round, buildEl, startT, timer){
     xhr.setRequestHeader("Content-Type","application/json");
     xhr.setRequestHeader("HTTP-Referer",location.origin);
     xhr.setRequestHeader("X-Title","Forge");
-
     xhr.onprogress=function(){
       try{
         var full=xhr.responseText||"";
@@ -987,15 +1065,10 @@ function callAI(prompt, imgs, sysExtra, prefill, round, buildEl, startT, timer){
           var l=lines[i].replace(/^\s+|\s+$/g,"");
           if (l.indexOf("data: ")!==0) continue;
           var d=l.slice(6); if (d==="[DONE]") continue;
-          try{
-            var j=JSON.parse(d);
-            var tk=j.choices&&j.choices[0]&&j.choices[0].delta&&j.choices[0].delta.content;
-            if (tk){ acc+=tk; lastAcc=acc; updateThink(acc); }
-          }catch(_){}
+          try{ var j=JSON.parse(d); var tk=j.choices&&j.choices[0]&&j.choices[0].delta&&j.choices[0].delta.content; if (tk){ acc+=tk; lastAcc=acc; updateThink(acc); } }catch(_){}
         }
       }catch(_){}
     };
-
     xhr.onreadystatechange=function(){
       if (xhr.readyState!==4) return;
       if (xhr.status!==200){
@@ -1003,11 +1076,7 @@ function callAI(prompt, imgs, sysExtra, prefill, round, buildEl, startT, timer){
         tryNext(); return;
       }
       if (!acc){
-        try{
-          var data=JSON.parse(xhr.responseText);
-          if (data && data.choices && data.choices[0] && data.choices[0].message) acc=data.choices[0].message.content||"";
-          else if (data && data.error){ tryNext(); return; }
-        }catch(e){}
+        try{ var data=JSON.parse(xhr.responseText); if (data && data.choices && data.choices[0] && data.choices[0].message) acc=data.choices[0].message.content||""; else if (data && data.error){ tryNext(); return; } }catch(e){}
       }
       if (!acc){ tryNext(); return; }
       lastAcc=acc; updateThink(acc);
@@ -1015,10 +1084,7 @@ function callAI(prompt, imgs, sysExtra, prefill, round, buildEl, startT, timer){
       if (sm && round<5){
         var q=sm[1].replace(/^\s+|\s+$/g,"");
         var te=$("bTitle"); if (te) te.textContent="Søker: "+q.slice(0,30);
-        doSearch(q,function(results){
-          sysExtra.push("Search query: "+q+"\n\nResults:\n"+results+"\n\nNow produce the FULL final output.");
-          callAI(prompt, imgs, sysExtra, null, round+1, buildEl, startT, timer);
-        });
+        doSearch(q,function(results){ sysExtra.push("Search query: "+q+"\n\nResults:\n"+results+"\n\nNow produce the FULL final output."); callAI(prompt, imgs, sysExtra, null, round+1, buildEl, startT, timer); });
         return;
       }
       var head=stripMem(acc).slice(0,400);
@@ -1033,14 +1099,12 @@ function callAI(prompt, imgs, sysExtra, prefill, round, buildEl, startT, timer){
     xhr.onerror=function(){ tryNext(); };
     try{ xhr.send(JSON.stringify({model:model,messages:messages,temperature:0.55,max_tokens:8192,stream:true})); }catch(e){ tryNext(); }
   }
-
   function fail(){
     clearInterval(timer); if (buildEl.parentNode) buildEl.parentNode.removeChild(buildEl);
     addAI("Fikk ikke kontakt med noen modell.",true);
     var ch=ensureChat(); ch.messages.push({role:"assistant",text:"feilet",err:true}); save();
     busy=false; $("send").disabled=false;
   }
-
   function finish(rawAcc){
     clearInterval(timer); if (buildEl.parentNode) buildEl.parentNode.removeChild(buildEl);
     var facts=extractMem(rawAcc); addMem(facts); save();
@@ -1049,18 +1113,11 @@ function callAI(prompt, imgs, sysExtra, prefill, round, buildEl, startT, timer){
     var ch=ensureChat();
     if (files && files.length>0){
       BUNDLE={files:files};
-      /* lagre til bibliotek */
       saveToLibrary(files, prompt);
-      /* bygge-kort i chatten */
       var l=logInner();
       var card=document.createElement("div"); card.className="msg a";
       var name=files.length===1?files[0].path.split("/").pop():"forge-project.zip";
-      card.innerHTML='Prosjekt klart — '+files.length+' fil'+(files.length===1?'':'er')+'. Lagt i Bibliotek.'+
-        '<div class="bundle"><div class="t"><div class="ic">◆</div>prosjekt</div><div class="l" id="bList"></div>'+
-        '<button id="bDl">Last ned '+name+'</button>'+
-        '<button class="sec" id="bGh2">Bygg på GitHub → ferdig fil</button>'+
-        '<div class="build-note">Pusher til github.com/<b>'+esc(BUILD_REPO)+'</b>. Du ser live nedtelling mens GitHub bygger.</div>'+
-        '</div>';
+      card.innerHTML='Prosjekt klart — '+files.length+' fil'+(files.length===1?'':'er')+'. Lagt i Bibliotek.<div class="bundle"><div class="t"><div class="ic">◆</div>prosjekt</div><div class="l" id="bList"></div><button id="bDl">Last ned '+name+'</button><button class="sec" id="bGh2">Bygg på GitHub → ferdig fil</button><div class="build-note">Pusher til github.com/<b>'+esc(BUILD_REPO)+'</b>. Live nedtelling mens GitHub bygger.</div></div>';
       l.appendChild(card);
       var lines=[]; for (var i=0;i<files.length;i++) lines.push(files[i].path+"  ·  "+(files[i].content.length/1024).toFixed(1)+" KB");
       $("bList").textContent=lines.join("\n");
@@ -1085,7 +1142,6 @@ function callAI(prompt, imgs, sysExtra, prefill, round, buildEl, startT, timer){
 
 function isSite(s){ if (!s) return false; var t=String(s).replace(/^\s+|\s+$/g,""); if (!/<!doctype html>|<html[\s>]/i.test(t)) return false; if (!/<\/html>/i.test(t)) return false; if (/^FILE:/m.test(t)) return false; return true; }
 function extractHTML(s){ s=String(s).replace(/^\s+|\s+$/g,""); s=s.replace(/^```[a-zA-Z]*\s*\n?/,"").replace(/\n?```\s*$/,""); var i=s.search(/<!doctype html>|<html[\s>]/i); if (i>0) s=s.slice(i); return s.replace(/^\s+|\s+$/g,""); }
-
 function doSearch(q,cb){
   try{ var xhr=new XMLHttpRequest(); xhr.open("GET","https://r.jina.ai/https://duckduckgo.com/html/?q="+encodeURIComponent(q),true);
     xhr.onreadystatechange=function(){ if (xhr.readyState!==4) return; if (xhr.status!==200){ cb("søk feilet: "+xhr.status); return; } cb(String(xhr.responseText).slice(0,6000)); };
@@ -1096,46 +1152,54 @@ function doSearch(q,cb){
 /* ============ MODALS ============ */
 function openModal(html){ $("card").innerHTML=html; $("modal").className="modal on"; }
 function closeModal(){ $("modal").className="modal"; }
-
 function openKey(){
-  openModal('<h3>OpenRouter API Key</h3><p>Hentes på <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a>. Lagres lokalt.</p>'+
-    '<input type="password" id="ki" placeholder="sk-or-v1-..." autocomplete="off" autocapitalize="off" spellcheck="false">'+
-    '<div class="row"><button class="g" id="kc">Avbryt</button><button class="p" id="ks">Lagre</button></div>');
-  $("ki").value=KEY;
-  setTimeout(function(){ try{ $("ki").focus(); }catch(_){} },80);
+  openModal('<h3>OpenRouter API Key</h3><p>Hentes på <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a>. Lagres lokalt.</p><input type="password" id="ki" placeholder="sk-or-v1-..." autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row"><button class="g" id="kc">Avbryt</button><button class="p" id="ks">Lagre</button></div>');
+  $("ki").value=KEY; setTimeout(function(){ try{ $("ki").focus(); }catch(_){} },80);
   $("kc").onclick=closeModal;
   $("ks").onclick=function(){ KEY=$("ki").value.replace(/^\s+|\s+$/g,""); save(); closeModal(); renderSidebar(); };
 }
-
 function openGh(){
-  openModal('<h3>⚙︎ GitHub token</h3>'+
-    '<p>1. Lag classic token på <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> — <b>Generate new token (classic)</b>.</p>'+
-    '<p>2. Scopes: <b>repo</b> + <b>workflow</b>. Expiration: no expiration.</p>'+
-    '<p>3. Repo <b>forge-builds</b> må finnes: <a href="https://github.com/new?name=forge-builds&public=1" target="_blank">github.com/new?name=forge-builds</a> — public, ingen README.</p>'+
-    '<p>4. Lim inn <b>ghp_...</b> under.</p>'+
-    '<input type="password" id="gi" placeholder="ghp_..." autocomplete="off" autocapitalize="off" spellcheck="false">'+
-    '<div class="row"><button class="g" id="gc">Avbryt</button><button class="p" id="gs">Lagre</button></div>');
-  $("gi").value=GH;
-  setTimeout(function(){ try{ $("gi").focus(); }catch(_){} },80);
+  openModal('<h3>⚙︎ GitHub token</h3><p>1. Lag classic token på <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> — <b>Generate new token (classic)</b>.</p><p>2. Scopes: <b>repo</b> + <b>workflow</b>. Expiration: no expiration.</p><p>3. Repo <b>forge-builds</b> må finnes: <a href="https://github.com/new?name=forge-builds&public=1" target="_blank">github.com/new?name=forge-builds</a> — public, ingen README.</p><p>4. Lim inn <b>ghp_...</b> under.</p><input type="password" id="gi" placeholder="ghp_..." autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row"><button class="g" id="gc">Avbryt</button><button class="p" id="gs">Lagre</button></div>');
+  $("gi").value=GH; setTimeout(function(){ try{ $("gi").focus(); }catch(_){} },80);
   $("gc").onclick=closeModal;
   $("gs").onclick=function(){ GH=$("gi").value.replace(/^\s+|\s+$/g,""); save(); closeModal(); renderSidebar(); };
 }
-
 function openMem(){
-  openModal('<h3>🧠 Minne</h3><p>Fakta han husker om deg.</p><div class="list" id="ml"></div>'+
-    '<div class="row"><button class="g" id="mcl">Slett alle</button><button class="p" id="mcc">Lukk</button></div>');
+  openModal('<h3>🧠 Minne</h3><p>Fakta han husker om deg.</p><div class="list" id="ml"></div><div class="row"><button class="g" id="mcl">Slett alle</button><button class="p" id="mcc">Lukk</button></div>');
   var ml=$("ml");
-  if (!MEM.length){ ml.innerHTML='<div style="text-align:center;color:#6e6e80;padding:20px;font-size:13px">Ingen enda</div>'; }
+  if (!MEM.length){ ml.innerHTML='<div style="text-align:center;color:var(--mute);padding:20px;font-size:13px">Ingen enda</div>'; }
   else { for (var i=0;i<MEM.length;i++){ (function(idx){
-    var el=document.createElement("div"); el.className="mem";
-    el.innerHTML='<div class="tx"></div><button class="x">×</button>';
-    el.querySelector(".tx").textContent=MEM[idx];
-    el.querySelector(".x").onclick=function(){ MEM.splice(idx,1); save(); closeModal(); openMem(); renderSidebar(); };
+    var el=document.createElement("div"); el.style.cssText="padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;font-size:14px;display:flex;gap:10px;align-items:flex-start";
+    el.innerHTML='<div style="flex:1;word-break:break-word"></div><button style="background:transparent;border:0;color:var(--dim);font-size:14px;cursor:pointer">×</button>';
+    el.querySelector("div").textContent=MEM[idx];
+    el.querySelector("button").onclick=function(){ MEM.splice(idx,1); save(); closeModal(); openMem(); renderSidebar(); };
     ml.appendChild(el);
   })(i); } }
   $("mcl").onclick=function(){ if (!confirm("Slett alle?")) return; MEM=[]; save(); closeModal(); renderSidebar(); };
   $("mcc").onclick=closeModal;
 }
+
+/* ============ SETTINGS ============ */
+function openSettings(){ $("settings").className="on"; renderAccount(); renderSidebar(); }
+function closeSettings(){ $("settings").className=""; }
+$("setBack").onclick=closeSettings;
+$("setSignIn").onclick=function(){
+  if (ACCOUNT.name && ACCOUNT.provider!=="guest"){
+    if (confirm("Logg ut?")){ ACCOUNT={name:"",email:"",provider:""}; save(); renderAccount(); closeSettings(); showLogin(); }
+  } else {
+    ACCOUNT={name:"",email:"",provider:""}; save(); renderAccount(); closeSettings(); showLogin();
+  }
+};
+$("setMem").onclick=function(){ openMem(); };
+$("setLib").onclick=function(){ closeSettings(); openLibrary(); };
+$("setKey").onclick=openKey;
+$("setGh").onclick=openGh;
+$("setClear").onclick=function(){
+  if (!confirm("Slette ALT? (chats, minne, bibliotek, konto)")) return;
+  try{ localStorage.clear(); }catch(e){}
+  CHATS={}; MEM=[]; LIBRARY=[]; CUR=""; KEY=""; GH=""; ACCOUNT={name:"",email:"",provider:""};
+  closeSettings(); renderSidebar(); replay(); showLogin();
+};
 
 /* ============ ATTACH ============ */
 function renderAttached(){
@@ -1156,7 +1220,6 @@ function addImage(dataUrl){ IMGS.push(dataUrl); renderAttached(); }
 $("send").onclick=onSend;
 $("inp").onkeydown=function(e){ if (e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); onSend(); } };
 $("inp").oninput=function(){ this.style.height="auto"; this.style.height=Math.min(this.scrollHeight,180)+"px"; };
-
 $("fileInput").onchange=function(e){
   var files=[].slice.call(e.target.files||[]).slice(0,4);
   for (var i=0;i<files.length;i++){ (function(file){ var r=new FileReader(); r.onload=function(){ addImage(r.result); }; r.readAsDataURL(file); })(files[i]); }
@@ -1171,7 +1234,6 @@ $("inp").onpaste=function(e){
     }
   }
 };
-
 $("modal").onclick=function(e){ if (e.target.id==="modal") closeModal(); };
 
 /* ============ BOOT ============ */
@@ -1179,7 +1241,8 @@ load();
 ensureChat();
 replay();
 renderSidebar();
-
+renderAccount();
+if (!ACCOUNT.name) showLogin();
 </script>
 </body>
 </html>
