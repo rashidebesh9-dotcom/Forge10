@@ -1,634 +1,147 @@
 <!DOCTYPE html>
-<html>
+<html lang="no">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0a0a0a">
-<title>DarkGpt</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;margin:0;padding:0;background:#0a0a0a;color:#ececec;font:16px/1.5 -apple-system,system-ui,sans-serif;overflow:hidden}
-.screen{position:fixed;inset:0;display:none;flex-direction:column;background:#0a0a0a}
-.screen.show{display:flex}
-#login{align-items:center;justify-content:center;padding:20px}
-#login .card{width:100%;max-width:380px}
-#login .logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#e54b4b,#6a0c0c);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:24px;color:#fff;margin:0 auto 20px}
-#login h1{margin:0 0 6px;font-size:28px;text-align:center;font-weight:700;letter-spacing:-.02em}
-#login .sub{margin:0 0 22px;text-align:center;color:#888;font-size:14px}
-#login input{width:100%;padding:15px;background:#141414;border:1px solid #2a2a2a;border-radius:12px;color:#ececec;font-size:16px;margin-bottom:10px;outline:none;font-family:inherit}
-#login input:focus{border-color:#e54b4b}
-#login button{width:100%;padding:15px;border-radius:12px;border:0;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:8px;font-family:inherit}
-#login .primary{background:#e54b4b;color:#fff}
-#login .secondary{background:#141414;color:#ececec;border:1px solid #2a2a2a}
-#login .msg{text-align:center;font-size:13px;color:#888;margin-top:10px;min-height:18px}
-header{height:56px;flex:0 0 auto;display:flex;align-items:center;padding:0 8px;padding-top:env(safe-area-inset-top);border-bottom:1px solid #1a1a1a;background:#0a0a0a}
-header button{width:44px;height:44px;border:0;background:transparent;color:#ececec;font-size:22px;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:inherit}
-header button:active{background:#1a1a1a}
-header .title{flex:1;text-align:center;font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px}
-#log{flex:1;overflow-y:auto;padding:16px 12px;-webkit-overflow-scrolling:touch}
-#log .msg{max-width:640px;margin:0 auto 14px;padding:11px 15px;border-radius:16px;white-space:pre-wrap;word-break:break-word;line-height:1.5;font-size:15.5px}
-#log .msg.u{background:#2a2a2a;margin-left:auto;max-width:82%}
-#log .msg.a{background:transparent;padding:11px 0}
-#log .msg.a.err{background:rgba(42,10,10,.7);border:1px solid #e54b4b;color:#ffb8b8;padding:12px 14px;border-radius:12px;font-size:14px}
-#log .msg pre{background:#0f0f0f;border:1px solid #1a1a1a;padding:10px;border-radius:8px;overflow-x:auto;margin:8px 0 0;font-size:12.5px;white-space:pre;font-family:ui-monospace,Menlo,monospace}
-footer{flex:0 0 auto;padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom));border-top:1px solid #1a1a1a;background:#0a0a0a}
-.composer{max-width:640px;margin:0 auto;display:flex;gap:8px;align-items:flex-end}
-#inp{flex:1;padding:13px 16px;background:#141414;border:1px solid #2a2a2a;border-radius:22px;color:#ececec;font:16px inherit;resize:none;outline:none;max-height:120px;min-height:46px;line-height:1.4;font-family:inherit}
-#inp:focus{border-color:#3a3a3a}
-#send{width:46px;height:46px;border-radius:50%;background:#e54b4b;border:0;color:#fff;font-size:20px;cursor:pointer;flex:0 0 auto}
-#send:disabled{opacity:.4}
-#sb{position:fixed;top:0;bottom:0;left:0;width:280px;background:#0f0f0f;border-right:1px solid #1a1a1a;transform:translateX(-100%);transition:transform .25s;z-index:50;display:flex;flex-direction:column;padding:8px;padding-top:calc(8px + env(safe-area-inset-top))}
-#sb.show{transform:translateX(0)}
-#sb .head{display:flex;align-items:center;justify-content:space-between;padding:8px 10px 14px}
-#sb .brand{font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px}
-#sb .brand .dot{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#e54b4b,#6a0c0c);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff}
-#sb .x{background:transparent;border:0;color:#888;font-size:20px;cursor:pointer;padding:6px;width:32px;height:32px}
-#sb .item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;cursor:pointer;font-size:14.5px;color:#ececec;background:transparent;border:0;width:100%;text-align:left;font-family:inherit}
-#sb .item:active{background:#1a1a1a}
-#sb .item .lbl{flex:1}
-#sb .item .badge{font-size:11px;color:#666;font-family:monospace}
-#sb .sep{height:1px;background:#1a1a1a;margin:10px 6px}
-#sb .tl{font-size:11px;color:#666;padding:8px 12px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
-#sb .list{flex:1;overflow-y:auto;margin:0 -4px;padding:0 4px}
-#sb .chat{display:flex;align-items:center;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14px;color:#b5b5b5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative}
-#sb .chat.on{background:#1a1a1a;color:#fff}
-#sb .chat .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#sb .chat .x2{background:transparent;border:0;color:#666;font-size:14px;padding:2px 6px;cursor:pointer;display:none}
-#sb .chat:active .x2{display:block}
-#sb .new{width:100%;padding:12px;border-radius:12px;background:#e54b4b;color:#fff;border:0;font:15px inherit;font-weight:600;cursor:pointer;margin-top:8px;font-family:inherit}
-#sb .prof{display:flex;align-items:center;gap:10px;padding:11px;border-radius:12px;cursor:pointer;margin-top:6px}
-#sb .prof:active{background:#1a1a1a}
-#sb .prof .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#e54b4b,#6a0c0c);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex:0 0 auto;overflow:hidden}
-#sb .prof .av img{width:100%;height:100%;object-fit:cover}
-#sb .prof .info{flex:1;min-width:0}
-#sb .prof .n{font-size:13.5px;color:#ececec;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#sb .prof .e{font-size:11px;color:#666;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;display:none}
-#ov.show{display:block}
-.screen2{position:fixed;inset:0;background:#0a0a0a;z-index:60;display:none;flex-direction:column;overflow-y:auto}
-.screen2.show{display:flex}
-.screen2 header{position:sticky;top:0;z-index:2;background:#0a0a0a}
-.screen2 .body{padding:20px 16px 60px;max-width:640px;margin:0 auto;width:100%}
-.screen2 .prof2{padding:20px 0;text-align:center;border-bottom:1px solid #1a1a1a;margin-bottom:20px}
-.screen2 .prof2 .av{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#e54b4b,#6a0c0c);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:26px;color:#fff;margin:0 auto 12px;overflow:hidden}
-.screen2 .prof2 .av img{width:100%;height:100%;object-fit:cover}
-.screen2 .prof2 .n{font-size:18px;font-weight:600;margin-bottom:4px}
-.screen2 .prof2 .e{font-size:13px;color:#888}
-.screen2 h4{margin:0 0 10px 6px;font-size:11.5px;color:#666;text-transform:uppercase;letter-spacing:.08em}
-.screen2 .row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#141414;border:1px solid #1f1f1f;border-radius:12px;margin-bottom:6px;cursor:pointer;font-size:14.5px;color:#ececec}
-.screen2 .row:active{background:#1a1a1a}
-.screen2 .row .l{flex:1}
-.screen2 .row .v{font-size:13px;color:#888;font-family:monospace;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.screen2 .row.dg{color:#ff5c5c}
-.screen2 .libitem{background:#141414;border:1px solid #1f1f1f;border-radius:14px;padding:14px;margin-bottom:12px}
-.screen2 .libitem .h{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px}
-.screen2 .libitem .nm{font-size:14.5px;font-weight:600;word-break:break-word;flex:1}
-.screen2 .libitem .dt{font-size:11px;color:#666;font-family:monospace}
-.screen2 .libitem .pr{font-size:13px;color:#888;margin-bottom:10px;line-height:1.5;word-break:break-word}
-.screen2 .libitem .fs{font-size:11.5px;color:#888;font-family:monospace;max-height:100px;overflow-y:auto;margin-bottom:10px;padding:8px 10px;background:#0a0a0a;border-radius:8px;white-space:pre-wrap;line-height:1.6}
-.screen2 .libitem .ac{display:flex;gap:6px;flex-wrap:wrap}
-.screen2 .libitem .ac button{font-size:12.5px;padding:9px 14px;border-radius:9px;background:#e54b4b;color:#fff;border:0;font-weight:600;cursor:pointer;font-family:inherit}
-.screen2 .libitem .ac button.s{background:#1f1f1f;color:#ececec;border:1px solid #2a2a2a}
-.screen2 .libitem .ac button.r{background:transparent;color:#ff5c5c;border:1px solid #2a0a0a}
-#modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
-#modal.show{display:flex}
-#modal .in{background:#141414;border:1px solid #2a2a2a;border-radius:16px;padding:20px;width:100%;max-width:440px;max-height:85vh;overflow-y:auto}
-#modal h2{margin:0 0 12px;font-size:17px}
-#modal label{display:block;font-size:12px;color:#888;margin:14px 0 4px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
-#modal input{width:100%;padding:12px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:10px;color:#ececec;font:13px monospace;outline:none}
-#modal input:focus{border-color:#e54b4b}
-#modal .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-#modal .row button{padding:12px 20px;border-radius:10px;border:0;font:14px inherit;font-weight:600;cursor:pointer;font-family:inherit}
-#modal .row .p{background:#e54b4b;color:#fff}
-#modal .row .g{background:#1a1a1a;color:#ececec;border:1px solid #2a2a2a}
-#err{position:fixed;top:70px;left:10px;right:10px;background:rgba(42,10,10,.96);border:1px solid #e54b4b;color:#ffb8b8;padding:12px;border-radius:12px;font-size:12px;z-index:200;display:none;white-space:pre-wrap;word-break:break-word;font-family:monospace;max-height:40vh;overflow-y:auto}
-#err.on{display:block}
-#at{display:none;gap:6px;margin-bottom:8px;flex-wrap:wrap;max-width:640px;margin-left:auto;margin-right:auto}
-#at.on{display:flex}
-#at .a{position:relative;width:56px;height:56px;border-radius:10px;overflow:hidden;border:1px solid #2a2a2a}
-#at .a img{width:100%;height:100%;object-fit:cover}
-#at .a button{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#2a0a0a;border:1px solid #e54b4b;color:#fff;font-size:12px;cursor:pointer;padding:0;line-height:1}
-.bd{background:#141414;border:1px solid #1f1f1f;border-radius:12px;padding:12px;margin:10px 0;font-size:13px;max-width:600px}
-.bd .r{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13.5px}
-.bd .pc{font-family:monospace;color:#e54b4b;font-weight:600}
-.bd .bar{height:3px;background:#0a0a0a;border-radius:2px;overflow:hidden}
-.bd .fl{height:100%;background:linear-gradient(90deg,#6a0c0c,#e54b4b);width:0;transition:width .2s}
-.bd .st{font-size:11.5px;color:#888;margin-top:8px;font-family:monospace}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ny chat</title>
+    <style>
+        /* Enkel og ren styling for å matche bildet */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background-color: #0d0d0d;
+        }
+
+        /* Toppmeny */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            border-bottom: 1px solid #1c1c1e;
+        }
+
+        .header-title {
+            font-size: 16px;
+        }
+
+        .icon {
+            font-size: 20px;
+        }
+
+        /* Chatteområde */
+        .chat-area {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .bot-message {
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: #2c2c2e;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 85%;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* Bunnmeny med input-felt */
+        .input-area {
+            padding: 15px 20px 25px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #0d0d0d;
+        }
+
+        .add-btn {
+            background: none;
+            border: none;
+            color: #a0a0a0;
+            font-size: 24px;
+            padding-bottom: 4px;
+        }
+
+        .text-input {
+            flex: 1;
+            background-color: #1c1c1e;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 18px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .send-btn {
+            background-color: #ff4d4d;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
-<div id="err"></div>
+    <div class="app-container">
+        <!-- Topp -->
+        <div class="header">
+            <div class="icon">☰</div>
+            <div class="header-title">Ny chat</div>
+            <div class="icon">✎</div>
+        </div>
 
-<div id="login" class="screen show">
-<div class="card">
-<div class="logo">D</div>
-<h1>DarkGpt</h1>
-<div class="sub">Logg inn eller bruk uten konto</div>
-<input id="lEmail" type="email" placeholder="E-post" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false">
-<input id="lPassword" type="password" placeholder="Passord (minst 6 tegn)" autocomplete="current-password">
-<button class="primary" onclick="doSignIn()">Logg inn</button>
-<button class="secondary" onclick="doSignUp()">Opprett ny konto</button>
-<button class="secondary" onclick="skipLogin()">Bruk uten konto</button>
-<div class="msg" id="lMsg"></div>
-</div>
-</div>
+        <!-- Chatteområde -->
+        <div class="chat-area">
+            <!-- Melding fra boten -->
+            <div class="bot-message">Hei! Hva kan jeg hjelpe med?</div>
+            
+            <!-- Meldingen du sa -->
+            <div class="user-message">Nei den fuste finke så eg tror eg bare møtte vente litt mer</div>
+        </div>
 
-<div id="chat" class="screen">
-<header>
-<button onclick="openSb()">&#9776;</button>
-<div class="title" id="title">DarkGpt</div>
-<button onclick="newChat()">&#9998;</button>
-</header>
-<div id="log"></div>
-<footer>
-<div id="at"></div>
-<div class="composer">
-<label style="width:40px;height:40px;border-radius:50%;background:transparent;display:flex;align-items:center;justify-content:center;color:#888;cursor:pointer;font-size:22px" for="fi">+</label>
-<input id="fi" type="file" accept="image/*" multiple style="display:none">
-<textarea id="inp" rows="1" placeholder="Spør om alt"></textarea>
-<button id="send" onclick="sendMsg()">&#8593;</button>
-</div>
-</footer>
-</div>
+        <!-- Bunn med input -->
+        <div class="input-area">
+            <button class="add-btn">+</button>
+            <input type="text" class="text-input" value="Hei" readonly>
+            <button class="send-btn">↑</button>
+        </div>
+    </div>
 
-<div id="sb">
-<div class="head">
-<div class="brand"><div class="dot">D</div>DarkGpt</div>
-<button class="x" onclick="closeSb()">&#10005;</button>
-</div>
-<button class="item" onclick="openSettings()">&#9881;<span class="lbl">Innstillinger</span></button>
-<button class="item" onclick="openLibrary()">&#9635;<span class="lbl">Bibliotek</span><span class="badge" id="sbLc">0</span></button>
-<div class="sep"></div>
-<div class="tl">Samtaler</div>
-<div class="list" id="sbList"></div>
-<button class="new" onclick="newChat();closeSb()">+ Ny chat</button>
-<div class="prof" onclick="openSettings()">
-<div class="av" id="sbAv">?</div>
-<div class="info"><div class="n" id="sbNm">Ikke logget inn</div><div class="e" id="sbEm"></div></div>
-</div>
-</div>
-<div id="ov" onclick="closeSb()"></div>
-
-<div id="set" class="screen2">
-<header><button onclick="closeSettings()">&#8249;</button><div class="title">Innstillinger</div><div style="width:44px"></div></header>
-<div class="body">
-<div class="prof2"><div class="av" id="stAv">?</div><div class="n" id="stNm">Ikke logget inn</div><div class="e" id="stEm"></div></div>
-<h4>Konto</h4>
-<div class="row" onclick="signOut()"><span class="l">Logg ut / nullstill</span></div>
-<div class="row" onclick="openSbCfg()"><span class="l">Supabase</span><span class="v" id="stSbV">-</span></div>
-<h4>Nøkler</h4>
-<div class="row" onclick="openKeyModal()"><span class="l">OpenRouter key</span><span class="v" id="stKv">-</span></div>
-<div class="row" onclick="openGhModal()"><span class="l">GitHub token</span><span class="v" id="stGv">-</span></div>
-<h4>Data</h4>
-<div class="row dg" onclick="clearAll()"><span class="l">Slett alle data</span></div>
-</div>
-</div>
-
-<div id="lib" class="screen2">
-<header><button onclick="closeLibrary()">&#8249;</button><div class="title">Bibliotek</div><div style="width:44px"></div></header>
-<div class="body" id="libBody"></div>
-</div>
-
-<div id="modal"><div class="in" id="modalBody"></div></div>
-
-<script>
-// ============ BLOCK 1: globals + errors + storage ============
-var SB = null, USER = null, K = '', G = '', BUSY = false;
-var HIST = [], CHATS = {}, CUR = '', IMGS = [], LIB = [];
-function $(id){ return document.getElementById(id); }
-function er(m){ var e = $('err'); if (e){ e.textContent = 'FEIL: ' + m; e.className = 'on'; setTimeout(function(){ e.className = ''; }, 20000); } }
-window.onerror = function(m, u, l){ er(m + ' @ linje ' + l); return false; };
-function nid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
-function es(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-function save(){ try { if (K) localStorage.setItem('dg_k', K); if (G) localStorage.setItem('dg_g', G); localStorage.setItem('dg_c', JSON.stringify(CHATS)); localStorage.setItem('dg_l', JSON.stringify(LIB)); if (CUR) localStorage.setItem('dg_cu', CUR); } catch(e){} }
-function load(){ try { K = localStorage.getItem('dg_k') || ''; G = localStorage.getItem('dg_g') || ''; var c = localStorage.getItem('dg_c'); if (c) CHATS = JSON.parse(c); var l = localStorage.getItem('dg_l'); if (l) LIB = JSON.parse(l); CUR = localStorage.getItem('dg_cu') || ''; } catch(e){ CHATS = {}; LIB = []; CUR = ''; } if (!CHATS || typeof CHATS !== 'object') CHATS = {}; if (!Array.isArray(LIB)) LIB = []; }
-function ensure(){ if (!CUR || !CHATS[CUR]){ var id = nid(); CHATS[id] = { title: 'Ny chat', messages: [], u: Date.now() }; CUR = id; save(); } return CHATS[CUR]; }
-load();
-</script>
-
-<script>
-// ============ BLOCK 2: login + supabase ============
-var SU = localStorage.getItem('sbUrl') || '';
-var SK = localStorage.getItem('sbKey') || '';
-function initSB(){ if (!SU || !SK || !window.supabase) return false; try { SB = window.supabase.createClient(SU, SK); return true; } catch(e){ SB = null; return false; } }
-function setMsg(t, k){ var m = $('lMsg'); if (!m) return; m.textContent = t || ''; m.style.color = k === 'e' ? '#ff8080' : (k === 'o' ? '#80ff80' : '#888'); }
-function showScreen(n){ $('login').className = n === 'login' ? 'screen show' : 'screen'; $('chat').className = n === 'chat' ? 'screen show' : 'screen'; }
-function doSignIn(){
-  var em = ($('lEmail').value || '').trim();
-  var pw = $('lPassword').value || '';
-  if (!em || !pw){ setMsg('Fyll e-post og passord', 'e'); return; }
-  if (!SB){ setMsg('Supabase ikke konfigurert. Trykk "Bruk uten konto" → Innstillinger → Supabase.', 'e'); return; }
-  setMsg('Logger inn...');
-  SB.auth.signInWithPassword({ email: em, password: pw }).then(function(r){
-    if (r.error){ setMsg(r.error.message, 'e'); return; }
-    USER = r.data.user;
-    try { localStorage.setItem('dg_u', JSON.stringify({ email: USER.email, id: USER.id })); } catch(e){}
-    startChat();
-  }).catch(function(e){ setMsg(String(e.message || e), 'e'); });
-}
-function doSignUp(){
-  var em = ($('lEmail').value || '').trim();
-  var pw = $('lPassword').value || '';
-  if (!em || !pw){ setMsg('Fyll e-post og passord', 'e'); return; }
-  if (pw.length < 6){ setMsg('Passord minst 6 tegn', 'e'); return; }
-  if (!SB){ setMsg('Supabase ikke konfigurert. Trykk "Bruk uten konto" → Innstillinger.', 'e'); return; }
-  setMsg('Oppretter konto...');
-  SB.auth.signUp({ email: em, password: pw }).then(function(r){
-    if (r.error){ setMsg(r.error.message, 'e'); return; }
-    if (r.data.user && !r.data.session){ setMsg('Sjekk e-posten for bekreftelseslenke.', 'o'); return; }
-    USER = r.data.user;
-    try { localStorage.setItem('dg_u', JSON.stringify({ email: USER.email, id: USER.id })); } catch(e){}
-    startChat();
-  }).catch(function(e){ setMsg(String(e.message || e), 'e'); });
-}
-function skipLogin(){ USER = null; try { localStorage.removeItem('dg_u'); } catch(e){} startChat(); }
-function signOut(){
-  if (SB){ try { SB.auth.signOut(); } catch(e){} }
-  USER = null; HIST = [];
-  try { localStorage.removeItem('dg_u'); } catch(e){}
-  closeSettings(); setMsg('');
-  $('lEmail').value = ''; $('lPassword').value = '';
-  showScreen('login');
-}
-function startChat(){
-  showScreen('chat');
-  var t = USER ? (USER.email || '').split('@')[0] : 'gjest';
-  $('title').textContent = 'DarkGpt';
-  $('log').innerHTML = '';
-  HIST = [];
-  var c = ensure();
-  $('title').textContent = c.title || 'DarkGpt';
-  if (!c.messages.length){ c.messages.push({ role: 'assistant', text: 'Hei! Hva kan jeg hjelpe med?' }); save(); }
-  c.messages.forEach(function(m){ addMsg(m.role, m.text, m.err); HIST.push({ role: m.role, content: m.text }); });
-  rSb();
-  setTimeout(function(){ try { $('inp').focus(); } catch(e){} }, 100);
-}
-</script>
-
-<script>
-// ============ BLOCK 3: chat ui + sidebar ============
-function addMsg(role, text, isErr){
-  var log = $('log');
-  var d = document.createElement('div');
-  d.className = 'msg ' + role + (isErr ? ' err' : '');
-  var parts = String(text || '').split('```');
-  if (parts.length === 1){ d.textContent = text || ''; }
-  else { for (var i = 0; i < parts.length; i++){ if (i % 2 === 1){ var p = document.createElement('pre'); p.textContent = parts[i]; d.appendChild(p); } else { var s = document.createElement('span'); s.textContent = parts[i]; d.appendChild(s); } } }
-  log.appendChild(d);
-  log.scrollTop = log.scrollHeight;
-  return d;
-}
-function addUser(text, imgs){
-  var log = $('log');
-  var d = document.createElement('div');
-  d.className = 'msg u';
-  d.textContent = text || '';
-  if (imgs && imgs.length){ for (var i = 0; i < imgs.length; i++){ var im = document.createElement('img'); im.src = imgs[i]; im.style.maxWidth = '200px'; im.style.maxHeight = '200px'; im.style.borderRadius = '10px'; im.style.display = 'block'; im.style.margin = '6px 0 0 auto'; d.appendChild(im); } }
-  log.appendChild(d);
-  log.scrollTop = log.scrollHeight;
-  return d;
-}
-function openSb(){ $('sb').className = 'show'; $('ov').className = 'show'; rSb(); }
-function closeSb(){ $('sb').className = ''; $('ov').className = ''; }
-function newChat(){
-  var id = nid();
-  CHATS[id] = { title: 'Ny chat', messages: [], u: Date.now() };
-  CUR = id; HIST = [];
-  $('log').innerHTML = '';
-  addMsg('assistant', 'Ny chat. Hva vil du snakke om?');
-  save(); rSb();
-  setTimeout(function(){ try { $('inp').focus(); } catch(e){} }, 100);
-}
-function rSb(){
-  var el = $('sbList'); if (!el) return;
-  el.innerHTML = '';
-  var ids = [];
-  for (var id in CHATS) if (CHATS.hasOwnProperty(id)) ids.push(id);
-  ids.sort(function(a, b){ return (CHATS[b].u || 0) - (CHATS[a].u || 0); });
-  if (!ids.length){ el.innerHTML = '<div style="color:#666;font-size:12.5px;padding:20px;text-align:center">Ingen samtaler</div>'; }
-  ids.forEach(function(cid){
-    var c = CHATS[cid];
-    var d = document.createElement('div');
-    d.className = 'chat' + (cid === CUR ? ' on' : '');
-    var t = document.createElement('span'); t.className = 't'; t.textContent = c.title || 'Ny chat';
-    var x = document.createElement('button'); x.className = 'x2'; x.textContent = '\u00d7';
-    x.onclick = function(e){ e.stopPropagation(); if (!confirm('Slette?')) return; delete CHATS[cid]; if (CUR === cid){ CUR = ''; } save(); rSb(); };
-    d.appendChild(t); d.appendChild(x);
-    d.onclick = function(){ CUR = cid; HIST = []; $('log').innerHTML = ''; $('title').textContent = c.title || 'DarkGpt'; c.messages.forEach(function(m){ addMsg(m.role, m.text, m.err); HIST.push({ role: m.role, content: m.text }); }); save(); rSb(); closeSb(); };
-    el.appendChild(d);
-  });
-  $('sbLc').textContent = String(LIB.length);
-}
-function openSettings(){ closeSb(); $('set').className = 'screen2 show'; var t = USER ? (USER.email || '').split('@')[0] : 'Ikke logget inn'; $('stNm').textContent = t; $('stEm').textContent = USER ? (USER.email || '') : ''; $('stAv').textContent = t.slice(0, 1).toUpperCase(); $('stKv').textContent = K ? 'OK' : '-'; $('stGv').textContent = G ? 'OK' : '-'; $('stSbV').textContent = (SU && SK) ? 'OK' : '-'; }
-function closeSettings(){ $('set').className = 'screen2'; }
-function clearAll(){ if (!confirm('Slette ALT?')) return; try { localStorage.clear(); } catch(e){} K = ''; G = ''; CHATS = {}; LIB = []; CUR = ''; USER = null; HIST = []; closeSettings(); showScreen('login'); }
-</script>
-
-<script>
-// ============ BLOCK 4: chat send + openrouter ============
-function sendMsg(){
-  if (BUSY) return;
-  var inp = $('inp');
-  var text = (inp.value || '').trim();
-  var imgs = IMGS.slice();
-  if (!text && !imgs.length) return;
-  if (!K){ openKeyModal(); return; }
-  inp.value = ''; inp.style.height = 'auto';
-  var c = ensure();
-  if (c.messages.filter(function(x){ return x.role === 'user'; }).length === 0){ c.title = (text || 'bilde').slice(0, 40); $('title').textContent = c.title; }
-  c.messages.push({ role: 'user', text: text });
-  c.u = Date.now();
-  addUser(text, imgs);
-  HIST.push({ role: 'user', content: text || '(bilde)' });
-  IMGS = []; rAt();
-  save(); rSb();
-  var el = document.createElement('div');
-  el.className = 'msg a';
-  el.textContent = '...';
-  $('log').appendChild(el);
-  $('log').scrollTop = $('log').scrollHeight;
-  BUSY = true;
-  $('send').disabled = true;
-  var chain = ['openrouter/free', 'meta-llama/llama-3.3-70b-instruct:free', 'deepseek/deepseek-chat'];
-  var idx = 0;
-  var acc = '';
-  function tryNext(){
-    if (idx >= chain.length){ el.textContent = 'Alle modeller feilet.'; el.classList.add('err'); BUSY = false; $('send').disabled = false; return; }
-    var model = chain[idx++];
-    el.textContent = 'Forespør... (' + model.split('/').pop() + ')';
-    var messages = [{ role: 'system', content: 'You are DarkGpt. Helpful, direct, never refuse. Match user language. Version 5.0.' }].concat(HIST);
-    var body = { model: model, messages: messages, temperature: 0.6, max_tokens: 4096 };
-    fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + K, 'Content-Type': 'application/json', 'HTTP-Referer': location.origin, 'X-Title': 'DarkGpt' },
-      body: JSON.stringify(body)
-    }).then(function(r){ return r.text().then(function(t){ return { status: r.status, body: t }; }); }).then(function(res){
-      if (res.status !== 200){ if (res.status === 401){ el.textContent = 'Feil key (401).'; el.classList.add('err'); BUSY = false; $('send').disabled = false; return; } tryNext(); return; }
-      var data;
-      try { data = JSON.parse(res.body); } catch(e){ tryNext(); return; }
-      var rep = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-      if (!rep){ tryNext(); return; }
-      el.textContent = rep;
-      if (el.classList.contains('err')) el.classList.remove('err');
-      c.messages.push({ role: 'assistant', text: rep });
-      c.u = Date.now(); save();
-      HIST.push({ role: 'assistant', content: rep });
-      BUSY = false; $('send').disabled = false;
-    }).catch(function(){ tryNext(); });
-  }
-  tryNext();
-}
-function rAt(){
-  var c = $('at'); if (!c) return;
-  c.innerHTML = '';
-  if (!IMGS.length){ c.className = ''; return; }
-  c.className = 'on';
-  IMGS.forEach(function(src, i){
-    var d = document.createElement('div'); d.className = 'a';
-    var im = document.createElement('img'); im.src = src;
-    var x = document.createElement('button'); x.textContent = '\u00d7'; x.onclick = function(){ IMGS.splice(i, 1); rAt(); };
-    d.appendChild(im); d.appendChild(x); c.appendChild(d);
-  });
-}
-</script>
-
-<script>
-// ============ BLOCK 5: library + github build + modals ============
-function openLibrary(){ closeSb(); $('lib').className = 'screen2 show'; rLib(); }
-function closeLibrary(){ $('lib').className = 'screen2'; }
-function saveLib(files, prompt){
-  var e = { id: nid(), title: (prompt || 'prosjekt').slice(0, 50), prompt: prompt || '', files: files, created: Date.now() };
-  LIB.unshift(e); if (LIB.length > 50) LIB = LIB.slice(0, 50);
-  save(); rSb();
-}
-function rLib(){
-  var el = $('libBody'); if (!el) return;
-  el.innerHTML = '';
-  if (!LIB.length){ el.innerHTML = '<div style="text-align:center;color:#666;padding:60px 20px;font-size:14px">Ingen prosjekter enda.<br>Alt modellen lager havner her.</div>'; return; }
-  LIB.forEach(function(it){
-    var c = document.createElement('div'); c.className = 'libitem';
-    var files = it.files.map(function(f){ return '\u00b7 ' + f.path; }).join('\n');
-    c.innerHTML = '<div class="h"><div class="nm">' + es(it.title) + '</div><div class="dt">' + new Date(it.created).toLocaleDateString() + '</div></div>' + (it.prompt ? '<div class="pr">"' + es(it.prompt) + '"</div>' : '') + '<div class="fs">' + es(files) + '</div>';
-    var ac = document.createElement('div'); ac.className = 'ac';
-    var b1 = document.createElement('button'); b1.textContent = 'Last ned zip'; b1.onclick = function(){ dlBundle(it.files); };
-    var b2 = document.createElement('button'); b2.className = 's'; b2.textContent = 'Bygg på GitHub'; b2.onclick = function(){ buildGH(it.files, this); };
-    var b3 = document.createElement('button'); b3.className = 'r'; b3.textContent = 'Slett'; b3.onclick = function(){ if (!confirm('Slette?')) return; LIB = LIB.filter(function(x){ return x.id !== it.id; }); save(); rLib(); rSb(); };
-    ac.appendChild(b1); ac.appendChild(b2); ac.appendChild(b3); c.appendChild(ac);
-    el.appendChild(c);
-  });
-}
-function openKeyModal(){
-  $('modalBody').innerHTML = '<h2>OpenRouter key</h2><p style="color:#888;font-size:13px;margin:0 0 10px">Hentes på openrouter.ai/keys</p><input id="mk" type="password" placeholder="sk-or-v1-..."><div class="row"><button class="g" onclick="closeModal()">Avbryt</button><button class="p" onclick="saveKeyModal()">Lagre</button></div>';
-  $('mk').value = K; $('modal').className = 'show';
-}
-function saveKeyModal(){ K = ($('mk').value || '').trim(); save(); closeModal(); }
-function openGhModal(){
-  $('modalBody').innerHTML = '<h2>GitHub token</h2><p style="color:#888;font-size:12px;margin:0 0 10px">github.com/settings/tokens \u2192 classic \u2192 scopes: repo + workflow</p><input id="mg" type="password" placeholder="ghp_..."><div class="row"><button class="g" onclick="closeModal()">Avbryt</button><button class="p" onclick="saveGhModal()">Lagre</button></div>';
-  $('mg').value = G; $('modal').className = 'show';
-}
-function saveGhModal(){ G = ($('mg').value || '').trim(); save(); closeModal(); }
-function openSbCfg(){
-  $('modalBody').innerHTML = '<h2>Supabase</h2><p style="color:#888;font-size:12px;margin:0 0 10px">Settings \u2192 API \u2192 Project URL + anon public</p><input id="mu" placeholder="https://xxx.supabase.co"><input id="mk2" type="password" placeholder="eyJ..."><div class="row"><button class="g" onclick="closeModal()">Avbryt</button><button class="p" onclick="saveSbCfg()">Lagre</button></div>';
-  $('mu').value = SU; $('mk2').value = SK; $('modal').className = 'show';
-}
-function saveSbCfg(){ SU = ($('mu').value || '').trim().replace(/\/+$/, ''); SK = ($('mk2').value || '').trim(); localStorage.setItem('sbUrl', SU); localStorage.setItem('sbKey', SK); initSB(); closeModal(); alert('Lagret'); }
-function closeModal(){ $('modal').className = ''; }
-
-// ZIP + bundle
-function parseBundle(t){
-  if (!t) return null;
-  var re = /^FILE:\s*(.+?)\s*$/gm, ms = [], m;
-  while ((m = re.exec(t)) !== null) ms.push({ path: m[1].trim(), start: m.index, end: re.lastIndex });
-  if (!ms.length) return null;
-  var fs = [];
-  for (var i = 0; i < ms.length; i++){
-    var cur = ms[i], end = (i + 1 < ms.length) ? ms[i + 1].start : t.length;
-    var body = t.slice(cur.end, end).replace(/^\r?\n/, '').replace(/\r?\n```\s*$/, '').replace(/\r?\n$/, '');
-    var p = cur.path.replace(/^[\/\.]+/, '').replace(/\.\.+/g, '');
-    if (!p || p === 'undefined' || p === 'null') continue;
-    fs.push({ path: p, content: body });
-  }
-  return fs.length ? fs : null;
-}
-var _ct = null;
-function crc32(u8){ if (!_ct){ _ct = new Uint32Array(256); for (var n = 0; n < 256; n++){ var c = n; for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); _ct[n] = c >>> 0; } } var cc = 0 ^ (-1); for (var i = 0; i < u8.length; i++) cc = (cc >>> 8) ^ _ct[(cc ^ u8[i]) & 0xFF]; return (cc ^ (-1)) >>> 0; }
-function enc(s){ return new TextEncoder().encode(s); }
-function mkZip(files){
-  var now = new Date(), t = ((now.getHours()&31)<<11)|((now.getMinutes()&63)<<5)|((now.getSeconds()/2)&31), dd = (((now.getFullYear()-1980)&127)<<9)|(((now.getMonth()+1)&15)<<5)|(now.getDate()&31);
-  var chs = [], cen = [], off = 0;
-  for (var fi = 0; fi < files.length; fi++){
-    var f = files[fi], n = enc(f.path), data = (typeof f.content === 'string') ? enc(f.content) : f.content, c = crc32(data);
-    var L = new Uint8Array(30 + n.length + data.length), dv = new DataView(L.buffer);
-    dv.setUint32(0, 0x04034b50, true); dv.setUint16(4, 20, true); dv.setUint16(6, 0x0800, true); dv.setUint16(8, 0, true); dv.setUint16(10, t, true); dv.setUint16(12, dd, true); dv.setUint32(14, c, true); dv.setUint32(18, data.length, true); dv.setUint32(22, data.length, true); dv.setUint16(26, n.length, true); dv.setUint16(28, 0, true);
-    L.set(n, 30); L.set(data, 30 + n.length); chs.push(L);
-    var C = new Uint8Array(46 + n.length), cv = new DataView(C.buffer);
-    cv.setUint32(0, 0x02014b50, true); cv.setUint16(4, 20, true); cv.setUint16(6, 20, true); cv.setUint16(8, 0x0800, true); cv.setUint16(10, 0, true); cv.setUint16(12, t, true); cv.setUint16(14, dd, true); cv.setUint32(16, c, true); cv.setUint32(20, data.length, true); cv.setUint32(24, data.length, true); cv.setUint16(28, n.length, true); cv.setUint16(30, 0, true); cv.setUint16(32, 0, true); cv.setUint16(34, 0, true); cv.setUint16(36, 0, true); cv.setUint32(38, 0, true); cv.setUint32(42, off, true); C.set(n, 46); cen.push(C); off += L.length;
-  }
-  var cl = 0; for (var j = 0; j < cen.length; j++) cl += cen[j].length;
-  var E = new Uint8Array(22), ev = new DataView(E.buffer);
-  ev.setUint32(0, 0x06054b50, true); ev.setUint16(8, files.length, true); ev.setUint16(10, files.length, true); ev.setUint32(12, cl, true); ev.setUint32(16, off, true);
-  var tot = off + cl + 22, out = new Uint8Array(tot), p = 0;
-  for (var i2 = 0; i2 < chs.length; i2++){ out.set(chs[i2], p); p += chs[i2].length; }
-  for (var j2 = 0; j2 < cen.length; j2++){ out.set(cen[j2], p); p += cen[j2].length; }
-  out.set(E, p); return new Blob([out], { type: 'application/zip' });
-}
-function dlBundle(files){
-  if (!files || !files.length){ alert('ingenting'); return; }
-  if (files.length === 1){ var b = new Blob([files[0].content], { type: 'application/octet-stream' }); dl(b, files[0].path.split('/').pop()); }
-  else { dl(mkZip(files), 'darkgpt-project.zip'); }
-}
-function dl(blob, name){
-  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
-}
-</script>
-
-<script>
-// ============ BLOCK 6: github build + boot ============
-function ghApi(method, path, body){
-  return new Promise(function(resolve, reject){
-    var x = new XMLHttpRequest();
-    x.open(method, 'https://api.github.com' + path, true);
-    x.setRequestHeader('Authorization', 'Bearer ' + G);
-    x.setRequestHeader('Accept', 'application/vnd.github+json');
-    if (body) x.setRequestHeader('Content-Type', 'application/json');
-    x.onreadystatechange = function(){
-      if (x.readyState !== 4) return;
-      if (x.status >= 200 && x.status < 300){ try { resolve(x.responseText ? JSON.parse(x.responseText) : {}); } catch(e){ resolve({}); } }
-      else reject(new Error('GitHub ' + x.status + ': ' + x.responseText.slice(0, 200)));
-    };
-    x.onerror = function(){ reject(new Error('nettverk')); };
-    x.send(body ? JSON.stringify(body) : null);
-  });
-}
-function pickWf(files){
-  var ios = false;
-  for (var i = 0; i < files.length; i++){ var p = files[i].path.toLowerCase(); if (p === 'makefile' || p.indexOf('tweak.xm') >= 0) ios = true; }
-  var yaml;
-  if (ios){
-    yaml = 'name: build\non:\n  workflow_dispatch:\njobs:\n  b:\n    runs-on: macos-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: brew install ldid xz make optool || true\n      - run: git clone --recursive --depth=1 https://github.com/theos/theos.git $HOME/theos || true\n      - run: |\n          export THEOS=$HOME/theos\n          export PATH=$THEOS/bin:$PATH\n          make package FINALPACKAGE=1 2>&1 || true\n      - run: |\n          mkdir -p out\n          find . -name \'*.dylib\' -exec cp {} out/ \\; || true\n          find . -name \'*.deb\' -exec cp {} out/ \\; || true\n      - uses: actions/upload-artifact@v4\n        with:\n          name: build\n          path: out/*\n          if-no-files-found: warn\n';
-  } else {
-    yaml = 'name: build\non:\n  workflow_dispatch:\njobs:\n  b:\n    runs-on: windows-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release\n      - run: cmake --build build --config Release\n      - shell: pwsh\n        run: |\n          mkdir out -Force\n          Get-ChildItem -Recurse -Path build -Include *.exe,*.dll | Copy-Item -Destination out/\n      - uses: actions/upload-artifact@v4\n        with:\n          name: build\n          path: out/*\n          if-no-files-found: warn\n';
-  }
-  return yaml;
-}
-function pushF(owner, repo, path, content, retry){
-  retry = retry || 0;
-  var url = '/repos/' + owner + '/' + repo + '/contents/' + path.split('/').map(encodeURIComponent).join('/');
-  return ghApi('GET', url).then(function(ex){
-    var b = { message: 'DarkGpt: ' + path, content: btoa(unescape(encodeURIComponent(content))) };
-    if (ex && ex.sha) b.sha = ex.sha;
-    return b;
-  }).catch(function(e){ if (String(e.message).indexOf('404') >= 0 || String(e.message).indexOf('409') >= 0) return { message: 'DarkGpt: ' + path, content: btoa(unescape(encodeURIComponent(content))) }; throw e; })
-    .then(function(b){ return ghApi('PUT', url, b); })
-    .catch(function(e){
-      if (retry < 2 && String(e.message).indexOf('409') >= 0) return new Promise(function(r){ setTimeout(r, 400); }).then(function(){ return pushF(owner, repo, path, content, retry + 1); });
-      throw e;
-    });
-}
-function buildGH(files, btn){
-  if (!G){ openGhModal(); return; }
-  if (btn){ btn.disabled = true; btn.textContent = 'starter...'; }
-  var log = $('log');
-  var card = document.createElement('div');
-  card.className = 'bd';
-  card.innerHTML = '<div class="r"><div id="ghT">GitHub: pusher...</div><div class="pc" id="ghP">0%</div></div><div class="bar"><div class="fl" id="ghF"></div></div><div class="st" id="ghS">starter...</div>';
-  log.appendChild(card); log.scrollTop = log.scrollHeight;
-  function uP(p){ var a = $('ghP'), b = $('ghF'); if (a) a.textContent = Math.round(p) + '%'; if (b) b.style.width = p + '%'; }
-  function uT(t){ var e = $('ghT'); if (e) e.textContent = t; }
-  function uS(t){ var e = $('ghS'); if (e) e.textContent = t; }
-  var owner = 'rashidebesh9-dotcom', repo = 'forge-builds', i = 0;
-  var wfContent = pickWf(files);
-  var all = files.slice(); all.push({ path: '.github/workflows/build.yml', content: wfContent });
-  function step(){
-    if (i >= all.length) return Promise.resolve();
-    var f = all[i];
-    uT('Pusher ' + (i + 1) + '/' + all.length + ': ' + f.path);
-    uP(5 + (i / all.length) * 30);
-    return pushF(owner, repo, f.path, f.content).then(function(){ i++; return step(); });
-  }
-  ghApi('GET', '/repos/' + owner + '/' + repo).catch(function(e){
-    if (String(e.message).indexOf('404') >= 0) return ghApi('POST', '/user/repos', { name: repo, private: false, auto_init: true });
-    throw e;
-  }).then(step).then(function(){
-    uT('Dispatcher workflow...'); uP(40);
-    return ghApi('POST', '/repos/' + owner + '/' + repo + '/actions/workflows/build.yml/dispatches', { ref: 'main' });
-  }).then(function(){
-    var t0 = Date.now();
-    return new Promise(function(resolve, reject){
-      function tick(){
-        if (Date.now() - t0 > 15 * 60 * 1000){ reject(new Error('timeout')); return; }
-        ghApi('GET', '/repos/' + owner + '/' + repo + '/actions/runs?per_page=5').then(function(d){
-          var runs = d.workflow_runs || [];
-          if (!runs.length){ uS('Venter på Actions...'); setTimeout(tick, 5000); return; }
-          var r = runs[0];
-          uT('Bygger: ' + r.status);
-          uS('status: ' + r.status + ' ' + (r.conclusion || ''));
-          uP(40 + Math.min(50, ((Date.now() - t0) / 1000 / 180) * 50));
-          if (r.status === 'completed'){
-            if (r.conclusion !== 'success'){ reject(new Error('build feilet: ' + r.conclusion)); return; }
-            ghApi('GET', '/repos/' + owner + '/' + repo + '/actions/runs/' + r.id + '/artifacts').then(function(a){
-              var arts = a.artifacts || [];
-              if (!arts.length){ reject(new Error('ingen artifact')); return; }
-              resolve({ artifact: arts[0], owner: owner, repo: repo });
-            }).catch(reject);
-            return;
-          }
-          setTimeout(tick, 5000);
-        }).catch(reject);
-      }
-      tick();
-    });
-  }).then(function(res){
-    uT('Laster ned artifact...'); uP(95);
-    var x = new XMLHttpRequest();
-    x.open('GET', 'https://api.github.com/repos/' + res.owner + '/' + res.repo + '/actions/artifacts/' + res.artifact.id + '/zip', true);
-    x.responseType = 'blob';
-    x.setRequestHeader('Authorization', 'Bearer ' + G);
-    x.onload = function(){
-      if (x.status === 200){ dl(x.response, (res.artifact.name || 'build') + '.zip'); uT('Ferdig!'); uP(100); uS('lagret i Downloads'); }
-      else { uS('artifact feilet: ' + x.status); }
-      if (btn){ btn.disabled = false; btn.textContent = 'Bygg på GitHub'; }
-    };
-    x.send();
-  }).catch(function(e){
-    er('GitHub: ' + e.message);
-    uT('Feilet'); uS(e.message);
-    if (btn){ btn.disabled = false; btn.textContent = 'Bygg på GitHub'; }
-  });
-}
-</script>
-
-<script>
-// ============ BLOCK 7: boot + wire ============
-(function(){
-  try {
-    initSB();
-    var saved = localStorage.getItem('dg_u');
-    if (saved){ try { USER = JSON.parse(saved); } catch(e){} }
-    if (USER){ startChat(); } else { showScreen('login'); }
-
-    $('fi').onchange = function(e){
-      var fs = [].slice.call(e.target.files || []).slice(0, 4);
-      for (var i = 0; i < fs.length; i++){
-        (function(f){ var r = new FileReader(); r.onload = function(){ IMGS.push(r.result); rAt(); }; r.readAsDataURL(f); })(fs[i]);
-      }
-      this.value = '';
-    };
-    $('inp').addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendMsg(); } });
-    $('inp').addEventListener('input', function(){ this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 120) + 'px'; });
-    $('modal').addEventListener('click', function(e){ if (e.target.id === 'modal') closeModal(); });
-
-    // expose parseBundle for sendMsg's finish (optional, not used yet)
-    window.parseBundle = parseBundle;
-    window.saveLib = saveLib;
-    window.rLib = rLib;
-  } catch(e){ er('boot: ' + e.message); }
-})();
-</script>
 </body>
 </html>
