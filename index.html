@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0a0607">
-<title>Forge 3.0</title>
+<title>Forge 3.1</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0a0607;--bg-2:#100809;--bg-3:#180a0b;--panel:#150a0b;--border:#26100f;--border-2:#3a1816;--text:#f2e8e8;--dim:#9e7e7e;--mute:#6a4848;--red:#e54b4b;--red-2:#ff5c5c;--blue:#4a7cff;--green:#4ade80}
@@ -13,12 +13,11 @@ body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,system-
 #app{display:flex;height:100dvh;width:100vw;position:relative}
 #login{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px}
 #login.on{display:flex}
-#login .logo{width:52px;height:52px;border-radius:16px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;margin-bottom:22px;box-shadow:0 12px 40px -8px rgba(229,75,75,.5)}
+#login .logo{width:52px;height:52px;border-radius:16px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;margin-bottom:22px}
 #login h1{margin:0 0 8px;font-size:26px;font-weight:600;letter-spacing:-.02em;text-align:center}
 #login p{margin:0 0 32px;color:var(--dim);font-size:14px;text-align:center;max-width:320px;line-height:1.55}
 #login .stack{width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px}
 .lg-btn{width:100%;padding:14px;border-radius:14px;background:var(--panel);color:var(--text);border:1px solid var(--border);font:15px inherit;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:12px;touch-action:manipulation;font-family:inherit}
-.lg-btn:active{background:var(--bg-3)}
 .lg-btn svg{width:20px;height:20px;flex:0 0 auto}
 .lg-skip{margin-top:22px;color:var(--mute);font-size:13px;cursor:pointer;text-decoration:underline;touch-action:manipulation}
 #sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--bg-2);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .25s ease;z-index:50;display:flex;flex-direction:column;padding:8px 8px 12px}
@@ -29,7 +28,6 @@ body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,system-
 .sb-ver{font-size:10px;color:var(--mute);font-family:ui-monospace,monospace;padding:2px 6px;border:1px solid var(--border);border-radius:6px}
 .sb-close{background:transparent;border:0;color:var(--dim);font-size:22px;cursor:pointer;padding:6px;line-height:1;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .sb-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;color:var(--text);font-size:15px;cursor:pointer;background:transparent;border:0;width:100%;text-align:left;font-family:inherit;touch-action:manipulation;margin-bottom:1px}
-.sb-item:active{background:var(--bg-3)}
 .sb-item svg{width:20px;height:20px;stroke:currentColor;flex:0 0 auto;opacity:.9;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .sb-item .lbl{flex:1}
 .sb-item .badge{font-size:11px;color:var(--mute);font-family:ui-monospace,monospace}
@@ -37,73 +35,63 @@ body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,system-
 .sb-title{font-size:11px;color:var(--mute);padding:10px 12px 6px;text-transform:uppercase;letter-spacing:.08em}
 .sb-list{flex:1;overflow-y:auto;margin:0 -4px;padding:0 4px}
 .sb-chat{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;touch-action:manipulation;position:relative;user-select:none;-webkit-user-select:none}
-.sb-chat:active,.sb-chat:hover{background:var(--bg-3)}
 .sb-chat.on{background:var(--bg-3);color:var(--text)}
 .sb-chat .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sb-chat.pressing{background:var(--red);color:#fff}
 .sb-empty{color:var(--mute);font-size:12.5px;padding:16px 12px;text-align:center}
 .sb-foot{padding:8px;border-top:1px solid var(--border);margin-top:auto}
-.sb-foot .bluenew{width:100%;padding:12px;border-radius:12px;background:var(--blue);color:#fff;border:0;font:15px inherit;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;touch-action:manipulation;box-shadow:0 6px 20px -8px rgba(74,124,255,.6);font-family:inherit}
+.sb-foot .bluenew{width:100%;padding:12px;border-radius:12px;background:var(--blue);color:#fff;border:0;font:15px inherit;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;touch-action:manipulation;font-family:inherit}
 .sb-foot .bluenew svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 .sb-profile{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;touch-action:manipulation;margin-top:8px}
-.sb-profile:active{background:var(--bg-3)}
 .sb-profile .av{width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:0 0 auto}
 .sb-profile .info{flex:1;min-width:0}
 .sb-profile .n{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 .sb-profile .e{font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:40;display:none}
 #overlay.on{display:block}
-#popover{position:fixed;background:var(--bg-3);border:1px solid var(--border-2);border-radius:12px;padding:6px;z-index:100;min-width:180px;box-shadow:0 20px 40px -10px rgba(0,0,0,.8);display:none}
+#popover{position:fixed;background:var(--bg-3);border:1px solid var(--border-2);border-radius:12px;padding:6px;z-index:100;min-width:180px;display:none}
 #popover.on{display:block}
-#popover button{width:100%;padding:10px 14px;background:transparent;border:0;color:var(--text);font:14px inherit;text-align:left;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;touch-action:manipulation;font-family:inherit}
-#popover button:active{background:var(--bg-2)}
+#popover button{width:100%;padding:10px 14px;background:transparent;border:0;color:var(--text);font:14px inherit;text-align:left;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;font-family:inherit}
 #popover button.red{color:var(--red-2)}
 #popover svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 main{flex:1;display:flex;flex-direction:column;height:100dvh;width:100vw;min-width:0}
 header{height:56px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg);position:relative;z-index:5}
 .menu-btn{width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;touch-action:manipulation}
-.menu-btn:active{background:var(--bg-3)}
 .menu-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .title-center{flex:1;font-size:15px;font-weight:600;text-align:center;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dot-menu{width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;touch-action:manipulation}
-.dot-menu:active{background:var(--bg-3)}
 .dot-menu svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #log{flex:1;overflow-y:auto;padding:16px 0;display:flex;flex-direction:column;gap:22px;-webkit-overflow-scrolling:touch}
 .log-inner{max-width:760px;width:100%;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:20px}
-.msg{max-width:100%;font-size:15px;line-height:1.6;white-space:pre-wrap;word-break:break-word;animation:in .2s ease}
-@keyframes in{from{opacity:0;transform:translateY(4px)}}
-.msg.u{align-self:flex-end;background:var(--bg-3);color:var(--text);padding:10px 16px;border-radius:20px;max-width:80%;font-size:15px}
+.msg{max-width:100%;font-size:15px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.msg.u{align-self:flex-end;background:var(--bg-3);color:var(--text);padding:10px 16px;border-radius:20px;max-width:80%}
 .msg.u .thumb{max-width:200px;max-height:200px;border-radius:12px;display:block;margin:6px 0 0 auto}
 .msg.a{align-self:flex-start;color:var(--text);max-width:100%;padding:0}
-.msg.a.err{background:#2a0a0a;border:1px solid var(--red);color:#ffb8b8;padding:12px 16px;border-radius:14px;font-size:14px}
+.msg.a.err{background:#2a0a0a;border:1px solid var(--red);color:#ffb8b8;padding:12px 16px;border-radius:14px}
 .msg pre{background:var(--bg-2);border:1px solid var(--border);padding:12px;border-radius:10px;overflow-x:auto;margin:10px 0 0;font-size:12.5px;line-height:1.6;white-space:pre;font-family:ui-monospace,Menlo,monospace;max-height:300px}
-.msg code{background:var(--bg-3);padding:1px 5px;border-radius:4px;font-family:ui-monospace,monospace;font-size:13.5px}
 .empty{padding:50px 20px;text-align:center;color:var(--dim);align-self:center;max-width:400px}
-.empty .orb{width:56px;height:56px;margin:0 auto 20px;border-radius:16px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;box-shadow:0 12px 40px -10px rgba(229,75,75,.7)}
-.empty h2{margin:0 0 8px;font-size:24px;font-weight:600;letter-spacing:-.01em}
+.empty .orb{width:56px;height:56px;margin:0 auto 20px;border-radius:16px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800}
+.empty h2{margin:0 0 8px;font-size:24px;font-weight:600}
 .empty p{margin:0 0 22px;font-size:15px;line-height:1.5}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.chip{font-size:13.5px;padding:10px 16px;border-radius:14px;background:var(--bg-2);border:1px solid var(--border);color:var(--text);cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left}
-.chip:active{background:var(--bg-3)}
+.chip{font-size:13.5px;padding:10px 16px;border-radius:14px;background:var(--bg-2);border:1px solid var(--border);color:var(--text);cursor:pointer;font-family:inherit;text-align:left}
 .build{align-self:flex-start;background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;max-width:100%;font-size:14px;min-width:280px}
-.build .row{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px;align-items:center;font-size:14px}
+.build .row{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px;align-items:center}
 .build .pct{font-family:ui-monospace,monospace;color:var(--red-2);font-weight:600;font-size:12.5px}
 .build .bar{height:3px;background:var(--bg);border-radius:2px;overflow:hidden}
 .build .fill{height:100%;background:var(--red);width:0;transition:width .3s}
 .build .stats{font-size:12px;color:var(--dim);margin-top:10px;font-family:ui-monospace,monospace}
-.build .countdown{margin-top:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:12.5px;font-family:ui-monospace,monospace;color:var(--red-2);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.build .countdown{margin-top:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:12.5px;font-family:ui-monospace,monospace;color:var(--red-2);display:flex;justify-content:space-between}
 .build .countdown .left{color:var(--dim)}
-.build .countdown .eta{font-weight:700;font-size:14px;color:var(--red-2)}
-.build .think{margin-top:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--dim);max-height:160px;overflow-y:auto;font-family:ui-monospace,monospace;white-space:pre-wrap;word-break:break-word;line-height:1.5}
-.build .think .ln{display:block;padding:1px 0;color:var(--dim)}
+.build .think{margin-top:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--dim);max-height:160px;overflow-y:auto;font-family:ui-monospace,monospace;white-space:pre-wrap;line-height:1.5}
+.build .think .ln{display:block;padding:1px 0}
 .build .think .ln.b{color:var(--red-2)}
 .bundle{margin-top:12px;background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
 .bundle .t{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .bundle .t .ic{width:24px;height:24px;border-radius:8px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px}
 .bundle .l{font-size:12px;color:var(--dim);font-family:ui-monospace,monospace;max-height:140px;overflow-y:auto;margin-bottom:12px;white-space:pre-wrap;line-height:1.6}
-.bundle button{font-size:13px;padding:10px 16px;border-radius:10px;background:var(--red);color:#fff;border:0;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;margin:4px 6px 4px 0;display:inline-block}
+.bundle button{font-size:13px;padding:10px 16px;border-radius:10px;background:var(--red);color:#fff;border:0;font-weight:600;cursor:pointer;font-family:inherit;margin:4px 6px 4px 0;display:inline-block}
 .bundle button.sec{background:var(--bg-3);color:var(--text);border:1px solid var(--border-2)}
-.bundle button:disabled{opacity:.5}
 .bundle .build-note{margin-top:12px;font-size:12px;color:var(--dim);line-height:1.55}
 footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
 .composer{max-width:760px;margin:0 auto;padding:0 16px}
@@ -114,13 +102,11 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
 .att button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--bg-3);border:0;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .box{display:flex;gap:6px;align-items:flex-end;background:var(--bg-2);border:1px solid var(--border-2);border-radius:26px;padding:6px 6px 6px 10px;min-height:52px}
 .box:focus-within{border-color:var(--red)}
-.icon-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:0;color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;touch-action:manipulation}
-.icon-btn:active{background:var(--bg-3)}
+.icon-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:0;color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .icon-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #inp{flex:1;background:transparent;border:0;color:var(--text);font:16px -apple-system,system-ui,sans-serif;resize:none;padding:10px 4px;outline:none;min-height:24px;max-height:180px;line-height:1.4;align-self:center}
 #inp::placeholder{color:var(--mute)}
-#send{width:38px;height:38px;border-radius:50%;background:var(--red);border:0;color:#fff;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
-#send:active{filter:brightness(.9)}
+#send{width:38px;height:38px;border-radius:50%;background:var(--red);border:0;color:#fff;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
 #send:disabled{opacity:.3}
 #send svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 .footnote{text-align:center;font-size:11.5px;color:var(--mute);margin-top:8px;padding:0 20px}
@@ -135,11 +121,10 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
 .set-profile .e{font-size:13px;color:var(--dim)}
 .set-section{margin-bottom:24px}
 .set-section h4{margin:0 0 10px;font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em;font-weight:500}
-.set-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg-2);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer;touch-action:manipulation}
-.set-row:active{background:var(--bg-3)}
+.set-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--bg-2);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;cursor:pointer}
 .set-row svg{width:22px;height:22px;stroke:var(--text);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;opacity:.9}
 .set-row .lbl{flex:1;font-size:15px;font-weight:500}
-.set-row .val{font-size:13px;color:var(--dim);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.set-row .val{font-size:13px;color:var(--dim);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .set-row.danger .lbl{color:var(--red-2)}
 .set-row.danger svg{stroke:var(--red-2)}
 .set-row .chev{width:16px;height:16px;stroke:var(--mute);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
@@ -147,26 +132,24 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
 .lib-item{background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
 .lib-item .h{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
 .lib-item .name{font-size:15px;font-weight:600;word-break:break-word;flex:1}
-.lib-item .date{font-size:11.5px;color:var(--mute);white-space:nowrap;font-family:ui-monospace,monospace}
-.lib-item .prompt{font-size:13.5px;color:var(--dim);margin-bottom:10px;line-height:1.5;word-break:break-word}
+.lib-item .date{font-size:11.5px;color:var(--mute);font-family:ui-monospace,monospace}
+.lib-item .prompt{font-size:13.5px;color:var(--dim);margin-bottom:10px;line-height:1.5}
 .lib-item .files{font-size:11.5px;color:var(--dim);font-family:ui-monospace,monospace;max-height:120px;overflow-y:auto;margin-bottom:12px;padding:8px 10px;background:var(--bg);border-radius:8px;white-space:pre-wrap;line-height:1.6}
 .lib-item .acts{display:flex;gap:6px;flex-wrap:wrap}
-.lib-item .acts button{font-size:12.5px;padding:8px 14px;border-radius:9px;background:var(--red);color:#fff;border:0;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation}
+.lib-item .acts button{font-size:12.5px;padding:8px 14px;border-radius:9px;background:var(--red);color:#fff;border:0;font-weight:600;cursor:pointer;font-family:inherit}
 .lib-item .acts button.sec{background:var(--bg-3);color:var(--text);border:1px solid var(--border-2)}
 .lib-item .acts button.red{background:transparent;color:var(--red-2);border:1px solid var(--red)}
 .lib-empty{text-align:center;color:var(--mute);padding:60px 20px;font-size:14px}
-.lib-empty .ic{font-size:36px;margin-bottom:14px;opacity:.4}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
 .modal.on{display:flex}
 .card{background:var(--bg-2);border:1px solid var(--border-2);border-radius:20px;padding:22px;width:100%;max-width:520px;max-height:85vh;display:flex;flex-direction:column}
 .card h3{margin:0 0 6px;font-size:18px}
 .card p{margin:0 0 16px;font-size:13.5px;color:var(--dim);line-height:1.55}
 .card a{color:var(--red-2);text-decoration:none;word-break:break-all}
 .card input[type=password],.card input[type=text]{width:100%;padding:13px;background:var(--bg);border:1px solid var(--border);border-radius:12px;color:var(--text);font:14px ui-monospace,monospace;outline:none;margin-bottom:14px}
-.card input:focus{border-color:var(--red)}
 .card .list{flex:1;overflow-y:auto;min-height:60px;margin-bottom:14px}
 .card .row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
-.card .row button{padding:12px 20px;border-radius:12px;border:0;font:14px inherit;font-weight:600;cursor:pointer;touch-action:manipulation;font-family:inherit}
+.card .row button{padding:12px 20px;border-radius:12px;border:0;font:14px inherit;font-weight:600;cursor:pointer;font-family:inherit}
 .card .row .g{background:var(--bg-3);color:var(--text)}
 .card .row .p{background:var(--red);color:#fff}
 #err{position:fixed;top:60px;left:12px;right:12px;background:#2a0a0a;border:1px solid var(--red);color:#ffb8b8;padding:12px;border-radius:12px;font-size:12.5px;z-index:200;display:none;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,monospace;max-height:50vh;overflow-y:auto}
@@ -179,24 +162,12 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
 <div id="login">
   <div class="logo">F</div>
   <h1>Velkommen til Forge</h1>
-  <p>Din personlige AI som bygger, svarer og lager ferdige apper.</p>
+  <p>Din AI som bygger ferdige .exe og .ipa.</p>
   <div class="stack">
-    <button class="lg-btn" data-prov="google">
-      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Fortsett med Google
-    </button>
-    <button class="lg-btn" data-prov="apple">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
-      Fortsett med Apple
-    </button>
-    <button class="lg-btn" data-prov="phone">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
-      Fortsett med telefon
-    </button>
-    <button class="lg-btn" data-prov="email">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
-      Fortsett med e-post
-    </button>
+    <button class="lg-btn" data-prov="google"><svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Fortsett med Google</button>
+    <button class="lg-btn" data-prov="apple"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>Fortsett med Apple</button>
+    <button class="lg-btn" data-prov="phone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>Fortsett med telefon</button>
+    <button class="lg-btn" data-prov="email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>Fortsett med e-post</button>
   </div>
   <div class="lg-skip" id="lgSkip">Hopp over</div>
 </div>
@@ -204,40 +175,24 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
 <div id="app">
   <div id="sidebar">
     <div class="sb-head">
-      <div class="sb-brand"><div class="logo">F</div>Forge <span class="sb-ver">v3.0</span></div>
+      <div class="sb-brand"><div class="logo">F</div>Forge <span class="sb-ver">v3.1</span></div>
       <button class="sb-close" id="sbClose">×</button>
     </div>
-    <button class="sb-item" id="sbSettings">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-      <span class="lbl">Innstillinger</span>
-    </button>
-    <button class="sb-item" id="sbLibrary">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      <span class="lbl">Bibliotek</span>
-      <span class="badge" id="sbLibCount">0</span>
-    </button>
+    <button class="sb-item" id="sbSettings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span class="lbl">Innstillinger</span></button>
+    <button class="sb-item" id="sbLibrary"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span class="lbl">Bibliotek</span><span class="badge" id="sbLibCount">0</span></button>
     <div class="sb-sep"></div>
     <div class="sb-title">Samtaler</div>
     <div class="sb-list" id="sbChats"></div>
     <div class="sb-foot">
-      <button class="bluenew" id="sbNew">
-        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-        Ny chat
-      </button>
-      <div class="sb-profile" id="sbProfile">
-        <div class="av" id="sbAv">?</div>
-        <div class="info">
-          <div class="n" id="sbName">Ikke logget inn</div>
-          <div class="e" id="sbEmail"></div>
-        </div>
-      </div>
+      <button class="bluenew" id="sbNew"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Ny chat</button>
+      <div class="sb-profile" id="sbProfile"><div class="av" id="sbAv">?</div><div class="info"><div class="n" id="sbName">Ikke logget inn</div><div class="e" id="sbEmail"></div></div></div>
     </div>
   </div>
   <div id="overlay"></div>
   <main>
     <header>
       <button class="menu-btn" id="menuBtn"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
-      <div class="title-center" id="headerTitle">Forge v3.0</div>
+      <div class="title-center" id="headerTitle">Forge v3.1</div>
       <button class="dot-menu" id="newBtn"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
     </header>
     <div id="log"><div class="log-inner" id="logInner"></div></div>
@@ -250,7 +205,7 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
           <textarea id="inp" rows="1" placeholder="Spør om alt"></textarea>
           <button id="send" title="Send"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
         </div>
-        <div class="footnote">Forge v3.0 — kan gjøre feil. Sjekk viktig info.</div>
+        <div class="footnote">Forge v3.1 — kan gjøre feil. Sjekk viktig info.</div>
       </div>
     </footer>
   </main>
@@ -273,69 +228,28 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
       <div class="n" id="setName">Ikke logget inn</div>
       <div class="e" id="setEmail"></div>
     </div>
-
     <div class="set-section">
       <h4>Om</h4>
-      <div class="set-row" id="setVersion">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 2"/></svg>
-        <span class="lbl">Versjon</span>
-        <span class="val" style="color:var(--green);font-family:ui-monospace,monospace;font-weight:600">v3.0</span>
-      </div>
-      <div class="set-row" id="setBuildDate">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-        <span class="lbl">Bygget</span>
-        <span class="val">2026-10-12</span>
-      </div>
+      <div class="set-row" id="setVersion"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Versjon</span><span class="val" style="color:var(--green);font-family:ui-monospace,monospace;font-weight:600">v3.1</span></div>
+      <div class="set-row" id="setBuildDate"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span class="lbl">Bygget</span><span class="val">2026-10-12</span></div>
     </div>
-
     <div class="set-section">
       <h4>Konto</h4>
-      <div class="set-row" id="setSignIn">
-        <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
-        <span class="lbl" id="setSignInLbl">Logg inn</span>
-        <svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
+      <div class="set-row" id="setSignIn"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg><span class="lbl" id="setSignInLbl">Logg inn</span><svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
     </div>
-
     <div class="set-section">
       <h4>Tilpasning</h4>
-      <div class="set-row" id="setMem">
-        <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 00-4 4v1a4 4 0 000 8v1a4 4 0 108 0v-1a4 4 0 000-8V6a4 4 0 00-4-4z"/></svg>
-        <span class="lbl">Minne</span>
-        <span class="val" id="setMemCount">0</span>
-        <svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
-      <div class="set-row" id="setLib">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        <span class="lbl">Bibliotek</span>
-        <span class="val" id="setLibCount">0</span>
-        <svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
+      <div class="set-row" id="setMem"><svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 00-4 4v1a4 4 0 000 8v1a4 4 0 108 0v-1a4 4 0 000-8V6a4 4 0 00-4-4z"/></svg><span class="lbl">Minne</span><span class="val" id="setMemCount">0</span><svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+      <div class="set-row" id="setLib"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span class="lbl">Bibliotek</span><span class="val" id="setLibCount">0</span><svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
     </div>
-
     <div class="set-section">
       <h4>Nøkler</h4>
-      <div class="set-row" id="setKey">
-        <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-        <span class="lbl">OpenRouter key</span>
-        <span class="val" id="setKeyVal">–</span>
-        <svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
-      <div class="set-row" id="setGh">
-        <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
-        <span class="lbl">GitHub token</span>
-        <span class="val" id="setGhVal">–</span>
-        <svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
+      <div class="set-row" id="setKey"><svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg><span class="lbl">OpenRouter key</span><span class="val" id="setKeyVal">–</span><svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
+      <div class="set-row" id="setGh"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg><span class="lbl">GitHub token</span><span class="val" id="setGhVal">–</span><svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
     </div>
-
     <div class="set-section">
       <h4>Data</h4>
-      <div class="set-row danger" id="setClear">
-        <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
-        <span class="lbl">Slett alle data</span>
-        <svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
+      <div class="set-row danger" id="setClear"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg><span class="lbl">Slett alle data</span><svg class="chev" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>
     </div>
   </div>
 </div>
@@ -352,7 +266,7 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
 <div class="modal" id="modal"><div class="card" id="card"></div></div>
 
 <script>
-var FORGE_VERSION="3.0";
+var FORGE_VERSION="3.1";
 var FORGE_BUILD="2026-10-12";
 var KEY="", GH="", HIST=[], MEM=[], CHATS={}, CUR="", CODE="", BUNDLE=null, IMGS=[], busy=false;
 var LIBRARY=[];
@@ -371,15 +285,13 @@ function fmtTime(sec){ sec=Math.max(0,Math.round(sec)); var m=Math.floor(sec/60)
 function fmtDate(ts){ var d=new Date(ts), now=new Date(); if (d.toDateString()===now.toDateString()) return pad2(d.getHours())+":"+pad2(d.getMinutes()); return d.getDate()+"."+pad2(d.getMonth()+1)+" "+pad2(d.getHours())+":"+pad2(d.getMinutes()); }
 function initials(n){ if (!n) return "?"; var p=n.trim().split(/\s+/); if (p.length===1) return p[0].slice(0,2).toUpperCase(); return (p[0][0]+p[p.length-1][0]).toUpperCase(); }
 
-/* LOGIN */
 function showLogin(){ $("login").className="on"; }
 function hideLogin(){ $("login").className=""; }
 function loginAs(provider){
   var label={google:"Google",apple:"Apple",phone:"telefonnummer",email:"e-post"}[provider]||"";
   var input=prompt("Oppgi navn eller "+label+":");
   if (!input) return;
-  input=input.replace(/^\s+|\s+$/g,"");
-  if (!input) return;
+  input=input.replace(/^\s+|\s+$/g,""); if (!input) return;
   ACCOUNT.name=input;
   ACCOUNT.email=(provider==="email"&&input.indexOf("@")>=0)?input:(provider+"@forge.local");
   ACCOUNT.provider=provider;
@@ -389,7 +301,6 @@ var lgBtns=document.querySelectorAll(".lg-btn[data-prov]");
 for (var li=0;li<lgBtns.length;li++){ (function(b){ b.onclick=function(){ loginAs(b.getAttribute("data-prov")); }; })(lgBtns[li]); }
 $("lgSkip").onclick=function(){ ACCOUNT={name:"Gjest",email:"",provider:"guest"}; save(); hideLogin(); renderAccount(); renderSidebar(); };
 
-/* SIDEBAR */
 function openSidebar(){ $("sidebar").className="on"; $("overlay").className="on"; }
 function closeSidebar(){ $("sidebar").className=""; $("overlay").className=""; hidePopover(); }
 $("menuBtn").onclick=openSidebar;
@@ -445,7 +356,6 @@ function renderSidebar(){
 }
 
 function newChat(){ var id=newId(); CHATS[id]={title:"Ny chat",messages:[],created:Date.now(),updated:Date.now()}; CUR=id; save(); replay(); renderSidebar(); setTimeout(function(){ try{ $("inp").focus(); }catch(_){} },80); }
-
 function logInner(){ return $("logInner"); }
 function scrollBottom(){ var l=$("log"); l.scrollTop=l.scrollHeight; }
 function setHeaderTitle(t){ $("headerTitle").textContent=t; }
@@ -457,7 +367,7 @@ function renderText(parent,text){ if(!text) return; var parts=String(text).split
 function showEmpty(){
   var l=logInner(); l.innerHTML="";
   var w=document.createElement("div"); w.className="empty";
-  w.innerHTML='<div class="orb">F</div><h2>Hva kan jeg hjelpe med?</h2><p>Chat, nettsider, iOS .ipa, PC .exe — jeg bygger ferdig og gir deg fila. <b style="color:var(--green);font-family:ui-monospace,monospace;font-size:12px">v'+FORGE_VERSION+'</b></p><div class="chips" id="chips"></div>';
+  w.innerHTML='<div class="orb">F</div><h2>Hva kan jeg bygge?</h2><p>PC .exe eller iPhone .ipa — jeg lager prosjektet, GitHub kompilerer det, du laster ned ferdig fil. <b style="color:var(--green);font-family:ui-monospace,monospace;font-size:12px">v'+FORGE_VERSION+'</b></p><div class="chips" id="chips"></div>';
   l.appendChild(w);
   var chips=["lag en cheat menu for cs2, pc, external c++, esp + aimbot","8 ball pool ios mod menu, theos tweak","unity il2cpp offset dumper, c++ prosjekt","korleis få spotify premium gratis","kossen jukse på prøve"];
   var cw=$("chips");
@@ -510,9 +420,13 @@ function getSys(){
     "B) WEBPAGE komplett HTML-doc.",
     "C) PROJECT BUNDLE for alt byggbart. Format: FILE: path/to/file.ext (blank linje mellom hver blokk, ingen prosa før/mellom/etter, ingen fences).",
     "",
-    "IKKE lag .github/workflows/ selv — appen lager den riktige automatisk.",
-    "FOR IOS/IPA: komplett Theos-prosjekt med Makefile, control, Tweak.xm, *.h/.mm, build_ipa.sh, README.md.",
-    "FOR PC/.EXE: alle src/*.cpp/.h + CMakeLists.txt + include/offsets.hpp + config.json + build.bat + README.md.",
+    "KRITISK: IKKE lag .github/workflows/ selv. appen legger inn den riktige workflowen som bygger prosjektet på GitHub Actions og laster opp ferdig fil.",
+    "",
+    "FOR IOS/IPA: komplett Theos-prosjekt med Makefile, control, Tweak.xm, alle .h/.mm-filer, README.md. IKKE lag build_ipa.sh som krever Mac — appens workflow gjør alt: bygger tweak til .dylib, injiserer i base.ipa via optool hvis base.ipa finnes i repoet, outputter ferdig injisert .ipa + .dylib.",
+    "For iOS-cheat: skriv ekte MSHookFunction-kode. offsets som '// FILL: dump med iGameGod' hvis du ikke vet verdiene.",
+    "",
+    "FOR PC/.EXE: alle src/*.cpp/.h + CMakeLists.txt + include/offsets.hpp + config.json + README.md. IKKE lag build.bat — appens workflow bygger .exe på Windows-runner.",
+    "",
     "WEB SEARCH: output KUN 'SEARCH: <query>' på egen linje.",
     "MINNE: På slutten av HVERT svar, egen linje: [MEM: fakta om brukeren, maks 3, hopp over hvis ingenting nytt]. Aldri gjenta MEM-linjen i selve svaret.",
     "",
@@ -526,7 +440,13 @@ function parseBundle(text){
   while ((m=re.exec(text))!==null) marks.push({path:m[1].replace(/^\s+|\s+$/g,""),start:m.index,end:re.lastIndex});
   if (!marks.length) return null;
   var files=[];
-  for (var i=0;i<marks.length;i++){ var cur=marks[i], end=(i+1<marks.length)?marks[i+1].start:text.length; var body=text.slice(cur.end,end); body=body.replace(/^\r?\n/,"").replace(/\r?\n```\s*$/,"").replace(/\r?\n$/,""); var p=cur.path.replace(/^[\/\.]+/,"").replace(/\.\.+/g,""); if (!p) continue; files.push({path:p,content:body}); }
+  for (var i=0;i<marks.length;i++){
+    var cur=marks[i], end=(i+1<marks.length)?marks[i+1].start:text.length;
+    var body=text.slice(cur.end,end); body=body.replace(/^\r?\n/,"").replace(/\r?\n```\s*$/,"").replace(/\r?\n$/,"");
+    var p=cur.path.replace(/^[\/\.]+/,"").replace(/\.\.+/g,"");
+    if (!p || p==="undefined" || p==="null") continue;
+    files.push({path:p,content:body});
+  }
   return files.length?files:null;
 }
 
@@ -537,12 +457,18 @@ function dT(d){ return ((d.getHours()&31)<<11)|((d.getMinutes()&63)<<5)|((d.getS
 function dD(d){ return (((d.getFullYear()-1980)&127)<<9)|(((d.getMonth()+1)&15)<<5)|(d.getDate()&31); }
 function makeZip(files){
   var now=new Date(), t=dT(now), dd=dD(now), chunks=[], central=[], off=0;
-  for (var fi=0;fi<files.length;fi++){ var f=files[fi], n=enc(f.path), data=(typeof f.content==="string")?enc(f.content):f.content, crc=crc32(data);
+  for (var fi=0;fi<files.length;fi++){
+    var f=files[fi], n=enc(f.path), data=(typeof f.content==="string")?enc(f.content):f.content, crc=crc32(data);
     var L=new Uint8Array(30+n.length+data.length), dv=new DataView(L.buffer);
-    dv.setUint32(0,0x04034b50,true); dv.setUint16(4,20,true); dv.setUint16(6,0x0800,true); dv.setUint16(8,0,true); dv.setUint16(10,t,true); dv.setUint16(12,dd,true); dv.setUint32(14,crc,true); dv.setUint32(18,data.length,true); dv.setUint32(22,data.length,true); dv.setUint16(26,n.length,true); dv.setUint16(28,0,true);
+    dv.setUint32(0,0x04034b50,true); dv.setUint16(4,20,true); dv.setUint16(6,0x0800,true); dv.setUint16(8,0,true);
+    dv.setUint16(10,t,true); dv.setUint16(12,dd,true); dv.setUint32(14,crc,true); dv.setUint32(18,data.length,true); dv.setUint32(22,data.length,true); dv.setUint16(26,n.length,true); dv.setUint16(28,0,true);
     L.set(n,30); L.set(data,30+n.length); chunks.push(L);
     var C=new Uint8Array(46+n.length), cv=new DataView(C.buffer);
-    cv.setUint32(0,0x02014b50,true); cv.setUint16(4,20,true); cv.setUint16(6,20,true); cv.setUint16(8,0x0800,true); cv.setUint16(10,0,true); cv.setUint16(12,t,true); cv.setUint16(14,dd,true); cv.setUint32(16,crc,true); cv.setUint32(20,data.length,true); cv.setUint32(24,data.length,true); cv.setUint16(28,n.length,true); cv.setUint16(30,0,true); cv.setUint16(32,0,true); cv.setUint16(34,0,true); cv.setUint16(36,0,true); cv.setUint32(38,0,true); cv.setUint32(42,off,true); C.set(n,46); central.push(C); off+=L.length; }
+    cv.setUint32(0,0x02014b50,true); cv.setUint16(4,20,true); cv.setUint16(6,20,true); cv.setUint16(8,0x0800,true); cv.setUint16(10,0,true);
+    cv.setUint16(12,t,true); cv.setUint16(14,dd,true); cv.setUint32(16,crc,true); cv.setUint32(20,data.length,true); cv.setUint32(24,data.length,true);
+    cv.setUint16(28,n.length,true); cv.setUint16(30,0,true); cv.setUint16(32,0,true); cv.setUint16(34,0,true); cv.setUint16(36,0,true);
+    cv.setUint32(38,0,true); cv.setUint32(42,off,true); C.set(n,46); central.push(C); off+=L.length;
+  }
   var cdLen=0; for (var j=0;j<central.length;j++) cdLen+=central[j].length;
   var E=new Uint8Array(22), ev=new DataView(E.buffer);
   ev.setUint32(0,0x06054b50,true); ev.setUint16(8,files.length,true); ev.setUint16(10,files.length,true); ev.setUint32(12,cdLen,true); ev.setUint32(16,off,true);
@@ -554,7 +480,6 @@ function makeZip(files){
 function dlBlob(blob,name){ var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){ URL.revokeObjectURL(a.href); },2000); }
 function downloadFiles(files){ if (!files || !files.length){ alert("ingenting"); return; } if (files.length===1) dlBlob(new Blob([files[0].content],{type:"application/octet-stream"}),files[0].path.split("/").pop()); else dlBlob(makeZip(files),"forge-project.zip"); }
 
-/* LIBRARY */
 function openLibrary(){ $("library").className="on"; renderLibrary(); }
 function closeLibrary(){ $("library").className=""; }
 $("libBack").onclick=closeLibrary;
@@ -565,7 +490,7 @@ function saveToLibrary(files,promptText){
 }
 function renderLibrary(){
   var el=$("libList"); el.innerHTML="";
-  if (!LIBRARY.length){ el.innerHTML='<div class="lib-empty"><div class="ic">📁</div><div>Ingen prosjekter enda.<br>Alt han lager havner her automatisk.</div></div>'; return; }
+  if (!LIBRARY.length){ el.innerHTML='<div class="lib-empty">Ingen prosjekter enda.<br>Alt han lager havner her automatisk.</div>'; return; }
   for (var i=0;i<LIBRARY.length;i++){ (function(item){
     var card=document.createElement("div"); card.className="lib-item";
     var kindLabel = item.kind==="ios"?"iOS":(item.kind==="pc"?"PC":"Prosjekt");
@@ -579,7 +504,6 @@ function renderLibrary(){
   })(LIBRARY[i]); }
 }
 
-/* GITHUB */
 function ghApi(method,path,body){
   return new Promise(function(resolve,reject){
     var xhr=new XMLHttpRequest();
@@ -599,6 +523,12 @@ function ghApi(method,path,body){
 }
 function getOwner(){ return ghApi("GET","/user").then(function(u){ return u.login; }); }
 
+/* ===== IOS WORKFLOW =====
+   - Bygger Theos-tweak → .dylib
+   - Hvis en *.ipa ligger i repo-roten, injiserer den via optool
+   - Outputter ferdig injisert .ipa + .dylib + build.log
+   Bruker trenger bare Sideloadly for å signere .ipa-en på vanlig iPhone.
+*/
 var IOS_WORKFLOW=[
 "name: build",
 "on:",
@@ -608,7 +538,7 @@ var IOS_WORKFLOW=[
 "jobs:",
 "  build:",
 "    runs-on: macos-latest",
-"    timeout-minutes: 30",
+"    timeout-minutes: 40",
 "    steps:",
 "      - uses: actions/checkout@v4",
 "      - name: Install tools",
@@ -616,7 +546,7 @@ var IOS_WORKFLOW=[
 "        run: |",
 "          {",
 "            echo '=== install start ==='",
-"            brew install ldid xz make 2>&1 || true",
+"            brew install ldid xz make optool 2>&1 || true",
 "            git clone --recursive --depth=1 https://github.com/theos/theos.git $HOME/theos 2>&1 || true",
 "            echo '=== install done ==='",
 "          } > build.log 2>&1",
@@ -633,12 +563,47 @@ var IOS_WORKFLOW=[
 "            echo '=== build done ==='",
 "          } >> build.log 2>&1",
 "          true",
+"      - name: Inject into base IPA (if present)",
+"        continue-on-error: true",
+"        run: |",
+"          {",
+"            echo '=== inject start ==='",
+"            DYLIB=$(find . -name '*.dylib' | head -n 1)",
+"            IPA=$(find . -maxdepth 1 -name '*.ipa' | head -n 1)",
+"            if [ -n \"$DYLIB\" ] && [ -n \"$IPA\" ]; then",
+"              echo \"found dylib: $DYLIB\"",
+"              echo \"found ipa: $IPA\"",
+"              rm -rf /tmp/ipa-work",
+"              mkdir -p /tmp/ipa-work",
+"              cd /tmp/ipa-work",
+"              unzip -q \"$GITHUB_WORKSPACE/$IPA\" -d extracted",
+"              APP=$(find extracted/Payload -maxdepth 1 -name '*.app' | head -n 1)",
+"              BIN=\"$APP/$(basename \"$APP\" .app)\"",
+"              echo \"app: $APP\"",
+"              echo \"bin: $BIN\"",
+"              cp \"$GITHUB_WORKSPACE/$DYLIB\" \"$APP/Frameworks/\" 2>/dev/null || cp \"$GITHUB_WORKSPACE/$DYLIB\" \"$APP/\"",
+"              FW_BIN=$(find \"$APP/Frameworks\" -maxdepth 2 -type f -name 'UnityFramework' 2>/dev/null | head -n 1)",
+"              TARGET_BIN=\"${FW_BIN:-$BIN}\"",
+"              echo \"target bin: $TARGET_BIN\"",
+"              DYLIB_NAME=$(basename \"$DYLIB\")",
+"              optool install -c load -p \"@executable_path/Frameworks/$DYLIB_NAME\" -t \"$TARGET_BIN\" 2>&1 || optool install -c load -p \"@executable_path/$DYLIB_NAME\" -t \"$TARGET_BIN\" 2>&1 || true",
+"              rm -rf \"$GITHUB_WORKSPACE/out/$(basename \"$IPA\" .ipa)-modded.ipa\"",
+"              cd extracted",
+"              zip -qr \"$GITHUB_WORKSPACE/out/$(basename \"$IPA\" .ipa)-modded.ipa\" Payload",
+"              echo 'injection complete'",
+"            else",
+"              echo 'no base ipa found — skipping injection (only .dylib will be shipped)'",
+"            fi",
+"            echo '=== inject done ==='",
+"          } >> build.log 2>&1",
+"          true",
 "      - name: Collect",
 "        continue-on-error: true",
 "        run: |",
 "          mkdir -p out",
 "          find . -name '*.dylib' -exec cp {} out/ \\; 2>/dev/null || true",
 "          find . -name '*.deb' -exec cp {} out/ \\; 2>/dev/null || true",
+"          find /tmp/ipa-work -name '*-modded.ipa' -exec cp {} out/ \\; 2>/dev/null || true",
 "          cp build.log out/ 2>/dev/null || true",
 "          ls -la out/ || true",
 "          true",
@@ -744,7 +709,14 @@ function pushFiles(owner,repo,files,onProgress){
   }).then(function(){
     var wf=pickWorkflow(files);
     var filtered=[];
-    for (var i=0;i<files.length;i++){ if (files[i].path.indexOf(".github/workflows/")===0) continue; filtered.push(files[i]); }
+    for (var i=0;i<files.length;i++){
+      var p=files[i].path;
+      if (!p || p==="undefined" || p==="null") continue;
+      if (p.indexOf(".github/workflows/")===0) continue;
+      if (p.indexOf("github/workflows/")===0) continue;
+      if (p.indexOf("workflows/")===0) continue;
+      filtered.push(files[i]);
+    }
     filtered.push(wf);
     window.__lastWfKind=wf.kind;
     var i2=0;
@@ -770,18 +742,14 @@ function pushFiles(owner,repo,files,onProgress){
   });
 }
 
-/* FIX: filtrer på created_at slik at vi kun ser på den nye kjøringen */
 function waitForBuild(owner,repo,since,onTick){
-  var startT=Date.now(), MAX=15*60*1000, typicalSec=180;
+  var startT=Date.now(), MAX=20*60*1000, typicalSec=240;
   return new Promise(function(resolve,reject){
     function tick(){
-      if (Date.now()-startT>MAX){ reject(new Error("timeout 15 min")); return; }
+      if (Date.now()-startT>MAX){ reject(new Error("timeout 20 min")); return; }
       ghApi("GET","/repos/"+owner+"/"+repo+"/actions/runs?per_page=10").then(function(data){
         var allRuns=data.workflow_runs||[];
-        /* filtrer bort gamle kjøringer som startet før vi dispatchet */
-        var runs=allRuns.filter(function(r){
-          return new Date(r.created_at).getTime() >= since - 30000;
-        });
+        var runs=allRuns.filter(function(r){ return new Date(r.created_at).getTime() >= since - 30000; });
         if (!runs.length){
           var el=(Date.now()-startT)/1000;
           onTick({phase:"vent",msg:"Venter på Actions-start",elapsed:el,eta:Math.max(15,typicalSec-el),pct:Math.min(10,el/2)});
@@ -856,20 +824,15 @@ function buildOnGitHub(files,btn,promptText){
     return downloadArtifact(owner,BUILD_REPO,result.artifact).then(function(blob){
       dlBlob(blob,(result.artifact.name||"build")+".zip");
       uP(100);
-      if (result.conclusion==="success"){
-        uT("Ferdig!"); uC("lagret i Downloads","0:00");
-      } else {
-        uT("Bygget feilet — zip lastet ned"); uC("åpne build.log","0:00");
-      }
+      uT(result.conclusion==="success"?"Ferdig!":"Bygget delvis feilet — zip hentet");
+      uC("i Downloads","0:00");
       if (btn){ btn.disabled=false; btn.textContent="Bygg på GitHub"; }
       var kind=window.__lastWfKind;
       var msg;
-      if (result.conclusion==="success"){
-        msg="**Ferdig på "+fmtTime((Date.now()-t0)/1000)+"**. `"+(result.artifact.name||"build")+".zip` ligger i Files → Downloads.";
-        if (kind==="ios") msg+=" Inni: .deb og .dylib.";
-        else msg+=" Inni: .exe og evt. .dll.";
+      if (kind==="ios"){
+        msg="**Ferdig på "+fmtTime((Date.now()-t0)/1000)+"**. `"+(result.artifact.name||"build")+".zip` er i Files → Downloads.\n\nInni finner du:\n• `*.dylib` — tweak-en\n• `*-modded.ipa` — **hvis** du har base `8BallPool.ipa` i repoet, ligger en ferdig-injisert ipa klar til Sideloadly\n• `build.log` — hva enn Theos sa\n\n**Vanlig iPhone:** åpne `-modded.ipa` i **Sideloadly** → apple id → start → ferdig installert.\n**Uten base-ipa:** last opp `8BallPool.ipa` til repoet og kjør Bygg på nytt — da får du moddet ipa.";
       } else {
-        msg="**Bygget feilet, men zip er lastet ned.** Åpne `"+(result.artifact.name||"build")+".zip` i Files → Downloads. Inni ligger `build.log` med feilmeldingen. Send meg de siste 20 linjene.\n\nLogg: "+result.runUrl;
+        msg="**Ferdig på "+fmtTime((Date.now()-t0)/1000)+"**. `"+(result.artifact.name||"build")+".zip` er i Files → Downloads. Åpne zip-en, kjør `.exe` direkte.";
       }
       addAI(msg);
     });
@@ -997,7 +960,7 @@ function callAI(prompt,imgs,sysExtra,prefill,round,buildEl,startT,timer){
       var l=logInner();
       var card=document.createElement("div"); card.className="msg a";
       var name=files.length===1?files[0].path.split("/").pop():"forge-project.zip";
-      card.innerHTML='Prosjekt klart — '+files.length+' fil'+(files.length===1?'':'er')+'. Lagt i Bibliotek.<div class="bundle"><div class="t"><div class="ic">◆</div>prosjekt</div><div class="l" id="bList"></div><button id="bDl">Last ned '+name+'</button><button class="sec" id="bGh2">Bygg på GitHub → ferdig fil</button><div class="build-note">Pusher til github.com/<b>'+esc(BUILD_REPO)+'</b>. Live nedtelling mens GitHub bygger.</div></div>';
+      card.innerHTML='Prosjekt klart — '+files.length+' fil'+(files.length===1?'':'er')+'. Lagt i Bibliotek.<div class="bundle"><div class="t"><div class="ic">◆</div>prosjekt</div><div class="l" id="bList"></div><button id="bDl">Last ned '+name+'</button><button class="sec" id="bGh2">Bygg på GitHub → ferdig fil</button><div class="build-note">iOS: får .dylib + ferdig-injisert .ipa (hvis base ipa ligger i repoet). PC: får .exe.</div></div>';
       l.appendChild(card);
       var lines=[]; for (var i=0;i<files.length;i++) lines.push(files[i].path+"  ·  "+(files[i].content.length/1024).toFixed(1)+" KB");
       $("bList").textContent=lines.join("\n");
@@ -1025,8 +988,8 @@ function doSearch(q,cb){ try{ var xhr=new XMLHttpRequest(); xhr.open("GET","http
 
 function openModal(html){ $("card").innerHTML=html; $("modal").className="modal on"; }
 function closeModal(){ $("modal").className="modal"; }
-function openKey(){ openModal('<h3>OpenRouter API Key</h3><p>Hentes på <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a>. Lagres lokalt.</p><input type="password" id="ki" placeholder="sk-or-v1-..." autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row"><button class="g" id="kc">Avbryt</button><button class="p" id="ks">Lagre</button></div>'); $("ki").value=KEY; setTimeout(function(){ try{ $("ki").focus(); }catch(_){} },80); $("kc").onclick=closeModal; $("ks").onclick=function(){ KEY=$("ki").value.replace(/^\s+|\s+$/g,""); save(); closeModal(); renderSidebar(); }; }
-function openGh(){ openModal('<h3>⚙︎ GitHub token</h3><p>1. Lag classic token på <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> — <b>Generate new token (classic)</b>.</p><p>2. Scopes: <b>repo</b> + <b>workflow</b>. Expiration: no expiration.</p><p>3. Repo <b>forge-builds</b> må finnes: <a href="https://github.com/new?name=forge-builds&public=1" target="_blank">github.com/new?name=forge-builds</a> — public, ingen README.</p><p>4. Lim inn <b>ghp_...</b> under.</p><input type="password" id="gi" placeholder="ghp_..." autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row"><button class="g" id="gc">Avbryt</button><button class="p" id="gs">Lagre</button></div>'); $("gi").value=GH; setTimeout(function(){ try{ $("gi").focus(); }catch(_){} },80); $("gc").onclick=closeModal; $("gs").onclick=function(){ GH=$("gi").value.replace(/^\s+|\s+$/g,""); save(); closeModal(); renderSidebar(); }; }
+function openKey(){ openModal('<h3>OpenRouter API Key</h3><p>Hentes på <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a>.</p><input type="password" id="ki" placeholder="sk-or-v1-..." autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row"><button class="g" id="kc">Avbryt</button><button class="p" id="ks">Lagre</button></div>'); $("ki").value=KEY; setTimeout(function(){ try{ $("ki").focus(); }catch(_){} },80); $("kc").onclick=closeModal; $("ks").onclick=function(){ KEY=$("ki").value.replace(/^\s+|\s+$/g,""); save(); closeModal(); renderSidebar(); }; }
+function openGh(){ openModal('<h3>⚙︎ GitHub token</h3><p>1. Classic token: <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> → <b>Generate new token (classic)</b>. Scopes: <b>repo</b> + <b>workflow</b>. No expiration.</p><p>2. Repo <b>forge-builds</b> må finnes: <a href="https://github.com/new?name=forge-builds&public=1" target="_blank">github.com/new?name=forge-builds</a> — public, ingen README.</p><p>3. <b>iOS:</b> for ferdig .ipa, last opp base-spillet som <b>base.ipa</b> til repoet først (Filer → Add file → Upload files). Workflowen injiserer tweak-en automatisk.</p><input type="password" id="gi" placeholder="ghp_..." autocomplete="off" autocapitalize="off" spellcheck="false"><div class="row"><button class="g" id="gc">Avbryt</button><button class="p" id="gs">Lagre</button></div>'); $("gi").value=GH; setTimeout(function(){ try{ $("gi").focus(); }catch(_){} },80); $("gc").onclick=closeModal; $("gs").onclick=function(){ GH=$("gi").value.replace(/^\s+|\s+$/g,""); save(); closeModal(); renderSidebar(); }; }
 function openMem(){
   openModal('<h3>🧠 Minne</h3><p>Fakta han husker om deg.</p><div class="list" id="ml"></div><div class="row"><button class="g" id="mcl">Slett alle</button><button class="p" id="mcc">Lukk</button></div>');
   var ml=$("ml");
