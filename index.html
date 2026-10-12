@@ -29,9 +29,9 @@ header{display:flex;align-items:center;gap:6px;padding:10px 12px;border-bottom:1
 @keyframes in{from{opacity:0;transform:translateY(6px)}}
 .msg.u{align-self:flex-end;background:linear-gradient(135deg,#8b5cf6,#22d3ee);color:#fff;padding:10px 14px;border-radius:16px 16px 4px 16px;max-width:85%;box-shadow:0 6px 22px -8px rgba(139,92,246,.6);font-weight:500}
 .msg.u .thumb{max-width:180px;max-height:180px;border-radius:10px;display:block;margin:6px 0 0 auto}
-.msg.a{align-self:flex-start;background:rgba(22,22,28,.85);border:1px solid #232329;padding:12px 15px;border-radius:16px 16px 16px 4px;max-width:95%;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.msg.a{align-self:flex-start;background:rgba(22,22,28,.85);border:1px solid #232329;padding:12px 15;paddingpx;border-radius:16:px 16px10 16px 4pxpx;max-width;:95%;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .msg.a.err{border-color:rgba(248,113,113,.4);background:rgba(40,15,15,.7);color:#ffc4c4}
-.msg pre{background:#0a0a0f;border:1px solid #232329;padding:10px;border-radius:8px;overflow-x:auto;margin:8px 0 0;font-size:12px;line-height:1.5;white-space:pre;font-family:ui-monospace,Menlo,monospace;max-height:240px}
+.msg pre{background:#0a0a0f;border:1px solid #232329border-radius:8px;overflow-x:auto;margin:8px 0 0;font-size:12px;line-height:1.5;white-space:pre;font-family:ui-monospace,Menlo,monospace;max-height:240px}
 .empty{padding:40px 20px;text-align:center;color:#8b8b9e;align-self:center}
 .empty .orb{width:72px;height:72px;margin:0 auto 20px;border-radius:24px;background:linear-gradient(135deg,#8b5cf6,#22d3ee);box-shadow:0 12px 40px -8px rgba(139,92,246,.7);display:flex;align-items:center;justify-content:center;font-size:32px}
 .empty h2{margin:0 0 8px;font-size:18px;color:#f2f2f7;font-weight:600}
@@ -132,6 +132,7 @@ window.onerror=function(m,u,l){ showErr(m+" @ "+l); return false; };
 function setStatus(t,cls){ var s=$("status"); s.textContent=t; s.className="pill"+(cls?" "+cls:""); }
 function newId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function isEmptyErr(msg){ msg=String(msg); return msg.indexOf("404")>=0||msg.indexOf("409")>=0||msg.indexOf("empty")>=0||msg.indexOf("Git Repository is empty")>=0; }
 
 function addUser(text, imgs){
   var l=$("log"); var d=document.createElement("div"); d.className="msg u"; d.textContent=text||"";
@@ -337,29 +338,31 @@ function ghApi(method, path, body){
   });
 }
 
-/* get owner from token without needing repo perms */
-function getOwner(){
-  return ghApi("GET","/user").then(function(u){ return u.login; });
-}
+function getOwner(){ return ghApi("GET","/user").then(function(u){ return u.login; }); }
 
 function pushFiles(owner, repo, files, onProgress){
-  /* 1. ensure repo exists — GET; if 404, POST /user/repos */
+  /* 1. ensure repo exists */
   return ghApi("GET","/repos/"+owner+"/"+repo).catch(function(err){
     if (String(err.message).indexOf("404")>=0){
       onProgress("GitHub: oppretter "+owner+"/"+repo);
       return ghApi("POST","/user/repos",{ name:repo, private:false, auto_init:false }).catch(function(e2){
-        if (String(e2.message).indexOf("403")>=0 || String(e2.message).indexOf("422")>=0){
-          throw new Error("kan ikke opprette repo "+owner+"/"+repo+". Lag det manuelt på github.com/new — navn: "+repo+", public, ingen README.");
+        var m2=String(e2.message);
+        if (m2.indexOf("403")>=0 || m2.indexOf("422")>=0){
+          throw new Error("kan ikke opprette repo. Lag det manuelt på github.com/new?name="+repo+"&public=1 (public, ingen README).");
         }
         throw e2;
       });
     }
     throw err;
   }).then(function(){
-    /* 2. get current main sha (or null if empty) */
+    /* 2. get current main sha — treat 404, 409, "empty" all as no-branch */
+    onProgress("GitHub: sjekker branch…");
     return ghApi("GET","/repos/"+owner+"/"+repo+"/git/refs/heads/main")
       .then(function(ref){ return ref.object.sha; })
-      .catch(function(){ return null; });
+      .catch(function(e){
+        if (isEmptyErr(e.message)) return null;
+        throw e;
+      });
   }).then(function(parentSha){
     /* 3. create blobs */
     var blobPromises=[];
@@ -385,11 +388,16 @@ function pushFiles(owner, repo, files, onProgress){
     if (info.parentSha) commitBody.parents=[info.parentSha];
     return ghApi("POST","/repos/"+owner+"/"+repo+"/git/commits",commitBody);
   }).then(function(commit){
-    /* 6. update or create ref */
+    /* 6. update or create ref — 404/409/empty = create */
     onProgress("GitHub: oppdaterer branch…");
     return ghApi("GET","/repos/"+owner+"/"+repo+"/git/refs/heads/main")
       .then(function(){ return ghApi("PATCH","/repos/"+owner+"/"+repo+"/git/refs/heads/main",{sha:commit.sha,force:true}); })
-      .catch(function(){ return ghApi("POST","/repos/"+owner+"/"+repo+"/git/refs",{ref:"refs/heads/main",sha:commit.sha}); });
+      .catch(function(e){
+        if (isEmptyErr(e.message)){
+          return ghApi("POST","/repos/"+owner+"/"+repo+"/git/refs",{ref:"refs/heads/main",sha:commit.sha});
+        }
+        throw e;
+      });
   });
 }
 
@@ -397,14 +405,14 @@ function waitForBuild(owner, repo, onProgress){
   var startT=Date.now(), MAX=10*60*1000;
   return new Promise(function(resolve,reject){
     function tick(){
-      if (Date.now()-startT>MAX){ reject(new Error("timeout etter 10 min")); return; }
+      if (Date.now()-startT>MAX){ reject(new Error("timeout etter 10 min — åpne github.com/"+owner+"/"+repo+"/actions")); return; }
       ghApi("GET","/repos/"+owner+"/"+repo+"/actions/runs?per_page=3").then(function(data){
         var runs=data.workflow_runs||[];
         if (!runs.length){ onProgress("GitHub: venter på Actions…"); setTimeout(tick,6000); return; }
         var run=runs[0];
         onProgress("GitHub: "+(run.status||"")+" "+(run.conclusion||""));
         if (run.status==="completed"){
-          if (run.conclusion!=="success"){ reject(new Error("build feilet: "+run.conclusion+" — åpne github.com/"+owner+"/"+repo+"/actions for detaljer")); return; }
+          if (run.conclusion!=="success"){ reject(new Error("build feilet: "+run.conclusion+" — åpne github.com/"+owner+"/"+repo+"/actions")); return; }
           ghApi("GET","/repos/"+owner+"/"+repo+"/actions/runs/"+run.id+"/artifacts").then(function(a){
             var arts=a.artifacts||[];
             if (!arts.length){ reject(new Error("build ferdig men ingen artifact")); return; }
@@ -414,8 +422,7 @@ function waitForBuild(owner, repo, onProgress){
         }
         setTimeout(tick,6000);
       }).catch(function(e){
-        /* actions might not be enabled yet — retry */
-        if (String(e.message).indexOf("404")>=0){ onProgress("GitHub: venter på actions…"); setTimeout(tick,6000); return; }
+        if (isEmptyErr(e.message)){ onProgress("GitHub: venter på actions…"); setTimeout(tick,6000); return; }
         reject(e);
       });
     }
@@ -678,9 +685,9 @@ function openKey(){
 
 function openGh(){
   openModal('<h3>⚙︎ GitHub token</h3>'+
-    '<p>1. Lag classic token på <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> (Generate new token (classic)).</p>'+
+    '<p>1. Lag classic token på <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a> — velg <b>Generate new token (classic)</b>.</p>'+
     '<p>2. Scopes: <b>repo</b> og <b>workflow</b>. Expiration: no expiration.</p>'+
-    '<p>3. Lag repo <b>forge-builds</b> manuelt på <a href="https://github.com/new?name=forge-builds&public=1" target="_blank">github.com/new?name=forge-builds</a> — public, ingen README.</p>'+
+    '<p>3. Lag repo <b>forge-builds</b> manuelt: <a href="https://github.com/new?name=forge-builds&public=1" target="_blank">github.com/new?name=forge-builds</a> — public, ingen README, ingen gitignore.</p>'+
     '<p>4. Lim inn <b>ghp_...</b>-tokenen under.</p>'+
     '<input type="password" id="gi" placeholder="ghp_..." autocomplete="off" autocapitalize="off" spellcheck="false">'+
     '<div class="row"><button class="g" id="gc">Avbryt</button><button class="p" id="gs">Lagre</button></div>');
