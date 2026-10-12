@@ -7,15 +7,10 @@
 <title>Forge</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#0a0607;--bg-2:#100809;--bg-3:#180a0b;--panel:#150a0b;
-  --border:#26100f;--border-2:#3a1816;--text:#f2e8e8;--dim:#9e7e7e;--mute:#6a4848;
-  --red:#e54b4b;--red-2:#ff5c5c;--blue:#4a7cff;--green:#4ade80;
-}
+:root{--bg:#0a0607;--bg-2:#100809;--bg-3:#180a0b;--panel:#150a0b;--border:#26100f;--border-2:#3a1816;--text:#f2e8e8;--dim:#9e7e7e;--mute:#6a4848;--red:#e54b4b;--red-2:#ff5c5c;--blue:#4a7cff;--green:#4ade80}
 html,body{height:100%;margin:0;overflow:hidden}
 body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,system-ui,sans-serif}
 #app{display:flex;height:100dvh;width:100vw;position:relative}
-
 #login{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px}
 #login.on{display:flex}
 #login .logo{width:52px;height:52px;border-radius:16px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;margin-bottom:22px;box-shadow:0 12px 40px -8px rgba(229,75,75,.5)}
@@ -27,7 +22,6 @@ body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,system-
 .lg-btn svg{width:20px;height:20px;flex:0 0 auto}
 .lg-btn.primary{background:var(--red);border:0;color:#fff;justify-content:center;font-weight:600}
 .lg-skip{margin-top:22px;color:var(--mute);font-size:13px;cursor:pointer;text-decoration:underline;touch-action:manipulation}
-
 #sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--bg-2);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .25s ease;z-index:50;display:flex;flex-direction:column;padding:8px 8px 12px}
 #sidebar.on{transform:translateX(0)}
 .sb-head{display:flex;align-items:center;justify-content:space-between;padding:8px 4px 8px 8px}
@@ -39,7 +33,6 @@ body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,system-
 .sb-item svg{width:20px;height:20px;stroke:currentColor;flex:0 0 auto;opacity:.9;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .sb-item .lbl{flex:1}
 .sb-item .badge{font-size:11px;color:var(--mute);font-family:ui-monospace,monospace}
-.sb-item .badge.ok{color:var(--green)}
 .sb-sep{height:1px;background:var(--border);margin:10px 8px}
 .sb-title{font-size:11px;color:var(--mute);padding:10px 12px 6px;text-transform:uppercase;letter-spacing:.08em}
 .sb-list{flex:1;overflow-y:auto;margin:0 -4px;padding:0 4px}
@@ -58,17 +51,14 @@ body{background:var(--bg);color:var(--text);font:16px/1.55 -apple-system,system-
 .sb-profile .info{flex:1;min-width:0}
 .sb-profile .n{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 .sb-profile .e{font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
 #overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:40;display:none}
 #overlay.on{display:block}
-
 #popover{position:fixed;background:var(--bg-3);border:1px solid var(--border-2);border-radius:12px;padding:6px;z-index:100;min-width:180px;box-shadow:0 20px 40px -10px rgba(0,0,0,.8);display:none}
 #popover.on{display:block}
 #popover button{width:100%;padding:10px 14px;background:transparent;border:0;color:var(--text);font:14px inherit;text-align:left;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;touch-action:manipulation;font-family:inherit}
 #popover button:active{background:var(--bg-2)}
 #popover button.red{color:var(--red-2)}
 #popover svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-
 main{flex:1;display:flex;flex-direction:column;height:100dvh;width:100vw;min-width:0}
 header{height:56px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg);position:relative;z-index:5;border-bottom:1px solid transparent}
 .menu-btn{width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;touch-action:manipulation}
@@ -78,7 +68,6 @@ header{height:56px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding
 .dot-menu{width:36px;height:36px;border-radius:50%;background:transparent;border:0;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto;touch-action:manipulation}
 .dot-menu:active{background:var(--bg-3)}
 .dot-menu svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-
 #log{flex:1;overflow-y:auto;padding:16px 0;display:flex;flex-direction:column;gap:22px;-webkit-overflow-scrolling:touch}
 .log-inner{max-width:760px;width:100%;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:20px}
 .msg{max-width:100%;font-size:15px;line-height:1.6;white-space:pre-wrap;word-break:break-word;animation:in .2s ease}
@@ -89,7 +78,6 @@ header{height:56px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding
 .msg.a.err{background:#2a0a0a;border:1px solid var(--red);color:#ffb8b8;padding:12px 16px;border-radius:14px;font-size:14px}
 .msg pre{background:var(--bg-2);border:1px solid var(--border);padding:12px;border-radius:10px;overflow-x:auto;margin:10px 0 0;font-size:12.5px;line-height:1.6;white-space:pre;font-family:ui-monospace,Menlo,monospace;max-height:300px}
 .msg code{background:var(--bg-3);padding:1px 5px;border-radius:4px;font-family:ui-monospace,monospace;font-size:13.5px}
-
 .empty{padding:50px 20px;text-align:center;color:var(--dim);align-self:center;max-width:400px}
 .empty .orb{width:56px;height:56px;margin:0 auto 20px;border-radius:16px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;box-shadow:0 12px 40px -10px rgba(229,75,75,.7)}
 .empty h2{margin:0 0 8px;font-size:24px;font-weight:600;letter-spacing:-.01em}
@@ -97,7 +85,6 @@ header{height:56px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .chip{font-size:13.5px;padding:10px 16px;border-radius:14px;background:var(--bg-2);border:1px solid var(--border);color:var(--text);cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left}
 .chip:active{background:var(--bg-3)}
-
 .build{align-self:flex-start;background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;max-width:100%;font-size:14px;min-width:280px}
 .build .row{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px;align-items:center;font-size:14px}
 .build .pct{font-family:ui-monospace,monospace;color:var(--red-2);font-weight:600;font-size:12.5px}
@@ -110,7 +97,6 @@ header{height:56px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding
 .build .think{margin-top:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--dim);max-height:160px;overflow-y:auto;font-family:ui-monospace,monospace;white-space:pre-wrap;word-break:break-word;line-height:1.5}
 .build .think .ln{display:block;padding:1px 0;color:var(--dim)}
 .build .think .ln.b{color:var(--red-2)}
-
 .bundle{margin-top:12px;background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
 .bundle .t{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .bundle .t .ic{width:24px;height:24px;border-radius:8px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px}
@@ -119,7 +105,6 @@ header{height:56px;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding
 .bundle button.sec{background:var(--bg-3);color:var(--text);border:1px solid var(--border-2)}
 .bundle button:disabled{opacity:.5}
 .bundle .build-note{margin-top:12px;font-size:12px;color:var(--dim);line-height:1.55}
-
 footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
 .composer{max-width:760px;margin:0 auto;padding:0 16px}
 #attached{display:none;gap:8px;margin-bottom:8px;flex-wrap:wrap}
@@ -139,11 +124,10 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
 #send:disabled{opacity:.3}
 #send svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 .footnote{text-align:center;font-size:11.5px;color:var(--mute);margin-top:8px;padding:0 20px}
-
-#settings{position:fixed;inset:0;background:var(--bg);z-index:60;display:none;flex-direction:column;overflow-y:auto}
-#settings.on{display:flex}
-.set-head{position:sticky;top:0;height:56px;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg);border-bottom:1px solid var(--border);z-index:2;flex:0 0 auto}
-.set-title{flex:1;font-size:17px;font-weight:600;text-align:center;padding:0 6px}
+#settings,#library{position:fixed;inset:0;background:var(--bg);z-index:60;display:none;flex-direction:column;overflow-y:auto}
+#settings.on,#library.on{display:flex}
+.set-head,.lib-head{position:sticky;top:0;height:56px;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg);border-bottom:1px solid var(--border);z-index:2;flex:0 0 auto}
+.set-title,.lib-title{flex:1;font-size:17px;font-weight:600;text-align:center;padding:0 6px}
 .set-body{max-width:760px;margin:0 auto;width:100%;padding:20px 16px 60px}
 .set-profile{padding:20px 0;text-align:center;border-bottom:1px solid var(--border);margin-bottom:20px}
 .set-profile .av{width:72px;height:72px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;margin:0 auto 12px}
@@ -159,11 +143,6 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
 .set-row.danger .lbl{color:var(--red-2)}
 .set-row.danger svg{stroke:var(--red-2)}
 .set-row .chev{width:16px;height:16px;stroke:var(--mute);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-
-#library{position:fixed;inset:0;background:var(--bg);z-index:60;display:none;flex-direction:column;overflow-y:auto}
-#library.on{display:flex}
-.lib-head{position:sticky;top:0;height:56px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border);background:var(--bg);z-index:2;flex:0 0 auto}
-.lib-title{flex:1;font-size:17px;font-weight:600;text-align:center;padding:0 6px}
 .lib-list{flex:1;overflow-y:auto;padding:20px 16px 60px;max-width:760px;margin:0 auto;width:100%}
 .lib-item{background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
 .lib-item .h{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
@@ -177,7 +156,6 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
 .lib-item .acts button.red{background:transparent;color:var(--red-2);border:1px solid var(--red)}
 .lib-empty{text-align:center;color:var(--mute);padding:60px 20px;font-size:14px}
 .lib-empty .ic{font-size:36px;margin-bottom:14px;opacity:.4}
-
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
 .modal.on{display:flex}
 .card{background:var(--bg-2);border:1px solid var(--border-2);border-radius:20px;padding:22px;width:100%;max-width:520px;max-height:85vh;display:flex;flex-direction:column}
@@ -191,7 +169,6 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
 .card .row button{padding:12px 20px;border-radius:12px;border:0;font:14px inherit;font-weight:600;cursor:pointer;touch-action:manipulation;font-family:inherit}
 .card .row .g{background:var(--bg-3);color:var(--text)}
 .card .row .p{background:var(--red);color:#fff}
-
 #err{position:fixed;top:60px;left:12px;right:12px;background:#2a0a0a;border:1px solid var(--red);color:#ffb8b8;padding:12px;border-radius:12px;font-size:12.5px;z-index:200;display:none;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,monospace;max-height:50vh;overflow-y:auto}
 #err.on{display:block}
 </style>
@@ -259,27 +236,19 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
   <div id="overlay"></div>
   <main>
     <header>
-      <button class="menu-btn" id="menuBtn">
-        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-      </button>
+      <button class="menu-btn" id="menuBtn"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
       <div class="title-center" id="headerTitle">Forge</div>
-      <button class="dot-menu" id="newBtn">
-        <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      </button>
+      <button class="dot-menu" id="newBtn"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
     </header>
     <div id="log"><div class="log-inner" id="logInner"></div></div>
     <footer>
       <div class="composer">
         <div id="attached"></div>
         <div class="box">
-          <label class="icon-btn" for="fileInput">
-            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-          </label>
+          <label class="icon-btn" for="fileInput"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></label>
           <input id="fileInput" type="file" accept="image/*" style="display:none" multiple>
           <textarea id="inp" rows="1" placeholder="Spør om alt"></textarea>
-          <button id="send" title="Send">
-            <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-          </button>
+          <button id="send" title="Send"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
         </div>
         <div class="footnote">Forge kan gjøre feil. Sjekk viktig info.</div>
       </div>
@@ -288,21 +257,13 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
 </div>
 
 <div id="popover">
-  <button id="popRename">
-    <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-    Gi nytt navn
-  </button>
-  <button id="popDelete" class="red">
-    <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
-    Slett
-  </button>
+  <button id="popRename"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Gi nytt navn</button>
+  <button id="popDelete" class="red"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Slett</button>
 </div>
 
 <div id="settings">
   <div class="set-head">
-    <button class="menu-btn" id="setBack">
-      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
+    <button class="menu-btn" id="setBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
     <div class="set-title">Innstillinger</div>
     <div style="width:36px"></div>
   </div>
@@ -363,13 +324,9 @@ footer{flex:0 0 auto;background:var(--bg);padding:12px 0 20px;padding-bottom:cal
 
 <div id="library">
   <div class="lib-head">
-    <button class="menu-btn" id="libBack">
-      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
+    <button class="menu-btn" id="libBack"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
     <div class="lib-title">Bibliotek</div>
-    <button class="menu-btn" id="libClear">
-      <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
-    </button>
+    <button class="menu-btn" id="libClear"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
   </div>
   <div class="lib-list" id="libList"></div>
 </div>
@@ -408,9 +365,7 @@ function loginAs(provider){
   save(); hideLogin(); renderAccount(); renderSidebar();
 }
 var lgBtns=document.querySelectorAll(".lg-btn[data-prov]");
-for (var li=0;li<lgBtns.length;li++){
-  (function(b){ b.onclick=function(){ loginAs(b.getAttribute("data-prov")); }; })(lgBtns[li]);
-}
+for (var li=0;li<lgBtns.length;li++){ (function(b){ b.onclick=function(){ loginAs(b.getAttribute("data-prov")); }; })(lgBtns[li]); }
 $("lgSkip").onclick=function(){ ACCOUNT={name:"Gjest",email:"",provider:"guest"}; save(); hideLogin(); renderAccount(); renderSidebar(); };
 
 function openSidebar(){ $("sidebar").className="on"; $("overlay").className="on"; }
@@ -438,8 +393,7 @@ function showPopover(x,y,cid){
   var p=$("popover");
   p.style.left=Math.max(8,Math.min(window.innerWidth-200,x))+"px";
   p.style.top=Math.max(8,Math.min(window.innerHeight-140,y))+"px";
-  p.classList.add("on");
-  p.__cid=cid;
+  p.classList.add("on"); p.__cid=cid;
 }
 function hidePopover(){ $("popover").className=""; $("popover").__cid=null; }
 $("popDelete").onclick=function(){
@@ -458,25 +412,13 @@ $("popRename").onclick=function(){
   n=n.replace(/^\s+|\s+$/g,""); if (!n) return;
   CHATS[cid].title=n; save(); renderSidebar(); if (cid===CUR) setHeaderTitle(n);
 };
-document.addEventListener("click",function(e){
-  if (!$("popover").classList.contains("on")) return;
-  if (!$("popover").contains(e.target)) hidePopover();
-},true);
+document.addEventListener("click",function(e){ if (!$("popover").classList.contains("on")) return; if (!$("popover").contains(e.target)) hidePopover(); },true);
 
 function attachLongPress(el,cid){
   var timer=null, fired=false, sx=0, sy=0;
-  el.addEventListener("touchstart",function(e){
-    var t=e.touches[0]; sx=t.clientX; sy=t.clientY; fired=false;
-    timer=setTimeout(function(){ fired=true; el.classList.add("pressing"); showPopover(sx,sy,cid); },450);
-  },{passive:true});
-  el.addEventListener("touchmove",function(e){
-    var t=e.touches[0];
-    if (Math.abs(t.clientX-sx)>10 || Math.abs(t.clientY-sy)>10){ clearTimeout(timer); el.classList.remove("pressing"); }
-  },{passive:true});
-  el.addEventListener("touchend",function(e){
-    clearTimeout(timer); el.classList.remove("pressing");
-    if (fired){ e.preventDefault(); e.stopPropagation(); }
-  });
+  el.addEventListener("touchstart",function(e){ var t=e.touches[0]; sx=t.clientX; sy=t.clientY; fired=false; timer=setTimeout(function(){ fired=true; el.classList.add("pressing"); showPopover(sx,sy,cid); },450); },{passive:true});
+  el.addEventListener("touchmove",function(e){ var t=e.touches[0]; if (Math.abs(t.clientX-sx)>10 || Math.abs(t.clientY-sy)>10){ clearTimeout(timer); el.classList.remove("pressing"); } },{passive:true});
+  el.addEventListener("touchend",function(e){ clearTimeout(timer); el.classList.remove("pressing"); if (fired){ e.preventDefault(); e.stopPropagation(); } });
   el.addEventListener("touchcancel",function(){ clearTimeout(timer); el.classList.remove("pressing"); });
 }
 
@@ -543,9 +485,7 @@ function showEmpty(){
   l.appendChild(w);
   var chips=["lag en cheat menu for cs2, pc, external c++, esp + aimbot","8 ball pool ios mod menu, theos tweak","unity il2cpp offset dumper, c++ prosjekt","korleis få spotify premium gratis","kossen jukse på prøve"];
   var cw=$("chips");
-  for (var i=0;i<chips.length;i++){
-    (function(t){ var b=document.createElement("button"); b.className="chip"; b.textContent=t; b.onclick=function(){ $("inp").value=t; onSend(); }; cw.appendChild(b); })(chips[i]);
-  }
+  for (var i=0;i<chips.length;i++){ (function(t){ var b=document.createElement("button"); b.className="chip"; b.textContent=t; b.onclick=function(){ $("inp").value=t; onSend(); }; cw.appendChild(b); })(chips[i]); }
 }
 function replay(){
   var l=logInner(); l.innerHTML=""; HIST=[];
@@ -771,15 +711,17 @@ function pickWorkflow(files){
 function pushFile(owner,repo,path,content,retry){
   retry=retry||0;
   var url="/repos/"+owner+"/"+repo+"/contents/"+encPath(path);
-  var body={ message: "Forge: "+path, content: btoa(unescape(encodeURIComponent(content))) };
   return ghApi("GET",url).then(function(existing){
+    var body={ message: "Forge: "+path, content: btoa(unescape(encodeURIComponent(content))) };
     if (existing && existing.sha) body.sha=existing.sha;
     return body;
   }).catch(function(e){
-    if (isEmptyErr(e.message)) return body;
+    if (isEmptyErr(e.message)) return { message: "Forge: "+path, content: btoa(unescape(encodeURIComponent(content))) };
     throw e;
   }).then(function(b){ return ghApi("PUT",url,b); }).catch(function(e){
-    if (retry<2 && String(e.message).indexOf("409")>=0) return pushFile(owner,repo,path,content,retry+1);
+    if (retry<3 && String(e.message).indexOf("409")>=0){
+      return new Promise(function(res){ setTimeout(res, 400); }).then(function(){ return pushFile(owner,repo,path,content,retry+1); });
+    }
     throw e;
   });
 }
@@ -801,11 +743,18 @@ function pushFiles(owner,repo,files,onProgress){
     for (var i=0;i<files.length;i++){ if (files[i].path.indexOf(".github/workflows/")===0) continue; filtered.push(files[i]); }
     filtered.push(wf);
     window.__lastWfKind=wf.kind;
-    var done=0, proms=[];
-    for (var j=0;j<filtered.length;j++){
-      (function(f){ proms.push(pushFile(owner,repo,f.path,f.content).then(function(){ done++; onProgress("pusher "+done+"/"+filtered.length+" — "+f.path.split("/").pop()); return true; })); })(filtered[j]);
+    /* SEKVENSIELL PUSH — én fil om gangen, ingen race */
+    var i2=0;
+    function step(){
+      if (i2>=filtered.length) return Promise.resolve();
+      var f=filtered[i2];
+      return pushFile(owner,repo,f.path,f.content).then(function(){
+        i2++;
+        onProgress("pusher "+i2+"/"+filtered.length+" — "+f.path.split("/").pop());
+        return step();
+      });
     }
-    return Promise.all(proms);
+    return step();
   }).then(function(){
     onProgress("dispatcher workflow…");
     var dispatchedAt=Date.now();
@@ -884,7 +833,11 @@ function buildOnGitHub(files,btn,promptText){
   var owner="",runSince=t0;
   getOwner().then(function(o){
     owner=o; uP(5); uT("Pusher filer…"); uC("pusher "+files.length+" filer","~"+fmtTime(3));
-    return pushFiles(owner,BUILD_REPO,files,function(msg){ uK(msg); uS(msg); uP(5+Math.min(25,Math.random()*3+2)); });
+    return pushFiles(owner,BUILD_REPO,files,function(msg){
+      uK(msg); uS(msg);
+      var m=msg.match(/pusher (\d+)\/(\d+)/);
+      if (m){ var done=parseInt(m[1],10), total=parseInt(m[2],10); uP(5+(done/total)*25); }
+    });
   }).then(function(res){
     if (res && res.runSince) runSince=res.runSince;
     uP(35); uT("Bygger på GitHub…");
